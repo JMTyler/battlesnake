@@ -18,14 +18,18 @@ app.post('/start', (req, res) => {
 	res.sendStatus(200);
 });
 
+let move = 'right';
 app.post('/move', (req, res) => {
 	const { game, board, you } = req.body;
 	
-	let move = 'right';
-	if (you.head.x + 1 >= board.width) move = 'up';
-	if (you.head.y + 1 >= board.height) move = 'left';
-	if (you.head.x - 1 < 0) move = 'down';
-	if (you.head.y - 1 < 0) move = 'right';
+	const engine = {
+		right: { next: 'up',    limit: (you.head.x + 1 >= board.width) },
+		up:    { next: 'left',  limit: (you.head.y + 1 >= board.height) },
+		left:  { next: 'down',  limit: (you.head.x - 1 < 0) },
+		down:  { next: 'right', limit: (you.head.y - 1 < 0) },
+	};
+	
+	if (engine[move].limit) move = engine[move].next;
 	
 	res.send({ move });
 });
