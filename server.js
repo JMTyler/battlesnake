@@ -1,3 +1,4 @@
+const _ = require('lodash');
 const express = require('express');
 
 const app = express();
@@ -54,16 +55,14 @@ let move = 'right';
 app.post('/move', (req, res) => {
 	const { game, board, you } = req.body;
 	
+	if (_.isEqual(you.head, target)) target = null;
 	if (target) {
-		if (you.head.x == target.x && you.head.y == target.y) target = null;
-		else {
-			move = approachTarget(you, target);
-			return res.send({ move });
-		}
+		move = approachTarget(you, target);
+		return res.send({ move });
 	}
 	
 	if (you.health <= maxTravel) {
-		move = approachTarget(you, board.food[0]);
+		move = approachTarget(you, _.first(board.food)); // _.sample(board.food)
 		return res.send({ move });
 	}
 	
@@ -83,12 +82,9 @@ app.post('/move', (req, res) => {
 	if (move == 'right') x += 1;
 	if (move == 'left') x -= 1;
 	
-	const collides = you.body.reduce((hit, coords) => {
-		return hit || (x == coords.x && y == coords.y);
-	}, false);
-	
+	const collides = _.some(you.body, { x, y });
 	if (collides) {
-		target = you.body[you.body.length - 1];
+		target = _.last(you.body);
 		move = approachTarget(you, target);
 		return res.send({ move });
 	}
@@ -102,4 +98,4 @@ app.post('/end', (req, res) => {
 	return res.sendStatus(200);
 });
 
-app.listen(process.env.PORT || 9000, () => console.log('Running!'));
+app.listen(process.env.PORT || 9000, () => console.log('Running!\n-----\n'));
