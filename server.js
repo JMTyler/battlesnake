@@ -19,7 +19,15 @@ app.post('/start', (req, res) => {
 });
 
 app.post('/move', (req, res) => {
-	res.send({ move: 'right' });
+	const { game, board, you } = req.body;
+	
+	let move = 'right';
+	if (you.head.x + 1 >= board.width) move = 'up';
+	if (you.head.y + 1 >= board.height) move = 'left';
+	if (you.head.x - 1 < 0) move = 'down';
+	if (you.head.y - 1 < 0) move = 'right';
+	
+	res.send({ move });
 });
 
 app.post('/end', (req, res) => {
