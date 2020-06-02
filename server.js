@@ -14,31 +14,60 @@ app.get('/', (req, res) => {
 	});
 });
 
-let target = null;
-const approachTarget = (you, target) => {
-	console.log('You:', you.head);
-	console.log('Target:', target);
-	
-	const diffX = target.x - you.head.x;
-	const diffY = target.y - you.head.y;
-	
-	const absX = Math.abs(diffX);
-	const absY = Math.abs(diffY);
-	
-	console.log('DiffX:', diffX, ';  DiffY:', diffY);
-	const moveX = Math.sign(diffX) + you.head.x;
-	const moveY = Math.sign(diffY) + you.head.y;
-	if (moveX != you.body[1].x) {
-		if (absX >= absY || moveY == you.body[1].y) {
-			const move = Math.sign(diffX) < 0 ? 'left' : 'right';
-			console.log('Moving X:', move);
-			return move;
+const Path = {
+	ApproachTarget(you, target) {
+		console.log('You:', you.head);
+		console.log('Target:', target);
+		
+		const vector = Path.GetVector(you.head, target);
+		const adjacent = Position.GetAdjacentTiles(you.head);
+		
+		const moveX = adjacent[vector.dir.x];
+		const xCollision = _.some(you.body, moveX);
+		if (xCollision) {
+			return vector.dir.y;
 		}
-	}
+		
+		const moveY = adjacent[vector.dir.y];
+		const yCollision = _.some(you.body, moveY);
+		if (yCollision) {
+			return vector.dir.x;
+		}
+		
+		if (Math.abs(vector.weight.x) > Math.abs(vector.weight.y)) {
+			return vector.dir.x;
+		}
+		
+		return vector.dir.y;
+	},
 	
-	const move = Math.sign(diffY) < 0 ? 'down' : 'up';
-	console.log('Moving Y:', move);
-	return move;
+	GetVector(origin, dest) {
+		const x = dest.x - origin.x;
+		const y = dest.y - origin.y;
+		console.log('DiffX:', x, ';  DiffY:', y);
+		return {
+			dir: {
+				x: Math.sign(x) < 0 ? 'left' : 'right',
+				y: Math.sign(y) < 0 ? 'down' : 'up',
+			},
+			weight: { x, y },
+		};
+	},
+};
+
+const Position = {
+	GetAdjacentTiles({ x, y }) {
+		return {
+			up:    { x, y: y + 1 },
+			down:  { x, y: y - 1 },
+			left:  { x: x - 1, y },
+			right: { x: x + 1, y },
+		};
+	},
+	
+	IsOutsideBoard({ x, y }, board) {
+		return x < 0 || y < 0 || x >= board.width || y >= board.height;
+	},
 };
 
 let maxTravel = 0;
@@ -51,41 +80,30 @@ app.post('/start', (req, res) => {
 	return res.sendStatus(200);
 });
 
+let target = null;
 let move = 'right';
 app.post('/move', (req, res) => {
 	const { game, board, you } = req.body;
+	const adjacent = Position.GetAdjacentTiles(you.head);
 	
 	if (_.isEqual(you.head, target)) target = null;
 	if (target) {
-		move = approachTarget(you, target);
+		move = Path.ApproachTarget(you, target);
 		return res.send({ move });
 	}
 	
 	if (you.health <= maxTravel) {
-		move = approachTarget(you, _.first(board.food)); // _.sample(board.food)
+		move = Path.ApproachTarget(you, _.first(board.food)); // _.sample(board.food)
 		return res.send({ move });
 	}
 	
-	const engine = {
-		right: { next: 'up',    limit: (you.head.x + 1 >= board.width) },
-		up:    { next: 'left',  limit: (you.head.y + 1 >= board.height) },
-		left:  { next: 'down',  limit: (you.head.x - 1 < 0) },
-		down:  { next: 'right', limit: (you.head.y - 1 < 0) },
-	};
+	const turn = { right: 'up', up: 'left', left: 'down', down: 'right' };
+	if (Position.IsOutsideBoard(adjacent[move], board)) move = turn[move];
 	
-	if (engine[move].limit) move = engine[move].next;
-	
-	let x = you.head.x;
-	let y = you.head.y;
-	if (move == 'up') y += 1;
-	if (move == 'down') y -= 1;
-	if (move == 'right') x += 1;
-	if (move == 'left') x -= 1;
-	
-	const collides = _.some(you.body, { x, y });
+	const collides = _.some(you.body, adjacent[move]);
 	if (collides) {
 		target = _.last(you.body);
-		move = approachTarget(you, target);
+		move = Path.ApproachTarget(you, target);
 		return res.send({ move });
 	}
 	
