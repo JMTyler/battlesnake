@@ -34,7 +34,7 @@ const Path = {
 			return vector.dir.x;
 		}
 		
-		if (Math.abs(vector.weight.x) > Math.abs(vector.weight.y)) {
+		if (adjacent[vector.dir.x].x != target.x) {
 			return vector.dir.x;
 		}
 		
