@@ -8,9 +8,9 @@ app.get('/', (req, res) => {
 	res.send({
 		apiversion: '1',
 		author: 'JMTyler',
-		color: '#660066',
-		head: 'default',
-		tail: 'default',
+		color: '#700070',
+		head: 'smile',
+		tail: 'shac-coffee',
 	});
 });
 
