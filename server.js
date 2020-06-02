@@ -63,8 +63,7 @@ app.post('/move', (req, res) => {
 	}
 	
 	if (you.health <= maxTravel) {
-		target = board.food[0];
-		move = approachTarget(you, target);
+		move = approachTarget(you, board.food[0]);
 		return res.send({ move });
 	}
 	
