@@ -131,6 +131,15 @@ app.post('/move', (req, res) => {
 		return res.send({ move });
 	}
 	
+	if (!Position.IsDeadly(adjacent[move], { board, you })) {
+		return res.send({ move });
+	}
+	
+	move = Path.ApproachTarget(you, _.last(you.body));
+	if (!Position.IsDeadly(adjacent[move], { board, you })) {
+		return res.send({ move });
+	}
+	
 	const turn = { right: 'up', up: 'left', left: 'down', down: 'right' };
 	while (turns < 3 && Position.IsDeadly(adjacent[move], { board, you })) {
 		move = turn[move];
