@@ -23,14 +23,12 @@ const Path = {
 		const adjacent = Position.GetAdjacentTiles(you.head);
 		
 		const moveX = adjacent[vector.dir.x];
-		const xCollision = _.some(you.body, moveX);
-		if (xCollision) {
+		if (Position.IsDeadly(moveX, { you })) {
 			return vector.dir.y;
 		}
 		
 		const moveY = adjacent[vector.dir.y];
-		const yCollision = _.some(you.body, moveY);
-		if (yCollision) {
+		if (Position.IsDeadly(moveY, { you })) {
 			return vector.dir.x;
 		}
 		
@@ -78,6 +76,20 @@ const Position = {
 	IsOutsideBoard({ x, y }, board) {
 		return x < 0 || y < 0 || x >= board.width || y >= board.height;
 	},
+	
+	IsDeadly(pos, { board, you }) {
+		if (board && Position.IsOutsideBoard(pos, board)) {
+			return true;
+		}
+		
+		// TODO: Only drop the tail piece if we HAVEN'T just eaten a disc.
+		const collides = _.some(_.initial(you.body), pos);
+		if (collides) {
+			return true;
+		}
+		
+		return false;
+	},
 };
 
 const Food = {
@@ -100,11 +112,13 @@ app.post('/start', (req, res) => {
 	return res.sendStatus(200);
 });
 
+let turns = 0;
 let target = null;
 let move = 'right';
 app.post('/move', (req, res) => {
 	const { game, board, you } = req.body;
 	const adjacent = Position.GetAdjacentTiles(you.head);
+	turns = 0;
 	
 	if (_.isEqual(you.head, target)) target = null;
 	if (target) {
@@ -118,13 +132,9 @@ app.post('/move', (req, res) => {
 	}
 	
 	const turn = { right: 'up', up: 'left', left: 'down', down: 'right' };
-	if (Position.IsOutsideBoard(adjacent[move], board)) move = turn[move];
-	
-	const collides = _.some(_.initial(you.body), adjacent[move]);
-	if (collides) {
-		target = _.last(you.body);
-		move = Path.ApproachTarget(you, target);
-		return res.send({ move });
+	while (turns < 3 && Position.IsDeadly(adjacent[move], { board, you })) {
+		move = turn[move];
+		turns += 1;
 	}
 	
 	return res.send({ move });
