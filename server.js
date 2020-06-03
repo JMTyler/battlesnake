@@ -9,7 +9,7 @@ app.get('/', (req, res) => {
 		apiversion: '1',
 		author: 'JMTyler',
 		color: '#700070',
-		head: 'smile',
+		head: 'beluga',
 		tail: 'shac-coffee',
 	});
 });
@@ -34,7 +34,7 @@ const Path = {
 			return vector.dir.x;
 		}
 		
-		if (adjacent[vector.dir.x].x != target.x) {
+		if (you.head.x != target.x) {
 			return vector.dir.x;
 		}
 		
@@ -53,6 +53,16 @@ const Path = {
 			weight: { x, y },
 		};
 	},
+	
+	GetDistance(origin, target) {
+		if (_.isArray(target)) {
+			return _.map(target, (t) => Path.GetDistance(origin, t));
+		}
+		
+		const x = target.x - origin.x;
+		const y = target.y - origin.y;
+		return Math.hypot(x, y);
+	},
 };
 
 const Position = {
@@ -67,6 +77,16 @@ const Position = {
 	
 	IsOutsideBoard({ x, y }, board) {
 		return x < 0 || y < 0 || x >= board.width || y >= board.height;
+	},
+};
+
+const Food = {
+	FindClosest({ you, board }) {
+		const distances = Path.GetDistance(you.head, board.food);
+		const shortestIndex = _.reduce(distances, (prev, distance, ix) => {
+			return (distance < distances[prev]) ? ix : prev;
+		}, 0);
+		return board.food[shortestIndex];
 	},
 };
 
@@ -93,14 +113,14 @@ app.post('/move', (req, res) => {
 	}
 	
 	if (you.health <= maxTravel) {
-		move = Path.ApproachTarget(you, _.first(board.food)); // _.sample(board.food)
+		move = Path.ApproachTarget(you, Food.FindClosest({ you, board }));
 		return res.send({ move });
 	}
 	
 	const turn = { right: 'up', up: 'left', left: 'down', down: 'right' };
 	if (Position.IsOutsideBoard(adjacent[move], board)) move = turn[move];
 	
-	const collides = _.some(you.body, adjacent[move]);
+	const collides = _.some(_.initial(you.body), adjacent[move]);
 	if (collides) {
 		target = _.last(you.body);
 		move = Path.ApproachTarget(you, target);
