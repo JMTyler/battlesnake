@@ -15,7 +15,7 @@ app.get('/', (req, res) => {
 });
 
 const Path = {
-	ApproachTarget(you, target) {
+	ApproachTarget(target, { board, you }) {
 		console.log('You:', you.head);
 		console.log('Target:', target);
 		
@@ -23,12 +23,12 @@ const Path = {
 		const adjacent = Position.GetAdjacentTiles(you.head);
 		
 		const moveX = adjacent[vector.dir.x];
-		if (Position.IsDeadly(moveX, { you })) {
+		if (Position.IsDeadly(moveX, { board, you })) {
 			return vector.dir.y;
 		}
 		
 		const moveY = adjacent[vector.dir.y];
-		if (Position.IsDeadly(moveY, { you })) {
+		if (Position.IsDeadly(moveY, { board, you })) {
 			return vector.dir.x;
 		}
 		
@@ -77,14 +77,17 @@ const Position = {
 		return x < 0 || y < 0 || x >= board.width || y >= board.height;
 	},
 	
-	IsDeadly(pos, { board, you }) {
+	IsDeadly(pos, { board }) {
 		if (board && Position.IsOutsideBoard(pos, board)) {
 			return true;
 		}
 		
-		// TODO: Only drop the tail piece if we HAVEN'T just eaten a disc.
-		const collides = _.some(_.initial(you.body), pos);
-		if (collides) {
+		const anySnakeCollision = _.some(board.snakes, (snake) => {
+			// TODO: Only drop the tail piece if the snake HASN'T just eaten a disc.
+			// TODO: Or, drop the tail either way, but consider that spot risky.
+			return _.some(_.initial(snake.body), pos);
+		});
+		if (anySnakeCollision) {
 			return true;
 		}
 		
@@ -122,12 +125,12 @@ app.post('/move', (req, res) => {
 	
 	if (_.isEqual(you.head, target)) target = null;
 	if (target) {
-		move = Path.ApproachTarget(you, target);
+		move = Path.ApproachTarget(target, req.body);
 		return res.send({ move });
 	}
 	
 	if (you.health <= maxTravel) {
-		move = Path.ApproachTarget(you, Food.FindClosest({ you, board }));
+		move = Path.ApproachTarget(Food.FindClosest({ you, board }), req.body);
 		return res.send({ move });
 	}
 	
@@ -135,7 +138,7 @@ app.post('/move', (req, res) => {
 		return res.send({ move });
 	}
 	
-	move = Path.ApproachTarget(you, _.last(you.body));
+	move = Path.ApproachTarget(_.last(you.body), req.body);
 	if (!Position.IsDeadly(adjacent[move], { board, you })) {
 		return res.send({ move });
 	}
