@@ -14,6 +14,15 @@ app.get('/', (req, res) => {
 	});
 });
 
+const State = {
+	Get(context) {
+		return _.get(this, [context.game.id, context.you.id]);
+	},
+	Set(context, value) {
+		return _.set(this, [context.game.id, context.you.id], value);
+	},
+};
+
 const Path = {
 	ApproachTarget(target, { board, you }) {
 		console.log('You:', you.head);
@@ -105,51 +114,54 @@ const Food = {
 	},
 };
 
-let maxTravel = 0;
 app.post('/start', (req, res) => {
 	const { game, board, you } = req.body;
 	
 	console.log(`New Game! [${game.id}]`);
-	maxTravel = board.width + board.height - 2;
+	State.Set(req.body, {
+		maxTravel : board.width + board.height - 2,
+		turns     : 0,
+		target    : null,
+		move      : 'right',
+	});
 	
 	return res.sendStatus(200);
 });
 
-let turns = 0;
-let target = null;
-let move = 'right';
 app.post('/move', (req, res) => {
 	const { game, board, you } = req.body;
+	const state = State.Get(req.body);
 	const adjacent = Position.GetAdjacentTiles(you.head);
-	turns = 0;
 	
-	if (_.isEqual(you.head, target)) target = null;
-	if (target) {
-		move = Path.ApproachTarget(target, req.body);
-		return res.send({ move });
+	state.turns = 0;
+	
+	if (_.isEqual(you.head, state.target)) state.target = null;
+	if (state.target) {
+		state.move = Path.ApproachTarget(state.target, req.body);
+		return res.send({ move: state.move });
 	}
 	
-	if (you.health <= maxTravel) {
-		move = Path.ApproachTarget(Food.FindClosest({ you, board }), req.body);
-		return res.send({ move });
+	if (you.health <= state.maxTravel) {
+		state.move = Path.ApproachTarget(Food.FindClosest({ you, board }), req.body);
+		return res.send({ move: state.move });
 	}
 	
-	if (!Position.IsDeadly(adjacent[move], { board, you })) {
-		return res.send({ move });
+	if (!Position.IsDeadly(adjacent[state.move], { board, you })) {
+		return res.send({ move: state.move });
 	}
 	
-	move = Path.ApproachTarget(_.last(you.body), req.body);
-	if (!Position.IsDeadly(adjacent[move], { board, you })) {
-		return res.send({ move });
+	state.move = Path.ApproachTarget(_.last(you.body), req.body);
+	if (!Position.IsDeadly(adjacent[state.move], { board, you })) {
+		return res.send({ move: state.move });
 	}
 	
 	const turn = { right: 'up', up: 'left', left: 'down', down: 'right' };
-	while (turns < 3 && Position.IsDeadly(adjacent[move], { board, you })) {
-		move = turn[move];
-		turns += 1;
+	while (state.turns < 3 && Position.IsDeadly(adjacent[state.move], { board, you })) {
+		state.move = turn[state.move];
+		state.turns += 1;
 	}
 	
-	return res.send({ move });
+	return res.send({ move: state.move });
 });
 
 app.post('/end', (req, res) => {
