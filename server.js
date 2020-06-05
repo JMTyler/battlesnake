@@ -32,16 +32,19 @@ const Utils = {
 
 	previousTurn: null,
 	LogMove(turn, move, comment) {
-		prefix = ' ';
-		if (turn === this.previousTurn) {
-			prefix = '↳';
+		if (turn > this.previousTurn + 1) {
+			console.log(' [ ... ]');
 		}
+		
+		const moveTag = Utils.Leftpad(move);
+		let turnTag = `[${Utils.Leftpad(turn)}]`;
+		if (turn === this.previousTurn) {
+			turnTag = ` ${Utils.Leftpad('↳')} `;
+		}
+
 		this.previousTurn = turn;
 
-		turn = Utils.Leftpad(turn);
-		move = Utils.Leftpad(move);
-
-		console.log(`${prefix}[${turn}] ${move} :  ${comment}`);
+		console.log(` ${turnTag} ${moveTag} :  ${comment}`);
 	},
 };
 
@@ -155,6 +158,7 @@ app.post('/start', (req, res) => {
 	});
 	
 	console.log('-----');
+	console.log();
 
 	return res.sendStatus(200);
 });
@@ -179,7 +183,8 @@ app.post('/move', (req, res) => {
 	}
 
 	if (Position.IsSafe(adjacent[state.move], { board, you })) {
-		Utils.LogMove(context.turn, state.move, 'no change');
+		if (context.turn === 0) Utils.LogMove(context.turn, state.move, 'first turn');
+		//else Utils.LogMove(context.turn, state.move, 'no change');
 		return res.send({ move: state.move });
 	}
 
@@ -205,8 +210,9 @@ app.post('/move', (req, res) => {
 });
 
 app.post('/end', (req, res) => {
-//	console.log('GAMEOVER', req.body);
+	console.log();
+	console.log('* Game Over! *');
 	return res.sendStatus(200);
 });
 
-app.listen(process.env.PORT || 9000, () => console.log('Running!\n'));
+app.listen(process.env.PORT || 9000, () => console.log('Running!'));
