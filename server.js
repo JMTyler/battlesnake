@@ -23,6 +23,28 @@ const State = {
 	},
 };
 
+const Utils = {
+	Leftpad(string, pad = 5) {
+		string = _.toString(string);
+		const prefix = _.times(pad - string.length, () => ' ').join('');
+		return prefix + string;
+	},
+
+	previousTurn: null,
+	LogMove(turn, move, comment) {
+		prefix = ' ';
+		if (turn === this.previousTurn) {
+			prefix = '↳';
+		}
+		this.previousTurn = turn;
+
+		turn = Utils.Leftpad(turn);
+		move = Utils.Leftpad(move);
+
+		console.log(`${prefix}[${turn}] ${move} :  ${comment}`);
+	},
+};
+
 const Path = {
 	ApproachTarget(target, { board, you }) {
 		const vector = Path.GetVector(you.head, target);
@@ -131,49 +153,60 @@ app.post('/start', (req, res) => {
 		target:    null,
 		move:      'right',
 	});
+	
+	console.log('-----');
 
 	return res.sendStatus(200);
 });
 
 app.post('/move', (req, res) => {
-	const { board, you } = req.body;
-	const state = State.Get(req.body);
+	const context = req.body;
+	const { board, you } = context;
+	const state = State.Get(context);
 	const adjacent = Position.GetAdjacentTiles(you.head);
-
-	state.turns = 0;
 
 	if (_.isEqual(you.head, state.target)) state.target = null;
 	if (state.target) {
-		state.move = Path.ApproachTarget(state.target, req.body);
+		state.move = Path.ApproachTarget(state.target, context);
+		Utils.LogMove(context.turn, state.move, 'continuing to approach target');
 		return res.send({ move: state.move });
 	}
 
 	if (you.health <= state.maxTravel) {
-		state.move = Path.ApproachTarget(Food.FindClosest({ you, board }), req.body);
+		state.move = Path.ApproachTarget(Food.FindClosest({ you, board }), context);
+		Utils.LogMove(context.turn, state.move, 'hungry, seeking food');
 		return res.send({ move: state.move });
 	}
 
 	if (Position.IsSafe(adjacent[state.move], { board, you })) {
+		Utils.LogMove(context.turn, state.move, 'no change');
 		return res.send({ move: state.move });
 	}
 
-	state.move = Path.ApproachTarget(_.last(you.body), req.body);
+	state.move = Path.ApproachTarget(_.last(you.body), context);
+	Utils.LogMove(context.turn, state.move, 'unsafe, approaching tail');
 	if (Position.IsSafe(adjacent[state.move], { board, you })) {
 		return res.send({ move: state.move });
 	}
 
+	state.turns = 0;
 	const turn = { right: 'up', up: 'left', left: 'down', down: 'right' };
-	while (state.turns < 3 && !Position.IsSafe(adjacent[state.move], { board, you })) {
+	do {
 		state.move = turn[state.move];
 		state.turns += 1;
+		Utils.LogMove(context.turn, state.move, 'still unsafe, had to turn');
+	} while (state.turns < 4 && !Position.IsSafe(adjacent[state.move], { board, you }));
+
+	if (state.turns === 4) {
+		Utils.LogMove(context.turn, state.move, 'welp 👋');
 	}
 
 	return res.send({ move: state.move });
 });
 
 app.post('/end', (req, res) => {
-	console.log('GAMEOVER', req.body);
+//	console.log('GAMEOVER', req.body);
 	return res.sendStatus(200);
 });
 
-app.listen(process.env.PORT || 9000, () => console.log('Running!\n-----\n'));
+app.listen(process.env.PORT || 9000, () => console.log('Running!\n'));
