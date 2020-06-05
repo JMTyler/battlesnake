@@ -32,12 +32,12 @@ const Path = {
 		const adjacent = Position.GetAdjacentTiles(you.head);
 		
 		const moveX = adjacent[vector.dir.x];
-		if (Position.IsDeadly(moveX, { board, you })) {
+		if (!Position.IsSafe(moveX, { board, you })) {
 			return vector.dir.y;
 		}
 		
 		const moveY = adjacent[vector.dir.y];
-		if (Position.IsDeadly(moveY, { board, you })) {
+		if (!Position.IsSafe(moveY, { board, you })) {
 			return vector.dir.x;
 		}
 		
@@ -87,7 +87,7 @@ const Position = {
 	},
 	
 	IsDeadly(pos, { board }) {
-		if (board && Position.IsOutsideBoard(pos, board)) {
+		if (Position.IsOutsideBoard(pos, board)) {
 			return true;
 		}
 		
@@ -101,6 +101,18 @@ const Position = {
 		}
 		
 		return false;
+	},
+	
+	IsRisky(pos, { board, you }) {
+		return _.some(board.snakes, (snake) => {
+			if (snake.id === you.id) return false;
+			const adjacent = Position.GetAdjacentTiles(snake.head);
+			return _.some(adjacent, pos);
+		});
+	},
+	
+	IsSafe(pos, context) {
+		return !Position.IsDeadly(pos, context) && !Position.IsRisky(pos, context);
 	},
 };
 
@@ -146,17 +158,17 @@ app.post('/move', (req, res) => {
 		return res.send({ move: state.move });
 	}
 	
-	if (!Position.IsDeadly(adjacent[state.move], { board, you })) {
+	if (Position.IsSafe(adjacent[state.move], { board, you })) {
 		return res.send({ move: state.move });
 	}
 	
 	state.move = Path.ApproachTarget(_.last(you.body), req.body);
-	if (!Position.IsDeadly(adjacent[state.move], { board, you })) {
+	if (Position.IsSafe(adjacent[state.move], { board, you })) {
 		return res.send({ move: state.move });
 	}
 	
 	const turn = { right: 'up', up: 'left', left: 'down', down: 'right' };
-	while (state.turns < 3 && Position.IsDeadly(adjacent[state.move], { board, you })) {
+	while (state.turns < 3 && !Position.IsSafe(adjacent[state.move], { board, you })) {
 		state.move = turn[state.move];
 		state.turns += 1;
 	}
