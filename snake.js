@@ -29,13 +29,6 @@ const Move = (context) => {
 	const state = State.Get(context);
 	const adjacent = position.GetAdjacentTiles(you.head);
 
-	if (_.isEqual(you.head, state.target)) state.target = null;
-	if (state.target) {
-		state.move = pathfinding.ApproachTarget(state.target, context);
-		utils.LogMove(context.turn, state.move, 'continuing to approach target');
-		return state.move;
-	}
-
 	if (you.health <= state.maxTravel) {
 		state.move = pathfinding.ApproachTarget(board.FindClosestFood(context), context);
 		utils.LogMove(context.turn, state.move, 'hungry, seeking food');
@@ -75,7 +68,6 @@ const StartGame = (context) => {
 	State.Set(context, {
 		maxTravel: board.width + board.height - 2,
 		turns:     0,
-		target:    null,
 		move:      'right',
 	});
 	
