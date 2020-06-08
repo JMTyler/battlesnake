@@ -1,14 +1,15 @@
 const _ = require('lodash');
 
-const tactics = require('./tactics');
-const utils   = require('./utils');
+const position = require('./position');
+const tactics  = require('./tactics');
+const utils    = require('./utils');
 
 const State = {
-	Get(context) {
-		return _.get(this, [context.game.id, context.you.id]);
-	},
-	Set(context, value) {
+	Initialise(context, value) {
 		return _.set(this, [context.game.id, context.you.id], value);
+	},
+	Scope(context) {
+		return _.get(this, [context.game.id, context.you.id]);
 	},
 };
 
@@ -22,47 +23,33 @@ const GetInfo = () => {
 	};
 };
 
+const strategy = [
+	tactics.SeekFood,
+	tactics.Continue,
+	tactics.SeekTail,
+	tactics.RotateUntilSafe,
+];
+
 const Move = (context) => {
-	const state = State.Get(context);
+	const state = State.Scope(context);
 	const adjacent = position.GetAdjacentTiles(context.you.head);
-
-	let move;
-
-	move = tactics.SeekFood({ context, state, adjacent });
+	
+	const move = _.reduce(strategy, (prev, tactic) => {
+		return prev || tactic({ context, state, adjacent });
+	}, false);
+	
 	if (move) {
 		state.move = move;
 		return move;
 	}
 
-	move = tactics.Continue({ context, state, adjacent });
-	if (move) {
-		state.move = move;
-		return move;
-	}
-
-	move = tactics.SeekTail({ context, state, adjacent });
-	if (move) {
-		state.move = move;
-		return move;
-	}
-
-	move = tactics.RotateUntilSafe({ context, state, adjacent });
-	if (move) {
-		state.move = move;
-		return move;
-	}
-
-	utils.LogMove(context.turn, move, 'welp 👋');
-	return move;
+	utils.LogMove(context.turn, state.move, 'welp 👋');
+	return state.move;
 };
 
 const StartGame = (context) => {
-	const { board } = context;
-
-	State.Set(context, {
-		maxTravel: board.width + board.height - 2,
-		turns:     0,
-		move:      'right',
+	State.Initialise(context, {
+		move: 'right',
 	});
 	
 	console.log('-----');
