@@ -1,9 +1,7 @@
 const _ = require('lodash');
 
-const board       = require('./board');
-const pathfinding = require('./pathfinding');
-const position    = require('./position');
-const utils       = require('./utils');
+const tactics = require('./tactics');
+const utils   = require('./utils');
 
 const State = {
 	Get(context) {
@@ -27,39 +25,35 @@ const GetInfo = () => {
 const Move = (context) => {
 	const { you } = context;
 	const state = State.Get(context);
-	const adjacent = position.GetAdjacentTiles(you.head);
+	
+	let isSafe, move;
 
 	if (you.health <= state.maxTravel) {
-		state.move = pathfinding.ApproachTarget(board.FindClosestFood(context), context);
-		utils.LogMove(context.turn, state.move, 'hungry, seeking food');
-		return state.move;
+		[isSafe, move] = tactics.SeekFood(context);
+		state.move = move;
+		return move;
 	}
 
-	if (position.IsSafe(adjacent[state.move], context)) {
-		if (context.turn === 0) utils.LogMove(context.turn, state.move, 'first turn');
-		//else Utils.LogMove(context.turn, state.move, 'no change');
-		return state.move;
+	[isSafe, move] = tactics.Continue(state.move, context);
+	state.move = move;
+	if (isSafe) {
+		return move;
 	}
 
-	state.move = pathfinding.ApproachTarget(_.last(you.body), context);
-	utils.LogMove(context.turn, state.move, 'unsafe, approaching tail');
-	if (position.IsSafe(adjacent[state.move], context)) {
-		return state.move;
+	[isSafe, move] = tactics.SeekTail(context);
+	state.move = move;
+	if (isSafe) {
+		return move;
 	}
 
-	state.turns = 0;
-	const turn = { right: 'up', up: 'left', left: 'down', down: 'right' };
-	do {
-		state.move = turn[state.move];
-		state.turns += 1;
-		utils.LogMove(context.turn, state.move, 'still unsafe, had to turn');
-	} while (state.turns < 4 && !position.IsSafe(adjacent[state.move], context));
-
-	if (state.turns === 4) {
-		utils.LogMove(context.turn, state.move, 'welp 👋');
+	[isSafe, move] = tactics.RotateUntilSafe(state.move, context);
+	state.move = move;
+	if (isSafe) {
+		return move;
 	}
 
-	return state.move;
+	utils.LogMove(context.turn, move, 'welp 👋');
+	return move;
 };
 
 const StartGame = (context) => {

@@ -16,8 +16,8 @@ const GetVector = (origin, target) => {
 	const y = target.y - origin.y;
 	return {
 		dir: {
-			x: Math.sign(x) < 0 ? 'left' : 'right',
-			y: Math.sign(y) < 0 ? 'down' : 'up',
+			x: Math.sign(x) > 0 ? 'right' : 'left',
+			y: Math.sign(y) > 0 ? 'up' : 'down',
 		},
 		weight: { x, y },
 	};
