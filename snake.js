@@ -23,32 +23,32 @@ const GetInfo = () => {
 };
 
 const Move = (context) => {
-	const { you } = context;
 	const state = State.Get(context);
-	
-	let isSafe, move;
+	const adjacent = position.GetAdjacentTiles(context.you.head);
 
-	if (you.health <= state.maxTravel) {
-		[isSafe, move] = tactics.SeekFood(context);
+	let move;
+
+	move = tactics.SeekFood({ context, state, adjacent });
+	if (move) {
 		state.move = move;
 		return move;
 	}
 
-	[isSafe, move] = tactics.Continue(state.move, context);
-	state.move = move;
-	if (isSafe) {
+	move = tactics.Continue({ context, state, adjacent });
+	if (move) {
+		state.move = move;
 		return move;
 	}
 
-	[isSafe, move] = tactics.SeekTail(context);
-	state.move = move;
-	if (isSafe) {
+	move = tactics.SeekTail({ context, state, adjacent });
+	if (move) {
+		state.move = move;
 		return move;
 	}
 
-	[isSafe, move] = tactics.RotateUntilSafe(state.move, context);
-	state.move = move;
-	if (isSafe) {
+	move = tactics.RotateUntilSafe({ context, state, adjacent });
+	if (move) {
+		state.move = move;
 		return move;
 	}
 

@@ -5,38 +5,38 @@ const pathfinding = require('./pathfinding');
 const position    = require('./position');
 const utils       = require('./utils');
 
-const Continue = (move, context) => {
-	if (context.turn === 0) utils.LogMove(context.turn, move, 'first turn');
+const Continue = ({ context, state, adjacent }) => {
+	if (context.turn === 0) utils.LogMove(context.turn, state.move, 'first turn');
 	//else utils.LogMove(context.turn, state.move, 'no change');
 
-	const adjacent = position.GetAdjacentTiles(context.you.head);
-	const isSafe = position.IsSafe(adjacent[move], context);
+	const isSafe = position.IsSafe(adjacent[state.move], context);
 
-	return [isSafe, move];
+	return isSafe && state.move;
 };
 
-const SeekFood = (context) => {
-	const adjacent = position.GetAdjacentTiles(context.you.head);
+const SeekFood = ({ context, state, adjacent }) => {
+	if (context.you.health > state.maxTravel) {
+		return false;
+	}
+	
 	const move = pathfinding.ApproachTarget(board.FindClosestFood(context), context);
 	utils.LogMove(context.turn, move, 'hungry, seeking food');
-	const isSafe = position.IsSafe(adjacent[move], context);
-	return [isSafe, move];
+	return move;
 };
 
-const SeekTail = (context) => {
-	const adjacent = position.GetAdjacentTiles(context.you.head);
+const SeekTail = ({ context, adjacent }) => {
 	const move = pathfinding.ApproachTarget(_.last(context.you.body), context);
 	utils.LogMove(context.turn, move, 'unsafe, approaching tail');
 	const isSafe = position.IsSafe(adjacent[move], context);
-	return [isSafe, move];
+	return isSafe && move;
 };
 
-const RotateUntilSafe = (move, context) => {
-	const adjacent = position.GetAdjacentTiles(context.you.head);
+const RotateUntilSafe = ({ context, state, adjacent }) => {
 	const rotate = { right: 'down', down: 'left', left: 'up', up: 'right' };
 
 	let turns = 0;
 	let isSafe = false;
+	let move = state.move;
 	do {
 		move = rotate[move];
 		turns += 1;
@@ -44,7 +44,7 @@ const RotateUntilSafe = (move, context) => {
 		utils.LogMove(context.turn, move, 'still unsafe, had to turn');
 	} while (turns < 4 && !isSafe);
 
-	return [isSafe, move];
+	return isSafe && move;
 };
 
 module.exports = {
