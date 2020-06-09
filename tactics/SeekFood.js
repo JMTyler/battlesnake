@@ -12,7 +12,7 @@ const SeekFood = ({ context, adjacent }) => {
 	const move = pathfinding.ApproachTarget(board.FindClosestFood(context), context);
 	utils.LogMove(context.turn, move, 'hungry, seeking food');
 	const isSafe = position.IsSafe(adjacent[move], context);
-	return move;
+	return isSafe && move;
 };
 
 module.exports = { SeekFood };

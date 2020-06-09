@@ -18,8 +18,8 @@ const GetInfo = () => {
 		apiversion: '1',
 		author:     'JMTyler',
 		color:      '#700070',
-		head:       'beluga',
-		tail:       'shac-coffee',
+		head:       'pixel',
+		tail:       'pixel',
 	};
 };
 
@@ -57,8 +57,9 @@ const StartGame = (context) => {
 };
 
 const EndGame = (context) => {
+	const result = (context.you.id === _.get(context, 'board.snakes.0.id')) ? 'WIN' : 'LOSE';
 	console.log();
-	console.log('* Game Over! *');
+	console.log(`* Game Over! ${result} *`);
 };
 
 module.exports = {
