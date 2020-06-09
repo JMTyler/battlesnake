@@ -14,6 +14,25 @@ const RotateUntilSafe = ({ context, state, adjacent }) => {
 		utils.LogMove(context.turn, move, 'still unsafe, had to turn');
 	} while (turns < 4 && !isSafe);
 
+	if (isSafe) {
+		return move;
+	}
+
+	// If there are no safe cells nearby, we have to be willing to move into risky cells.
+	// Prioritising our current direction.
+	if (!position.IsDeadly(adjacent[state.move], context)) {
+		return state.move;
+	}
+
+	// But if our current direction is deadly, resort to any adjacent risky cell.
+	turns = 0;
+	do {
+		move = rotate[move];
+		turns += 1;
+		isSafe = !position.IsDeadly(adjacent[move], context);
+		utils.LogMove(context.turn, move, 'still deadly, had to turn');
+	} while (turns < 4 && !isSafe);
+
 	return isSafe && move;
 };
 
