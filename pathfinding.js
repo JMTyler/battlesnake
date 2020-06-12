@@ -45,8 +45,17 @@ const ApproachTarget = (target, { board, you }) => {
 	return vector.dir.y;
 };
 
+const FindClosestTarget = (origin, targets) => {
+	const distances = GetDistance(origin, targets);
+	const shortestIndex = _.reduce(distances, (prev, distance, ix) => {
+		return (distance < distances[prev]) ? ix : prev;
+	}, 0);
+	return targets[shortestIndex];
+};
+
 module.exports = {
 	GetDistance,
 	GetVector,
 	ApproachTarget,
+	FindClosestTarget,
 };

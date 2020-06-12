@@ -13,8 +13,10 @@ const Aggress = ({ context, adjacent }) => {
 	if (!prey) {
 		return false;
 	}
-
-	const move = pathfinding.ApproachTarget(prey.head, context);
+	
+	const targetOptions = _.filter(position.GetAdjacentTiles(prey.head), (pos) => position.IsSafe(pos, context));
+	const target = pathfinding.FindClosestTarget(context.you.head, targetOptions);
+	const move = pathfinding.ApproachTarget(target, context);
 	utils.LogMove(context.turn, move, 'Aggress');
 
 	const isSafe = position.IsSafe(adjacent[move], context);
