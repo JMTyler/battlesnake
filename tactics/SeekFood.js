@@ -4,7 +4,7 @@ const position    = require('../position');
 const utils       = require('../utils');
 
 const SeekFood = ({ context, adjacent }) => {
-	if (context.you.health > 90) {
+	if (context.you.health > 91) {
 		return false;
 	}
 	
