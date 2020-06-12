@@ -4,8 +4,7 @@ const position    = require('../position');
 const utils       = require('../utils');
 
 const SeekFood = ({ context, adjacent }) => {
-	const maxTravel = context.board.width + context.board.height - 2;
-	if (context.you.health > maxTravel) {
+	if (context.you.health > 90) {
 		return false;
 	}
 	
