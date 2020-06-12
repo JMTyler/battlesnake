@@ -6,9 +6,9 @@ const GetDistance = (origin, target) => {
 		return _.map(target, (t) => GetDistance(origin, t));
 	}
 
-	const x = target.x - origin.x;
-	const y = target.y - origin.y;
-	return Math.hypot(x, y);
+	const x = Math.abs(target.x - origin.x);
+	const y = Math.abs(target.y - origin.y);
+	return x + y;
 };
 
 const GetVector = (origin, target) => {
