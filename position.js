@@ -13,7 +13,7 @@ const IsOutsideBoard = ({ x, y }, board) => {
 	return x < 0 || y < 0 || x >= board.width || y >= board.height;
 };
 
-const IsDeadly = (pos, { board }) => {
+const IsDeadly = (pos, { board, you }) => {
 	if (IsOutsideBoard(pos, board)) {
 		return true;
 	}
@@ -21,7 +21,16 @@ const IsDeadly = (pos, { board }) => {
 	const anySnakeCollision = _.some(board.snakes, (snake) => {
 		// TODO: Only drop the tail piece if the snake HASN'T just eaten a disc.
 		// TODO: Or, drop the tail either way, but consider that spot risky.
-		return _.some(_.initial(snake.body), pos);
+		const collision = _.some(_.initial(snake.body), pos);
+		if (!collision) {
+			return false;
+		}
+
+		if (Matches(pos, snake.head) && you.length > snake.length) {
+			return false;
+		}
+
+		return true;
 	});
 	if (anySnakeCollision) {
 		return true;
@@ -33,13 +42,20 @@ const IsDeadly = (pos, { board }) => {
 const IsRisky = (pos, { board, you }) => {
 	return _.some(board.snakes, (snake) => {
 		if (snake.id === you.id) return false;
+
 		const adjacent = GetAdjacentTiles(snake.head);
-		return _.some(adjacent, pos);
+		const gettinSpicy = _.some(adjacent, pos);
+
+		return gettinSpicy && you.length <= snake.length;
 	});
 };
 
 const IsSafe = (pos, context) => {
 	return !IsDeadly(pos, context) && !IsRisky(pos, context);
+};
+
+const Matches = (posA, posB) => {
+	return _.isEqual(posA, posB);
 };
 
 module.exports = {
@@ -48,4 +64,5 @@ module.exports = {
 	IsDeadly,
 	IsRisky,
 	IsSafe,
+	Matches,
 };

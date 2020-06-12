@@ -27,6 +27,7 @@ const ApproachTarget = (target, { board, you }) => {
 	const vector = GetVector(you.head, target);
 	const adjacent = position.GetAdjacentTiles(you.head);
 
+	// TODO: Support target being a straight line away, making left/right or up/down equal choices.
 	const moveX = adjacent[vector.dir.x];
 	if (!position.IsSafe(moveX, { board, you })) {
 		return vector.dir.y;
