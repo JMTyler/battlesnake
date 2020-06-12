@@ -9,7 +9,7 @@ const SeekFood = ({ context, adjacent }) => {
 	}
 	
 	const move = pathfinding.ApproachTarget(board.FindClosestFood(context), context);
-	utils.LogMove(context.turn, move, 'hungry, seeking food');
+	utils.LogMove(context.turn, move, 'Seek Food');
 	const isSafe = position.IsSafe(adjacent[move], context);
 	return isSafe && move;
 };

@@ -11,7 +11,7 @@ const RotateUntilSafe = ({ context, state, adjacent }) => {
 		move = rotate[move];
 		turns += 1;
 		isSafe = position.IsSafe(adjacent[move], context);
-		utils.LogMove(context.turn, move, 'still unsafe, had to turn');
+		utils.LogMove(context.turn, move, 'Rotate Until Safe');
 	} while (turns < 4 && !isSafe);
 
 	if (isSafe) {
@@ -30,7 +30,7 @@ const RotateUntilSafe = ({ context, state, adjacent }) => {
 		move = rotate[move];
 		turns += 1;
 		isSafe = !position.IsDeadly(adjacent[move], context);
-		utils.LogMove(context.turn, move, 'still deadly, had to turn');
+		utils.LogMove(context.turn, move, 'Rotate Until Not Deadly');
 	} while (turns < 4 && !isSafe);
 
 	return isSafe && move;

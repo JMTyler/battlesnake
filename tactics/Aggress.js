@@ -15,7 +15,7 @@ const Aggress = ({ context, adjacent }) => {
 	}
 
 	const move = pathfinding.ApproachTarget(prey.head, context);
-	utils.LogMove(context.turn, move, 'fired up, ready to kill');
+	utils.LogMove(context.turn, move, 'Aggress');
 
 	const isSafe = position.IsSafe(adjacent[move], context);
 	return isSafe && move;
