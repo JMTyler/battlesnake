@@ -17,7 +17,7 @@ const GetInfo = () => {
 	return {
 		apiversion: '1',
 		author:     'JMTyler',
-		color:      '#700070',
+		color:      '#8F008F',
 		head:       'pixel',
 		tail:       'pixel',
 	};

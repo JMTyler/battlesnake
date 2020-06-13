@@ -4,11 +4,13 @@ const position    = require('../position');
 const utils       = require('../utils');
 
 const SeekFood = ({ context, adjacent }) => {
-	if (context.you.health > 95) {
+	const closestFood = board.FindClosestFood(context);
+	const distanceToFood = pathfinding.GetDistance(context.you.head, closestFood);
+	if (distanceToFood > 2 && context.you.health > 95) {
 		return false;
 	}
 	
-	const move = pathfinding.ApproachTarget(board.FindClosestFood(context), context);
+	const move = pathfinding.ApproachTarget(closestFood, context);
 	utils.LogMove(context.turn, move, 'Seek Food');
 	const isSafe = position.IsSafe(adjacent[move], context);
 	return isSafe && move;
