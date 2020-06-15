@@ -1,8 +1,7 @@
-const _ = require('lodash');
-const pathfinding = require('./pathfinding');
+const movement = require('./movement');
 
 const FindClosestFood = ({ you, board }) => {
-	return pathfinding.FindClosestTarget(you.head, board.food);
+	return movement.FindClosestTarget(you.head, board.food);
 };
 
 module.exports = {

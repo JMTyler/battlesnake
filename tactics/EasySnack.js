@@ -1,16 +1,16 @@
-const board       = require('../board');
-const pathfinding = require('../pathfinding');
-const position    = require('../position');
-const utils       = require('../utils');
+const board    = require('../board');
+const movement = require('../movement');
+const position = require('../position');
+const utils    = require('../utils');
 
 const EasySnack = ({ context, adjacent }) => {
 	const closestFood = board.FindClosestFood(context);
-	const distanceToFood = pathfinding.GetDistance(context.you.head, closestFood);
+	const distanceToFood = movement.GetDistance(context.you.head, closestFood);
 	if (distanceToFood > 2) {
 		return false;
 	}
 	
-	const move = pathfinding.ApproachTarget(closestFood, context);
+	const move = movement.ApproachTarget(closestFood, context);
 	utils.LogMove(context.turn, move, 'Easy Snack');
 	const isSafe = position.IsSafe(adjacent[move], context);
 	return isSafe && move;

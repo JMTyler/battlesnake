@@ -1,8 +1,8 @@
 const _ = require('lodash');
 
-const pathfinding = require('../pathfinding');
-const position    = require('../position');
-const utils       = require('../utils');
+const movement = require('../movement');
+const position = require('../position');
+const utils    = require('../utils');
 
 const GoCentre = ({ context, adjacent }) => {
 	const halfWidth = context.board.width / 2.0;
@@ -29,7 +29,7 @@ const GoCentre = ({ context, adjacent }) => {
 
 	const cellIndex = Math.floor(Math.random() * centreCells.length);
 	const target = centreCells[cellIndex];
-	const move = pathfinding.ApproachTarget(target, context);
+	const move = movement.ApproachTarget(target, context);
 
 	utils.LogMove(context.turn, move, 'GoCentre');
 	const isSafe = position.IsSafe(adjacent[move], context);
