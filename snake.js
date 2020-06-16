@@ -1,5 +1,6 @@
 const _ = require('lodash');
 
+const movement = require('./movement');
 const position = require('./position');
 const tactics  = require('./tactics');
 const utils    = require('./utils');
@@ -18,8 +19,8 @@ const GetInfo = () => {
 		apiversion: '1',
 		author:     'JMTyler',
 		color:      '#8F008F',
-		head:       'pixel',
-		tail:       'pixel',
+		head:       'shades',
+		tail:       'bolt',
 	};
 };
 
@@ -36,11 +37,13 @@ const strategy = [
 const Move = (context) => {
 	const state = State.Scope(context);
 	const adjacent = position.GetAdjacentTiles(context.you.head);
-	
+
+	movement.InitPathfinder(context);
+
 	const move = _.reduce(strategy, (prev, tactic) => {
 		return prev || tactic({ context, state, adjacent });
 	}, false);
-	
+
 	if (move) {
 		state.move = move;
 		return move;
@@ -54,7 +57,7 @@ const StartGame = (context) => {
 	State.Initialise(context, {
 		move: 'right',
 	});
-	
+
 	console.log('-----');
 	console.log();
 };

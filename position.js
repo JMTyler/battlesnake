@@ -58,6 +58,21 @@ const Matches = (posA, posB) => {
 	return _.isEqual(posA, posB);
 };
 
+const ToDirection = (pos, { you }) => {
+	const x = Math.sign(pos.x - you.head.x);
+	const y = Math.sign(pos.y - you.head.y);
+
+	if (x !== 0 && y !== 0) {
+		return null;
+	}
+
+	if (x !== 0) {
+		return x > 0 ? 'right' : 'left';
+	}
+
+	return y > 0 ? 'up' : 'down';
+};
+
 module.exports = {
 	GetAdjacentTiles,
 	IsOutsideBoard,
@@ -65,4 +80,5 @@ module.exports = {
 	IsRisky,
 	IsSafe,
 	Matches,
+	ToDirection,
 };

@@ -10,8 +10,8 @@ const Aggress = ({ context, adjacent }) => {
 		return false;
 	}
 
-	const prey = (preyOptions.length === 1) ? preyOptions[0] : movement.FindClosestTarget(context.you.head, preyOptions);
-	const targetOptions = _.filter(position.GetAdjacentTiles(prey.head), (pos) => position.IsSafe(pos, context));
+	const prey = (preyOptions.length === 1) ? preyOptions[0].head : movement.FindClosestTarget(context.you.head, _.map(preyOptions, 'head'));
+	const targetOptions = _.filter(position.GetAdjacentTiles(prey), (pos) => position.IsSafe(pos, context));
 	if (_.isEmpty(targetOptions)) {
 		return false;
 	}

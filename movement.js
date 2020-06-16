@@ -1,5 +1,25 @@
-const _ = require('lodash');
+const _           = require('lodash');
+const pathfinding = require('pathfinding');
+
 const position = require('./position');
+
+const pathfinder = new pathfinding.JumpPointFinder({ diagonalMovement: pathfinding.DiagonalMovement.Never });
+
+const InitPathfinder = (context) => {
+	const grid = new pathfinding.Grid(context.board.width, context.board.height);
+
+	// TODO: Consider adding a safeGrid (this is a riskyGrid) that also avoids risky cells.
+	_.each(context.board.snakes, (snake) => {
+		// TODO: not sure if this field exists in regular payloads
+		if (snake.death) return;
+		_.each(_.initial(snake.body), ({ x, y }) => {
+			grid.setWalkableAt(x, y, false);
+		});
+	});
+
+	// Make context.grid an accessor that always returns a clone.
+	Object.defineProperty(context, 'grid', { get: () => grid.clone() });
+};
 
 const GetDistance = (origin, target) => {
 	if (_.isArray(target)) {
@@ -23,26 +43,12 @@ const GetVector = (origin, target) => {
 	};
 };
 
-const ApproachTarget = (target, { board, you }) => {
-	const vector = GetVector(you.head, target);
-	const adjacent = position.GetAdjacentTiles(you.head);
-
-	// TODO: Support target being a straight line away, making left/right or up/down equal choices.
-	const moveX = adjacent[vector.dir.x];
-	if (!position.IsSafe(moveX, { board, you })) {
-		return vector.dir.y;
-	}
-
-	const moveY = adjacent[vector.dir.y];
-	if (!position.IsSafe(moveY, { board, you })) {
-		return vector.dir.x;
-	}
-
-	if (you.head.x != target.x) {
-		return vector.dir.x;
-	}
-
-	return vector.dir.y;
+const ApproachTarget = (target, { you, grid }) => {
+	const path = pathfinder.findPath(you.head.x, you.head.y, target.x, target.y, grid);
+	const nextCell = path[1];
+	if (!nextCell) return 'up';
+	const pos = { x: nextCell[0], y: nextCell[1] };
+	return position.ToDirection(pos, { you });
 };
 
 const FindClosestTarget = (origin, targets) => {
@@ -54,6 +60,7 @@ const FindClosestTarget = (origin, targets) => {
 };
 
 module.exports = {
+	InitPathfinder,
 	GetDistance,
 	GetVector,
 	ApproachTarget,
