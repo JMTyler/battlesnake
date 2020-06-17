@@ -10,7 +10,7 @@ const State = {
 		return _.set(this, [context.game.id, context.you.id], value);
 	},
 	Scope(context) {
-		return _.get(this, [context.game.id, context.you.id]);
+		return _.get(this, [context.game.id, context.you.id], { move: 'right' });
 	},
 };
 
@@ -34,7 +34,9 @@ const strategy = [
 	tactics.RotateUntilSafe,
 ];
 
-const Move = (context) => {
+const Move = async (context) => {
+	await utils.RecordFrame(context);
+
 	const state = State.Scope(context);
 	const adjacent = position.GetAdjacentTiles(context.you.head);
 
@@ -43,6 +45,8 @@ const Move = (context) => {
 	const move = _.reduce(strategy, (prev, tactic) => {
 		return prev || tactic({ context, state, adjacent });
 	}, false);
+
+	await utils.RecordFrame(context, move || state.move);
 
 	if (move) {
 		state.move = move;
@@ -62,10 +66,12 @@ const StartGame = (context) => {
 	console.log();
 };
 
-const EndGame = (context) => {
+const EndGame = async (context) => {
 	const result = (context.you.id === _.get(context, 'board.snakes.0.id')) ? 'WIN' : 'LOSE';
 	console.log();
 	console.log(`* Game Over! ${result} *`);
+
+	await utils.PruneGames();
 };
 
 module.exports = {

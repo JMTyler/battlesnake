@@ -15,13 +15,15 @@ app.post('/start', (req, res) => {
 	return res.sendStatus(200);
 });
 
-app.post('/move', (req, res) => {
-	const move = snake.Move(req.body);
+app.post('/move', async (req, res) => {
+	const start = Date.now();
+	const move = await snake.Move(req.body);
+	console.log(`Move took ${Date.now() - start}ms.`);
 	return res.send({ move });
 });
 
-app.post('/end', (req, res) => {
-	snake.EndGame(req.body);
+app.post('/end', async (req, res) => {
+	await snake.EndGame(req.body);
 	return res.sendStatus(200);
 });
 
