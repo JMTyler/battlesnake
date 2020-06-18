@@ -4,7 +4,7 @@ const movement = require('../movement');
 const position = require('../position');
 const utils    = require('../utils');
 
-const Aggress = ({ context, adjacent }) => {
+const Aggrieve = ({ context, adjacent }) => {
 	const preyOptions = _.filter(context.board.snakes, (snake) => (context.you.length >= snake.length + 2));
 	if (_.isEmpty(preyOptions)) {
 		return false;
@@ -18,10 +18,10 @@ const Aggress = ({ context, adjacent }) => {
 
 	const target = movement.FindClosestTarget(context.you.head, targetOptions);
 	const move = movement.ApproachTarget(target, context);
-	utils.LogMove(context.turn, move, 'Aggress');
+	utils.LogMove(context.turn, move, 'Aggrieve');
 
 	const isSafe = position.IsSafe(adjacent[move], context);
 	return isSafe && move;
 };
 
-module.exports = { Aggress };
+module.exports = { Aggrieve };

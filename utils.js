@@ -59,7 +59,7 @@ const RecordFrame = async (context, move = null) => {
 
 const PruneGames = async () => {
 	const numRows = _.toNumber(await db.Frames.count());
-	if (numRows < 9500) return;
+	if (numRows < 9000) return;
 
 	// Find the oldest game in the database.
 	const { game_id } = await db.Frames.findOne({}, {

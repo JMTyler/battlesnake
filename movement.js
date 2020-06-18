@@ -21,6 +21,7 @@ const InitPathfinder = (context) => {
 	Object.defineProperty(context, 'grid', { get: () => grid.clone() });
 };
 
+// TODO: Use pathfinding distance, not direct distance.
 const GetDistance = (origin, target) => {
 	if (_.isArray(target)) {
 		return _.map(target, (t) => GetDistance(origin, t));
@@ -52,6 +53,10 @@ const ApproachTarget = (target, { you, grid }) => {
 };
 
 const FindClosestTarget = (origin, targets) => {
+	if (targets.length === 1) {
+		return targets[0];
+	}
+
 	const distances = GetDistance(origin, targets);
 	const shortestIndex = _.reduce(distances, (prev, distance, ix) => {
 		return (distance < distances[prev]) ? ix : prev;
