@@ -25,15 +25,15 @@ const GetInfo = () => {
 };
 
 const strategy = [
-	tactics.EasyKill,
-	tactics.EasySnack,
-	tactics.Abscond,
-	tactics.Aggrieve,
-	tactics.Hungry,
-	tactics.GoCentre,
-	tactics.Continue,
-	tactics.SeekTail,
-	tactics.RotateUntilSafe,
+	tactics.EasyKill({ advantage: 1, distance: 2 }),
+	tactics.EasySnack({ distance: 2 }),
+	tactics.Abscond({ disadvantage: 1, distance: 3 }),
+	tactics.Aggrieve({ advantage: 2 }),
+	tactics.Hungry({ health: 95 }),
+	tactics.GoCentre(),
+	tactics.Continue(),
+	tactics.SeekTail(),
+	tactics.RotateUntilSafe(),
 ];
 
 const Move = async (context) => {
