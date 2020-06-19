@@ -5,13 +5,11 @@ const position = require('../position');
 const utils    = require('../utils');
 
 const GoCentre = ({ context, adjacent }) => {
-	const halfWidth = context.board.width / 2.0;
-	const centreWidth = Math.floor(halfWidth);
-	const leftEdge = Math.ceil(halfWidth) / 2;
+	const centreWidth = 3;
+	const leftEdge = (context.board.width - centreWidth) / 2;
 
-	const halfHeight = context.board.height / 2.0;
-	const centreHeight = Math.floor(halfHeight);
-	const bottomEdge = Math.ceil(halfHeight) / 2;
+	const centreHeight = 3;
+	const bottomEdge = (context.board.height - centreHeight) / 2;
 
 	const centreCells = [];
 	for (let x = leftEdge; x < leftEdge + centreWidth; x += 1) {
@@ -27,11 +25,9 @@ const GoCentre = ({ context, adjacent }) => {
 		return false;
 	}
 
-	const cellIndex = Math.floor(Math.random() * centreCells.length);
-	const target = centreCells[cellIndex];
+	const target = _.sample(centreCells);
 	const move = movement.ApproachTarget(target, context);
-
-	utils.LogMove(context.turn, move, 'GoCentre');
+	utils.LogMove(context.turn, move, 'Go Centre');
 	const isSafe = position.IsSafe(adjacent[move], context);
 
 	return isSafe && move;
