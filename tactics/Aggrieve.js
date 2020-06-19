@@ -10,7 +10,7 @@ const Aggrieve = ({ context, adjacent }) => {
 		return false;
 	}
 
-	const prey = (preyOptions.length === 1) ? preyOptions[0].head : movement.FindClosestTarget(context.you.head, _.map(preyOptions, 'head'));
+	const prey = movement.FindClosestTarget(context.you.head, _.map(preyOptions, 'head'));
 	const targetOptions = _.filter(position.GetAdjacentTiles(prey), (pos) => position.IsSafe(pos, context));
 	if (_.isEmpty(targetOptions)) {
 		return false;

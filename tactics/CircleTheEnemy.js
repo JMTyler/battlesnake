@@ -1,9 +1,9 @@
 const position = require('../position');
 
-const { Aggress } = require('./Aggress');
+const { Aggrieve } = require('./Aggrieve');
 
 const CircleTheEnemy = ({ context, adjacent }) => {
-	const move = Aggress({ context, adjacent });
+	const move = Aggrieve({ context, adjacent });
 	if (!move) {
 		return false;
 	}
