@@ -25,6 +25,7 @@ const GetInfo = () => {
 };
 
 const strategy = [
+	tactics.EasyKill,
 	tactics.EasySnack,
 	tactics.Abscond,
 	tactics.Aggrieve,
