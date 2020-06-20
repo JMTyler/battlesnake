@@ -1,5 +1,5 @@
-const position = require('../position');
-const utils    = require('../utils');
+const position = require('../../../position');
+const utils    = require('../../../utils');
 
 const RotateUntilSafe = () => {
 	return ({ context, state, adjacent }) => {

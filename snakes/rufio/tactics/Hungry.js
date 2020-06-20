@@ -1,7 +1,7 @@
-const board    = require('../board');
-const movement = require('../movement');
-const position = require('../position');
-const utils    = require('../utils');
+const board    = require('../../../board');
+const movement = require('../../../movement');
+const position = require('../../../position');
+const utils    = require('../../../utils');
 
 const Hungry = ({ health = Infinity }) => {
 	return ({ context, adjacent }) => {

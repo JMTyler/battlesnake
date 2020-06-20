@@ -1,8 +1,8 @@
 const _ = require('lodash');
 
-const movement = require('../movement');
-const position = require('../position');
-const utils    = require('../utils');
+const movement = require('../../../movement');
+const position = require('../../../position');
+const utils    = require('../../../utils');
 
 const EasyKill = ({ advantage = 1, distance = Infinity }) => {
 	return ({ context, adjacent }) => {

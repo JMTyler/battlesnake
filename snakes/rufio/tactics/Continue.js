@@ -1,5 +1,5 @@
-const position = require('../position');
-const utils    = require('../utils');
+const position = require('../../../position');
+const utils    = require('../../../utils');
 
 const Continue = () => {
 	return ({ context, state, adjacent }) => {

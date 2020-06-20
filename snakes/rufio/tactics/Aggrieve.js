@@ -1,8 +1,8 @@
 const _ = require('lodash');
 
-const movement = require('../movement');
-const position = require('../position');
-const utils    = require('../utils');
+const movement = require('../../../movement');
+const position = require('../../../position');
+const utils    = require('../../../utils');
 
 const Aggrieve = ({ advantage = 1 }) => {
 	return ({ context, adjacent }) => {

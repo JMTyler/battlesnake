@@ -1,9 +1,8 @@
 const _ = require('lodash');
 
-const movement = require('./movement');
-const position = require('./position');
-const tactics  = require('./tactics');
-const utils    = require('./utils');
+const movement = require('../../movement');
+const position = require('../../position');
+const utils    = require('../../utils');
 
 const State = {
 	Initialise(context, value) {
@@ -16,14 +15,13 @@ const State = {
 
 const GetInfo = () => {
 	return {
-		apiversion: '1',
-		author:     'JMTyler',
-		color:      '#8F008F',
-		head:       'shades',
-		tail:       'bolt',
+		color : '#8F008F',
+		head  : 'shades',
+		tail  : 'bolt',
 	};
 };
 
+const tactics = require('./tactics');
 const strategy = [
 	tactics.EasyKill({ advantage: 1, distance: 2 }),
 	tactics.EasySnack({ distance: 2 }),
