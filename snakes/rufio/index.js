@@ -19,7 +19,7 @@ const strategy = [
 	tactics.EasySnack({ distance: 2 }),
 	tactics.Abscond({ disadvantage: 1, distance: 3 }),
 	tactics.Aggrieve({ advantage: 2 }),
-	tactics.Hungry({ health: 95 }),
+	tactics.Hungry({}),
 	tactics.GoCentre(),
 	tactics.Continue(),
 	tactics.SeekTail(),
