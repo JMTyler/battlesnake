@@ -45,7 +45,11 @@ const Move = async (context) => {
 		.value();
 
 	const move = _.reduce(strategy, (prev, tactic) => {
-		return prev || tactic({ context, state, adjacent });
+		if (prev) return prev;
+		const move = tactic({ context, state, adjacent });
+		if (!move) return false;
+		const isSafe = position.IsSafe(adjacent[move], context);
+		return isSafe && move;
 	}, false);
 
 	await utils.RecordFrame(context, move || state.move);

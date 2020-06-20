@@ -19,7 +19,7 @@ const chooseAdjacentCell = (prey, context, state) => {
 };
 
 const EasyKill = ({ advantage = 1, distance = Infinity }) => {
-	return ({ context, state, adjacent }) => {
+	return ({ context, state }) => {
 		// TODO: We should probably just remove `you` from the snakes array at the top level.
 		const snakes = _.filter(context.board.snakes, (snake) => snake.id !== context.you.id);
 		const closestSnake = movement.FindClosestTarget(context.you.head, _.map(snakes, 'head'));
@@ -40,8 +40,7 @@ const EasyKill = ({ advantage = 1, distance = Infinity }) => {
 
 		const move = movement.ApproachTarget(target, context);
 		utils.LogMove(context.turn, move, 'Easy Kill');
-		const isSafe = position.IsSafe(adjacent[move], context);
-		return isSafe && move;
+		return move;
 	};
 };
 

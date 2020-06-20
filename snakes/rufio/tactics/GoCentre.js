@@ -5,7 +5,7 @@ const position = require('../../../position');
 const utils    = require('../../../utils');
 
 const GoCentre = () => {
-	return ({ context, adjacent }) => {
+	return ({ context }) => {
 		const centreWidth = 3;
 		const leftEdge = (context.board.width - centreWidth) / 2;
 
@@ -29,9 +29,7 @@ const GoCentre = () => {
 		const target = _.sample(centreCells);
 		const move = movement.ApproachTarget(target, context);
 		utils.LogMove(context.turn, move, 'Go Centre');
-		const isSafe = position.IsSafe(adjacent[move], context);
-
-		return isSafe && move;
+		return move;
 	};
 };
 

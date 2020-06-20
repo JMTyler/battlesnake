@@ -1,14 +1,11 @@
-const position = require('../../../position');
-const utils    = require('../../../utils');
+const utils = require('../../../utils');
 
 const Continue = () => {
-	return ({ context, state, adjacent }) => {
+	return ({ context, state }) => {
 		if (context.turn === 0) utils.LogMove(context.turn, state.move, 'Initial Move');
 		else utils.LogMove(context.turn, state.move, 'Continue');
 
-		const isSafe = position.IsSafe(adjacent[state.move], context);
-
-		return isSafe && state.move;
+		return state.move;
 	};
 };
 

@@ -1,11 +1,10 @@
 const _ = require('lodash');
 
 const movement = require('../../../movement');
-const position = require('../../../position');
 const utils    = require('../../../utils');
 
 const Abscond = ({ disadvantage = 1, distance = Infinity }) => {
-	return ({ context, adjacent }) => {
+	return ({ context }) => {
 		const predators = _.filter(context.board.snakes, (snake) => (context.you.length <= snake.length - disadvantage));
 		if (_.isEmpty(predators)) {
 			return false;
@@ -29,9 +28,7 @@ const Abscond = ({ disadvantage = 1, distance = Infinity }) => {
 
 		const move = movement.ApproachTarget(escapeTarget, context);
 		utils.LogMove(context.turn, move, 'Abscond');
-
-		const isSafe = position.IsSafe(adjacent[move], context);
-		return isSafe && move;
+		return move;
 	};
 };
 

@@ -19,7 +19,7 @@ const chooseAdjacentCell = (prey, context, state) => {
 };
 
 const Aggrieve = ({ advantage = 1 }) => {
-	return ({ context, state, adjacent }) => {
+	return ({ context, state }) => {
 		const preyOptions = _.filter(context.board.snakes, (snake) => (context.you.length >= snake.length + advantage));
 		if (_.isEmpty(preyOptions)) {
 			return false;
@@ -34,9 +34,7 @@ const Aggrieve = ({ advantage = 1 }) => {
 
 		const move = movement.ApproachTarget(target, context);
 		utils.LogMove(context.turn, move, 'Aggrieve');
-
-		const isSafe = position.IsSafe(adjacent[move], context);
-		return isSafe && move;
+		return move;
 	};
 };
 

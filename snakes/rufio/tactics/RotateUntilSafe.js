@@ -34,7 +34,7 @@ const RotateUntilSafe = () => {
 			utils.LogMove(context.turn, move, 'Rotate Until Risky');
 		} while (turns < 4 && !isSafe);
 
-		return isSafe && move;
+		return move;
 	};
 };
 
