@@ -9,7 +9,7 @@ const State = {
 		return _.set(this, [context.game.id, context.you.id], value);
 	},
 	Scope(context) {
-		return _.get(this, [context.game.id, context.you.id], { move: 'right' });
+		return _.get(this, [context.game.id, context.you.id], { move: 'right', snakes: {} });
 	},
 };
 
@@ -34,6 +34,16 @@ const Move = async (context) => {
 
 	movement.InitPathfinder(context);
 
+	// Figure out which move each snake took during the *last* turn.
+	state.snakes = _.chain(context.board.snakes)
+		.mapKeys('id')
+		.mapValues(({ id, head }) => {
+			const prev = _.get(state.snakes, [id, 'head']);
+			const move = prev ? position.ToDirection(head, prev) : 'up';
+			return { head, move };
+		})
+		.value();
+
 	const move = _.reduce(strategy, (prev, tactic) => {
 		return prev || tactic({ context, state, adjacent });
 	}, false);
@@ -53,7 +63,8 @@ const GetInfo = () => require('./info.json');
 
 const StartGame = async (context) => {
 	State.Initialise(context, {
-		move: 'right',
+		move   : 'right',
+		snakes : {},
 	});
 
 	console.log('-----');

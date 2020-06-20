@@ -49,7 +49,7 @@ const ApproachTarget = (target, { you, grid }) => {
 	const nextCell = path[1];
 	if (!nextCell) return 'up';
 	const pos = { x: nextCell[0], y: nextCell[1] };
-	return position.ToDirection(pos, { you });
+	return position.ToDirection(pos, you.head);
 };
 
 const FindClosestTarget = (origin, targets) => {

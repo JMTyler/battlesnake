@@ -58,9 +58,9 @@ const Matches = (posA, posB) => {
 	return _.isEqual(posA, posB);
 };
 
-const ToDirection = (pos, { you }) => {
-	const x = Math.sign(pos.x - you.head.x);
-	const y = Math.sign(pos.y - you.head.y);
+const ToDirection = (to, from) => {
+	const x = Math.sign(to.x - from.x);
+	const y = Math.sign(to.y - from.y);
 
 	if (x !== 0 && y !== 0) {
 		return null;
