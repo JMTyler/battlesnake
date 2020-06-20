@@ -4,6 +4,7 @@ const fs      = require('fs');
 
 const files = fs.readdirSync('./snakes');
 
+// TODO: Setup root paths to default to local snake.
 module.exports = _.transform(files, (router, file) => {
 	const name = file.replace(/\.js$/, '');
 	const snake = require(`./snakes/${file}`);
@@ -15,8 +16,8 @@ module.exports = _.transform(files, (router, file) => {
 		}, snake.GetInfo()));
 	});
 
-	router.post(`/${name}/start`, (req, res) => {
-		snake.StartGame(req.body);
+	router.post(`/${name}/start`, async (req, res) => {
+		await snake.StartGame(req.body);
 		return res.sendStatus(200);
 	});
 

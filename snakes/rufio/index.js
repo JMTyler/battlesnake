@@ -13,14 +13,6 @@ const State = {
 	},
 };
 
-const GetInfo = () => {
-	return {
-		color : '#8F008F',
-		head  : 'shades',
-		tail  : 'bolt',
-	};
-};
-
 const tactics = require('./tactics');
 const strategy = [
 	tactics.EasyKill({ advantage: 1, distance: 2 }),
@@ -57,7 +49,9 @@ const Move = async (context) => {
 	return state.move;
 };
 
-const StartGame = (context) => {
+const GetInfo = () => require('./info.json');
+
+const StartGame = async (context) => {
 	State.Initialise(context, {
 		move: 'right',
 	});
@@ -74,9 +68,4 @@ const EndGame = async (context) => {
 	await utils.PruneGames();
 };
 
-module.exports = {
-	GetInfo,
-	StartGame,
-	Move,
-	EndGame,
-};
+module.exports = { GetInfo, StartGame, Move, EndGame };
