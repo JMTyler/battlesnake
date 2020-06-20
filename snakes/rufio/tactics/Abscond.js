@@ -1,7 +1,6 @@
 const _ = require('lodash');
 
 const movement = require('../../../movement');
-const utils    = require('../../../utils');
 
 const Abscond = ({ disadvantage = 1, distance = Infinity }) => {
 	return ({ context }) => {
@@ -26,9 +25,7 @@ const Abscond = ({ disadvantage = 1, distance = Infinity }) => {
 			y : _.clamp(escapeVector.y + context.you.head.y, 0, context.board.height - 1),
 		};
 
-		const move = movement.ApproachTarget(escapeTarget, context);
-		utils.LogMove(context.turn, move, 'Abscond');
-		return move;
+		return movement.ApproachTarget(escapeTarget, context);
 	};
 };
 

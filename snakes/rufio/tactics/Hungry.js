@@ -1,6 +1,5 @@
 const board    = require('../../../board');
 const movement = require('../../../movement');
-const utils    = require('../../../utils');
 
 const Hungry = ({ health = Infinity }) => {
 	return ({ context }) => {
@@ -8,9 +7,7 @@ const Hungry = ({ health = Infinity }) => {
 			return false;
 		}
 
-		const move = movement.ApproachTarget(board.FindClosestFood(context), context);
-		utils.LogMove(context.turn, move, 'Hungry');
-		return move;
+		return movement.ApproachTarget(board.FindClosestFood(context), context);
 	};
 };
 

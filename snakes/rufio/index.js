@@ -14,17 +14,17 @@ const State = {
 };
 
 const tactics = require('./tactics');
-const strategy = [
-	tactics.EasyKill({ advantage: 1, distance: 2 }),
-	tactics.EasySnack({ distance: 2 }),
-	tactics.Abscond({ disadvantage: 1, distance: 3 }),
-	tactics.Aggrieve({ advantage: 2 }),
-	tactics.Hungry({}),
-	tactics.GoCentre(),
-	tactics.Continue(),
-	tactics.SeekTail(),
-	tactics.RotateUntilSafe(),
-];
+const strategy = {
+	'Easy Kill'         : tactics.EasyKill({ advantage: 1, distance: 2 }),
+	'Easy Snack'        : tactics.EasySnack({ distance: 2 }),
+	'Abscond'           : tactics.Abscond({ disadvantage: 1, distance: 3 }),
+	'Aggrieve'          : tactics.Aggrieve({ advantage: 2 }),
+	'Hungry'            : tactics.Hungry({}),
+	'Go Centre'         : tactics.GoCentre(),
+	'Continue'          : tactics.Continue(),
+	'Seek Tail'         : tactics.SeekTail(),
+	'Rotate Until Safe' : tactics.RotateUntilSafe(),
+};
 
 const Move = async (context) => {
 	await utils.RecordFrame(context);
@@ -44,10 +44,11 @@ const Move = async (context) => {
 		})
 		.value();
 
-	const move = _.reduce(strategy, (prev, tactic) => {
+	const move = _.reduce(strategy, (prev, tactic, description) => {
 		if (prev) return prev;
 		const move = tactic({ context, state, adjacent });
 		if (!move) return false;
+		utils.LogMove(context.turn, move, description);
 		const isSafe = position.IsSafe(adjacent[move], context);
 		return isSafe && move;
 	}, false);

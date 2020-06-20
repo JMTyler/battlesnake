@@ -1,6 +1,5 @@
 const board    = require('../../../board');
 const movement = require('../../../movement');
-const utils    = require('../../../utils');
 
 const EasySnack = ({ distance = Infinity }) => {
 	return ({ context }) => {
@@ -10,9 +9,7 @@ const EasySnack = ({ distance = Infinity }) => {
 			return false;
 		}
 
-		const move = movement.ApproachTarget(closestFood, context);
-		utils.LogMove(context.turn, move, 'Easy Snack');
-		return move;
+		return movement.ApproachTarget(closestFood, context);
 	};
 };
 

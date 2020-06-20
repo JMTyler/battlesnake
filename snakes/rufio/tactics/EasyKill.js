@@ -2,7 +2,6 @@ const _ = require('lodash');
 
 const movement = require('../../../movement');
 const position = require('../../../position');
-const utils    = require('../../../utils');
 
 const chooseAdjacentCell = (prey, context, state) => {
 	const targetOptions = _.pickBy(position.GetAdjacentTiles(prey.head), (pos) => position.IsSafe(pos, context));
@@ -38,9 +37,7 @@ const EasyKill = ({ advantage = 1, distance = Infinity }) => {
 			return false;
 		}
 
-		const move = movement.ApproachTarget(target, context);
-		utils.LogMove(context.turn, move, 'Easy Kill');
-		return move;
+		return movement.ApproachTarget(target, context);
 	};
 };
 

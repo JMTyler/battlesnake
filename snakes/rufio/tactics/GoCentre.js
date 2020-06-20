@@ -2,7 +2,6 @@ const _ = require('lodash');
 
 const movement = require('../../../movement');
 const position = require('../../../position');
-const utils    = require('../../../utils');
 
 const GoCentre = () => {
 	return ({ context }) => {
@@ -27,9 +26,7 @@ const GoCentre = () => {
 		}
 
 		const target = _.sample(centreCells);
-		const move = movement.ApproachTarget(target, context);
-		utils.LogMove(context.turn, move, 'Go Centre');
-		return move;
+		return movement.ApproachTarget(target, context);
 	};
 };
 

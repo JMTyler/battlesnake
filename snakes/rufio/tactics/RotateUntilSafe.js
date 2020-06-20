@@ -1,5 +1,4 @@
 const position = require('../../../position');
-const utils    = require('../../../utils');
 
 const RotateUntilSafe = () => {
 	return ({ context, state, adjacent }) => {
@@ -12,7 +11,7 @@ const RotateUntilSafe = () => {
 			move = rotate[move];
 			turns += 1;
 			isSafe = position.IsSafe(adjacent[move], context);
-			utils.LogMove(context.turn, move, 'Rotate Until Safe');
+//			utils.LogMove(context.turn, move, 'Rotate Until Safe');
 		} while (turns < 4 && !isSafe);
 
 		if (isSafe) {
@@ -31,7 +30,7 @@ const RotateUntilSafe = () => {
 			move = rotate[move];
 			turns += 1;
 			isSafe = !position.IsDeadly(adjacent[move], context);
-			utils.LogMove(context.turn, move, 'Rotate Until Risky');
+//			utils.LogMove(context.turn, move, 'Rotate Until Risky');
 		} while (turns < 4 && !isSafe);
 
 		return move;
