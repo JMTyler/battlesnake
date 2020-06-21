@@ -15,7 +15,7 @@ const State = {
 
 const tactics = require('./tactics');
 const strategy = {
-	'Easy Kill'         : tactics.EasyKill({ advantage: 1, distance: 2 }),
+	'Easy Kill'         : tactics.Aggrieve({ advantage: 1, distance: 2 }),
 	'Quick Snack'       : tactics.Eat({ distance: 2 }),
 	'Abscond'           : tactics.Abscond({ disadvantage: 1, distance: 3 }),
 	'Aggrieve'          : tactics.Aggrieve({ advantage: 2 }),
