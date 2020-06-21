@@ -59,16 +59,18 @@ const RecordFrame = async (context, move = null) => {
 
 const PruneGames = async () => {
 	const numRows = _.toNumber(await db.Frames.count());
-	if (numRows < 9000) return;
+	if (numRows < 9500) return;
 
 	// Find the oldest game in the database.
-	const { game_id } = await db.Frames.findOne({}, {
+	const { game_id } = await db.Frames.findOne({ important: false }, {
 		fields : ['game_id'],
 		order  : [{ field: 'created_at', direction: 'asc' }],
 	});
 
 	// And delete it.
-	return await db.Frames.destroy({ game_id });
+	await db.Frames.destroy({ game_id });
+
+	return await PruneGames();
 };
 
 module.exports = {

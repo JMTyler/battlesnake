@@ -19,6 +19,11 @@ module.exports = async (db) => {
 				UNIQUE (game_id, turn, snake_id)
 			);
 		`);
+
+		await tx.query(`
+			ALTER TABLE "Frames"
+			ADD COLUMN IF NOT EXISTS important boolean NOT NULL DEFAULT false;
+		`);
 	});
 
 	// Tell Massive to introspect the database again now that we've modified the schema.
