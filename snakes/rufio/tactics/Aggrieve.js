@@ -19,9 +19,7 @@ const chooseAdjacentCell = (prey, context, state) => {
 
 const Aggrieve = ({ advantage = 1, distance = Infinity }) => {
 	return ({ context, state }) => {
-		// TODO: We should probably just remove `you` from the snakes array at the top level.
-		const snakes = _.filter(context.board.snakes, (snake) => (snake.id !== context.you.id));
-		const weaklings = _.filter(snakes, (snake) => (context.you.length >= snake.length + advantage));
+		const weaklings = _.filter(context.board.snakes, (snake) => (context.you.length >= snake.length + advantage));
 		if (_.isEmpty(weaklings)) {
 			return false;
 		}
@@ -32,7 +30,7 @@ const Aggrieve = ({ advantage = 1, distance = Infinity }) => {
 			return false;
 		}
 
-		const prey = _.find(snakes, { head: closestSnake });
+		const prey = _.find(context.board.snakes, { head: closestSnake });
 		const target = chooseAdjacentCell(prey, context, state);
 		if (!target) {
 			return false;

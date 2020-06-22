@@ -27,8 +27,6 @@ const strategy = {
 };
 
 const Move = async (context) => {
-	await utils.RecordFrame(context);
-
 	const state = State.Scope(context);
 	const adjacent = position.GetAdjacentTiles(context.you.head);
 
@@ -44,6 +42,7 @@ const Move = async (context) => {
 		})
 		.value();
 
+	_.remove(context.board.snakes, context.you);
 	const move = _.reduce(strategy, (prev, tactic, description) => {
 		if (prev) return prev;
 		const move = tactic({ context, state, adjacent });
@@ -52,8 +51,6 @@ const Move = async (context) => {
 		const isSafe = position.IsSafe(adjacent[move], context);
 		return isSafe && move;
 	}, false);
-
-	await utils.RecordFrame(context, move || state.move);
 
 	if (move) {
 		state.move = move;
@@ -64,7 +61,7 @@ const Move = async (context) => {
 	return state.move;
 };
 
-const GetInfo = () => require('./info.json');
+const GetInfo = async () => require('./info.json');
 
 const StartGame = async (context) => {
 	State.Initialise(context, {

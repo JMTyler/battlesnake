@@ -8,10 +8,12 @@ const pathfinder = new pathfinding.JumpPointFinder({ diagonalMovement: pathfindi
 const InitPathfinder = (context) => {
 	const grid = new pathfinding.Grid(context.board.width, context.board.height);
 
+	_.each(_.initial(context.you.body), ({ x, y }) => {
+		grid.setWalkableAt(x, y, false);
+	});
+
 	// TODO: Consider adding a safeGrid (this is a riskyGrid) that also avoids risky cells.
 	_.each(context.board.snakes, (snake) => {
-		// TODO: not sure if this field exists in regular payloads
-		if (snake.death) return;
 		_.each(_.initial(snake.body), ({ x, y }) => {
 			grid.setWalkableAt(x, y, false);
 		});

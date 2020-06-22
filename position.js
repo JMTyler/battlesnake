@@ -18,9 +18,12 @@ const IsDeadly = (pos, { board, you }) => {
 		return true;
 	}
 
+	const selfCollision = _.some(_.initial(you.body), pos);
+	if (selfCollision) {
+		return true;
+	}
+
 	const anySnakeCollision = _.some(board.snakes, (snake) => {
-		// TODO: Only drop the tail piece if the snake HASN'T just eaten a disc.
-		// TODO: Or, drop the tail either way, but consider that spot risky.
 		const collision = _.some(_.initial(snake.body), pos);
 		if (!collision) {
 			return false;
@@ -41,8 +44,6 @@ const IsDeadly = (pos, { board, you }) => {
 
 const IsRisky = (pos, { board, you }) => {
 	return _.some(board.snakes, (snake) => {
-		if (snake.id === you.id) return false;
-
 		const adjacent = GetAdjacentTiles(snake.head);
 		const gettinSpicy = _.some(adjacent, pos);
 
