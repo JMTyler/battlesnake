@@ -33,6 +33,8 @@ const LogMove = (turn, move, comment) => {
 
 // TODO: Merge LogMove and RecordFrame, once we can be sure which move was the final choice.
 const RecordFrame = async (context, move = null) => {
+	if (context.game.dev) return;
+
 	const NOW = new Date().toISOString();
 
 	if (move) {
