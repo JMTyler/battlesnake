@@ -2,16 +2,21 @@ const _ = require('lodash');
 
 const movement = require('../../../movement');
 
-const Abscond = ({ disadvantage = 1, distance = Infinity }) => {
+const Abscond = (options = {}) => {
+	options = Object.assign({
+		disadvantage : 1,
+		distance     : Infinity,
+	}, options);
+
 	return ({ context }) => {
-		const predators = _.filter(context.board.snakes, (snake) => (context.you.length <= snake.length - disadvantage));
+		const predators = _.filter(context.board.snakes, (snake) => (context.you.length <= snake.length - options.disadvantage));
 		if (_.isEmpty(predators)) {
 			return false;
 		}
 
 		const predator = movement.FindClosestTarget(context.you.head, _.map(predators, 'head'));
 		const distanceToPredator = movement.GetDistance(context.you.head, predator);
-		if (distanceToPredator > distance) {
+		if (distanceToPredator > options.distance) {
 			return false;
 		}
 

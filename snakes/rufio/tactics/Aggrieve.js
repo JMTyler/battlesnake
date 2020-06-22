@@ -17,16 +17,21 @@ const chooseAdjacentCell = (prey, context, state) => {
 	return movement.FindClosestTarget(context.you.head, _.toArray(targetOptions));
 };
 
-const Aggrieve = ({ advantage = 1, distance = Infinity }) => {
+const Aggrieve = (options = {}) => {
+	options = Object.assign({
+		advantage : 1,
+		distance  : Infinity,
+	}, options);
+
 	return ({ context, state }) => {
-		const weaklings = _.filter(context.board.snakes, (snake) => (context.you.length >= snake.length + advantage));
+		const weaklings = _.filter(context.board.snakes, (snake) => (context.you.length >= snake.length + options.advantage));
 		if (_.isEmpty(weaklings)) {
 			return false;
 		}
 
 		const closestSnake = movement.FindClosestTarget(context.you.head, _.map(weaklings, 'head'));
 		const distanceToSnake = movement.GetDistance(context.you.head, closestSnake);
-		if (distanceToSnake > distance) {
+		if (distanceToSnake > options.distance) {
 			return false;
 		}
 

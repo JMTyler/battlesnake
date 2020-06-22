@@ -1,15 +1,20 @@
 const board    = require('../../../board');
 const movement = require('../../../movement');
 
-const Eat = ({ health = Infinity, distance = Infinity }) => {
+const Eat = (options = {}) => {
+	options = Object.assign({
+		health   : Infinity,
+		distance : Infinity,
+	}, options);
+
 	return ({ context }) => {
-		if (context.you.health > health) {
+		if (context.you.health > options.health) {
 			return false;
 		}
 
 		const food = board.FindClosestFood(context);
 		const distanceToFood = movement.GetDistance(context.you.head, food);
-		if (distanceToFood > distance) {
+		if (distanceToFood > options.distance) {
 			return false;
 		}
 
