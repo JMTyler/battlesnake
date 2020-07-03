@@ -59,7 +59,9 @@ const RecordFrame = async (context, move = null) => {
 	}, { onConflict: { action: 'ignore' } });
 };
 
-const PruneGames = async () => {
+const PruneGames = async (context) => {
+	if (context.game.dev) return;
+
 	const numRows = _.toNumber(await db.Frames.count());
 	if (numRows < 9500) return;
 

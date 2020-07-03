@@ -78,7 +78,7 @@ const EndGame = async (context) => {
 	console.log();
 	console.log(`* Game Over! ${result} *`);
 
-	await utils.PruneGames();
+	await utils.PruneGames(context);
 };
 
 module.exports = { GetInfo, StartGame, Move, EndGame };
