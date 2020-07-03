@@ -13,6 +13,10 @@ const Eat = (options = {}) => {
 		}
 
 		const food = board.FindClosestFood(context);
+		if (!food) {
+			return false;
+		}
+
 		const distanceToFood = movement.GetDistance(context.you.head, food);
 		if (distanceToFood > options.distance) {
 			return false;
