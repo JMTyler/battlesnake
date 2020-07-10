@@ -16,7 +16,7 @@ const StartGame = async (context) => {
 	return new Promise((resolve, reject) => {
 		request.post({
 			url: '/start',
-			body: Object.assign({ game: { dev: true } }, context),
+			body: context,
 			baseUrl,
 			json: true,
 		}, (err) => err ? reject(err) : resolve());
@@ -27,7 +27,7 @@ const Move = async (context) => {
 	return new Promise((resolve, reject) => {
 		request.post({
 			url: '/move',
-			body: Object.assign({ game: { dev: true } }, context),
+			body: context,
 			baseUrl,
 			json: true,
 		}, (err, res, body) => err ? reject(err) : resolve(body.move));
@@ -38,7 +38,7 @@ const EndGame = async (context) => {
 	return new Promise((resolve, reject) => {
 		request.post({
 			url: '/end',
-			body: Object.assign({ game: { dev: true } }, context),
+			body: context,
 			baseUrl,
 			json: true,
 		}, (err) => err ? reject(err) : resolve());
