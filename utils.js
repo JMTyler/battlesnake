@@ -32,18 +32,18 @@ const LogMove = (turn, move, comment) => {
 };
 
 // TODO: Merge LogMove and RecordFrame, once we can be sure which move was the final choice.
-const RecordFrame = async (context, move = null) => {
+const RecordFrame = async (context, update = null) => {
 	if (context.game.dev) return;
 
 	const NOW = new Date().toISOString();
 
-	if (move) {
+	if (update) {
 		return await db.Frames.update({
 			game_id  : context.game.id,
 			snake_id : context.you.id,
 			turn     : context.turn,
 		}, {
-			move,
+			...update,
 			updated_at : NOW,
 		});
 	}

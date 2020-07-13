@@ -24,6 +24,11 @@ module.exports = async (db) => {
 			ALTER TABLE "Frames"
 			ADD COLUMN IF NOT EXISTS important boolean NOT NULL DEFAULT false;
 		`);
+
+		await tx.query(`
+			ALTER TABLE "Frames"
+			ADD COLUMN IF NOT EXISTS duration integer DEFAULT NULL;
+		`);
 	});
 
 	// Tell Massive to introspect the database again now that we've modified the schema.

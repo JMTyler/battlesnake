@@ -28,9 +28,10 @@ module.exports = _.transform(files, (router, file) => {
 
 		await utils.RecordFrame(req.body);
 		const move = await snake.Move(req.body);
-		await utils.RecordFrame(req.body, move);
 
-		console.log(`Move took ${Date.now() - start}ms.`);
+		const duration = Date.now() - start;
+		await utils.RecordFrame(req.body, { move, duration });
+
 		return res.send({ move });
 	});
 
