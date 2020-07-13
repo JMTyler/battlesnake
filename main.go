@@ -2,8 +2,8 @@ package main
 
 import (
 	"fmt"
+	"github.com/JMTyler/battlesnake/_/config"
 	"net/http"
-	"os"
 	"runtime"
 )
 
@@ -24,10 +24,7 @@ func rootHandler(w http.ResponseWriter, r *http.Request) {
 func main() {
 	http.HandleFunc("/", rootHandler)
 
-	port, exists := os.LookupEnv("PORT")
-	if !exists {
-		port = "80"
-	}
+	port := config.Get("PORT", 80).(string)
 	fmt.Println("Battlesnake listening on port", port)
 	fmt.Println("-----")
 
