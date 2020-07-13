@@ -2,7 +2,7 @@ package movement
 
 import (
 	snek "github.com/JMTyler/battlesnake/_"
-	//	"github.com/JMTyler/battlesnake/_/position"
+	"github.com/JMTyler/battlesnake/_/position"
 	"math"
 )
 
@@ -35,14 +35,25 @@ func GetDistance(origin snek.Position, target snek.Position) int {
 	return int(x + y)
 }
 func GetDistances(origin snek.Position, targets []snek.Position) []int {
-	distances := make([]int, len(targets))
-	for i, target := range targets {
-		distances[i] = GetDistance(origin, target)
+	var distances []int
+	for _, target := range targets {
+		distances = append(distances, GetDistance(origin, target))
 	}
 	return distances
 }
 
-func GetVector(origin snek.Position, target snek.Position) map[string]interface{} {
+type Vector struct {
+	Dir struct {
+		X string
+		Y string
+	}
+	Weight struct {
+		X int
+		Y int
+	}
+}
+
+func GetVector(origin snek.Position, target snek.Position) Vector {
 	x := target.X - origin.X
 	y := target.Y - origin.Y
 
@@ -56,28 +67,61 @@ func GetVector(origin snek.Position, target snek.Position) map[string]interface{
 		yDir = "up"
 	}
 
-	return map[string]interface{}{
-		"dir": map[string]string{
-			"x": xDir,
-			"y": yDir,
+	return Vector{
+		Dir: struct {
+			X string
+			Y string
+		}{
+			X: xDir,
+			Y: yDir,
 		},
-		"weight": map[string]int{"x": x, "y": y},
+		Weight: struct {
+			X int
+			Y int
+		}{
+			X: x,
+			Y: y,
+		},
 	}
 }
 
-//func ApproachTarget(target snek.Position, context snek.Context) string {
-//	const path = pathfinder.findPath(you.head.x, you.head.y, target.x, target.y, grid)
-//	const nextCell = path[1]
-//	if !nextCell {
-//		return "up"
-//	}
-//	const pos = snek.Position{X: nextCell[0], Y: nextCell[1]}
-//	return position.ToDirection(pos, you.head)
-//}
+func ApproachTarget(target snek.Position, context snek.Context) string {
+	//	const path = pathfinder.findPath(you.head.x, you.head.y, target.x, target.y, grid)
+	//	const nextCell = path[1]
+	//	if !nextCell {
+	//		return "up"
+	//	}
+	//	const pos = snek.Position{X: nextCell[0], Y: nextCell[1]}
+	//	return position.ToDirection(pos, you.head)
+
+	vector := GetVector(context.You.Head, target)
+	adjacent := position.GetAdjacentTiles(context.You.Head)
+
+	// TODO: Support target being a straight line away, making left/right or up/down equal choices.
+	moveX := adjacent[vector.Dir.X]
+	if !position.IsSafe(moveX, context) {
+		return vector.Dir.Y
+	}
+
+	moveY := adjacent[vector.Dir.Y]
+	if !position.IsSafe(moveY, context) {
+		return vector.Dir.X
+	}
+
+	if context.You.Head.X != target.X {
+		return vector.Dir.X
+	}
+
+	return vector.Dir.Y
+}
 
 func FindClosestTarget(origin snek.Position, targets []snek.Position) snek.Position {
 	if len(targets) == 1 {
 		return targets[0]
+	}
+
+	if len(targets) == 0 {
+		return snek.Position{}
 	}
 
 	distances := GetDistances(origin, targets)

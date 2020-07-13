@@ -6,10 +6,10 @@ import (
 
 func GetAdjacentTiles(pos snek.Position) map[string]snek.Position {
 	return map[string]snek.Position{
-		"up":    snek.Position{X: pos.X, Y: pos.Y + 1},
-		"down":  snek.Position{X: pos.X, Y: pos.Y - 1},
-		"left":  snek.Position{X: pos.X - 1, Y: pos.Y},
-		"right": snek.Position{X: pos.X + 1, Y: pos.Y},
+		"up":    {X: pos.X, Y: pos.Y + 1},
+		"down":  {X: pos.X, Y: pos.Y - 1},
+		"left":  {X: pos.X - 1, Y: pos.Y},
+		"right": {X: pos.X + 1, Y: pos.Y},
 	}
 }
 

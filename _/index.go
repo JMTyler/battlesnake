@@ -1,5 +1,12 @@
 package tactics
 
+type TacticOptions struct {
+	Health       int
+	Distance     int
+	Advantage    int
+	Disadvantage int
+}
+
 type Position struct {
 	X int
 	Y int
@@ -13,7 +20,8 @@ type Context struct {
 }
 
 type State struct {
-	Move string
+	Move   string
+	Snakes map[string]SnakeState
 }
 
 type Game struct {
@@ -23,9 +31,11 @@ type Game struct {
 }
 
 type Snake struct {
+	ID     string
 	Head   Position
 	Body   []Position
 	Length int
+	Health int
 }
 
 type Board struct {
@@ -33,6 +43,10 @@ type Board struct {
 	Height int
 	Snakes []Snake
 	Food   []Position
+}
+
+type SnakeState struct {
+	Move string
 }
 
 //const _    = require('lodash');
