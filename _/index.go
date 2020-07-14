@@ -50,7 +50,7 @@ type SnakeState struct {
 	Move string
 }
 
-var states map[string]State
+var states = make(map[string]State)
 
 func InitState(context Context, value State) {
 	states[context.Game.ID+"---"+context.You.ID] = value
@@ -59,7 +59,7 @@ func InitState(context Context, value State) {
 func GetState(context Context) State {
 	state, ok := states[context.Game.ID+"---"+context.You.ID]
 	if !ok {
-		return State{Move: "right"}
+		return State{Move: "right", Snakes: make(map[string]SnakeState)}
 	}
 	return state
 }

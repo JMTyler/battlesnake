@@ -83,7 +83,8 @@ func (me *Rufio) GetInfo() map[string]string {
 
 func (me *Rufio) StartGame(context snek.Context) {
 	snek.InitState(context, snek.State{
-		Move: "right",
+		Move:   "right",
+		Snakes: make(map[string]snek.SnakeState),
 	})
 
 	fmt.Println("-----")

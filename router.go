@@ -8,6 +8,7 @@ import (
 	"time"
 	//	"github.com/JMTyler/battlesnake/_/utils"
 	"github.com/JMTyler/battlesnake/snakes"
+	"io/ioutil"
 )
 
 var the_snakes = []snakes.SnakeService{
@@ -43,8 +44,10 @@ func RouteSnakes() {
 		})
 
 		handleRoute(prefix+"/start", func(w http.ResponseWriter, r *http.Request) {
-			var bytes []byte
-			if _, err := r.Body.Read(bytes); err != nil {
+			//			var bytes []byte
+			//			n, err := r.Body.Read(bytes)
+			bytes, err := ioutil.ReadAll(r.Body)
+			if err != nil {
 				panic(err)
 			}
 
@@ -57,10 +60,11 @@ func RouteSnakes() {
 		})
 
 		handleRoute(prefix+"/move", func(w http.ResponseWriter, r *http.Request) {
-			var bytes []byte
-			if _, err := r.Body.Read(bytes); err != nil {
+			bytes, err := ioutil.ReadAll(r.Body)
+			if err != nil {
 				panic(err)
 			}
+
 			var ctx snek.Context
 			if err := json.Unmarshal(bytes, &ctx); err != nil {
 				panic(err)
@@ -83,8 +87,8 @@ func RouteSnakes() {
 		})
 
 		handleRoute(prefix+"/end", func(w http.ResponseWriter, r *http.Request) {
-			var bytes []byte
-			if _, err := r.Body.Read(bytes); err != nil {
+			bytes, err := ioutil.ReadAll(r.Body)
+			if err != nil {
 				panic(err)
 			}
 
