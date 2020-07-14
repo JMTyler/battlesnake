@@ -9,7 +9,7 @@ import (
 func main() {
 	RouteSnakes()
 
-	port := config.Get("PORT", 80).(string)
+	port := config.Get("port", "80")
 	fmt.Println("🐍 listening on port", port)
 	fmt.Println("-----")
 
