@@ -7,21 +7,13 @@ import (
 	"net/http"
 	"time"
 	//	"github.com/JMTyler/battlesnake/_/utils"
-	//	"github.com/JMTyler/battlesnake/snakes"
+	"github.com/JMTyler/battlesnake/snakes"
 )
 
-type SnakeService interface {
-	GetName() string
-	GetInfo() map[string]string
-	StartGame(snek.Context)
-	Move(snek.Context) string
-	EndGame(snek.Context)
-}
-
-var snakes = []SnakeService{
-	//	snakes.Local,
-	//	snakes.Rufio,
-	//	snakes.Proxy,
+var the_snakes = []snakes.SnakeService{
+	//		snakes.Local,
+	&snakes.Rufio{},
+	//		snakes.Proxy,
 }
 
 func handleRoute(route string, f func(http.ResponseWriter, *http.Request)) {
@@ -39,7 +31,7 @@ func handleRoute(route string, f func(http.ResponseWriter, *http.Request)) {
 
 // TODO: Setup root paths to default to local snake.
 func RouteSnakes() {
-	for _, snake := range snakes {
+	for _, snake := range the_snakes {
 		prefix := "/" + snake.GetName()
 		handleRoute(prefix, func(w http.ResponseWriter, r *http.Request) {
 			info := snake.GetInfo()
