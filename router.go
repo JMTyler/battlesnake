@@ -34,7 +34,7 @@ func handleRoute(route string, snake snakes.SnakeService, f func(snakes.SnakeSer
 func RouteSnakes() {
 	for _, snake := range the_snakes {
 		prefix := "/" + snake.GetName()
-		handleRoute(prefix, snake, func(snake snakes.SnakeService, w http.ResponseWriter, r *http.Request) {
+		handleRoute(prefix+"/", snake, func(snake snakes.SnakeService, w http.ResponseWriter, r *http.Request) {
 			info := snake.GetInfo()
 			info.APIVersion = "1"
 			info.Author = "JMTyler"
@@ -73,9 +73,9 @@ func RouteSnakes() {
 			start := time.Now()
 			//			await utils.RecordFrame(req.body);
 			move := snake.Move(ctx)
-			duration := time.Now().Sub(start).Milliseconds()
+			duration := time.Now().Sub(start).Microseconds()
 			//			await utils.RecordFrame(req.body, { move, duration });
-			fmt.Printf("Move took %vms.\n", duration)
+			fmt.Printf("Move took %vμs.\n", duration)
 
 			payload, err := json.Marshal(map[string]string{
 				"move": move,

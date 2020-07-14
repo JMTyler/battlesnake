@@ -5,6 +5,7 @@ import (
 	//	"github.com/JMTyler/battlesnake/_/config"
 	"fmt"
 	//	"time"
+	"strings"
 )
 
 //let db = require("./db")
@@ -14,15 +15,11 @@ import (
 //	})
 
 func Leftpad(str string, pad int) string {
-	gap := pad - len(str)
-	prefix := ""
-	for i := 0; i < gap; i++ {
-		prefix += " "
-	}
+	prefix := strings.Repeat(" ", pad-len(str))
 	return prefix + str
 }
 
-var previousTurn int
+var previousTurn int = -1
 
 func LogMove(turn int, move string, comment string) {
 	if turn > previousTurn+1 {
@@ -30,7 +27,7 @@ func LogMove(turn int, move string, comment string) {
 	}
 
 	moveTag := Leftpad(move, 5)
-	turnTag := fmt.Sprintf("[%s]", Leftpad(string(turn), 5))
+	turnTag := fmt.Sprintf("[%s]", Leftpad(fmt.Sprintf("%v", turn), 5))
 	if turn == previousTurn {
 		turnTag = fmt.Sprintf(" %s ", Leftpad("↳", 5))
 	}
