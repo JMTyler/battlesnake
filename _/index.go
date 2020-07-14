@@ -56,6 +56,10 @@ func InitState(context Context, value State) {
 	states[context.Game.ID+"---"+context.You.ID] = value
 }
 
+func DeleteState(context Context) {
+	delete(states, context.Game.ID+"---"+context.You.ID)
+}
+
 func GetState(context Context) State {
 	state, ok := states[context.Game.ID+"---"+context.You.ID]
 	if !ok {

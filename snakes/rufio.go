@@ -106,5 +106,6 @@ func (me *Rufio) EndGame(context snek.Context) {
 	fmt.Println()
 	fmt.Printf("* Game Over! %s *\n", result)
 
+	snek.DeleteState(context)
 	utils.PruneGames(context)
 }
