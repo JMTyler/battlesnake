@@ -12,12 +12,12 @@ import (
 )
 
 var the_snakes = []snakes.SnakeService{
-	//		snakes.Local,
+	&snakes.Local{},
 	&snakes.Rufio{},
 	//		snakes.Proxy,
 }
 
-func handleRoute(route string, f func(http.ResponseWriter, *http.Request)) {
+func handleRoute(route string, snake snakes.SnakeService, f func(snakes.SnakeService, http.ResponseWriter, *http.Request)) {
 	http.HandleFunc(route, func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Add("Access-Control-Allow-Origin", "*")
 		w.Header().Add("Access-Control-Allow-Headers", "*")
@@ -26,7 +26,7 @@ func handleRoute(route string, f func(http.ResponseWriter, *http.Request)) {
 		}
 		fmt.Println("[http]", r.Method, r.RequestURI)
 		w.Header().Add("Content-Type", "application/json")
-		f(w, r)
+		f(snake, w, r)
 	})
 }
 
@@ -34,7 +34,7 @@ func handleRoute(route string, f func(http.ResponseWriter, *http.Request)) {
 func RouteSnakes() {
 	for _, snake := range the_snakes {
 		prefix := "/" + snake.GetName()
-		handleRoute(prefix, func(w http.ResponseWriter, r *http.Request) {
+		handleRoute(prefix, snake, func(snake snakes.SnakeService, w http.ResponseWriter, r *http.Request) {
 			info := snake.GetInfo()
 			info.APIVersion = "1"
 			info.Author = "JMTyler"
@@ -43,7 +43,7 @@ func RouteSnakes() {
 			w.Write(payload)
 		})
 
-		handleRoute(prefix+"/start", func(w http.ResponseWriter, r *http.Request) {
+		handleRoute(prefix+"/start", snake, func(snake snakes.SnakeService, w http.ResponseWriter, r *http.Request) {
 			//			var bytes []byte
 			//			n, err := r.Body.Read(bytes)
 			bytes, err := ioutil.ReadAll(r.Body)
@@ -59,7 +59,7 @@ func RouteSnakes() {
 			snake.StartGame(ctx)
 		})
 
-		handleRoute(prefix+"/move", func(w http.ResponseWriter, r *http.Request) {
+		handleRoute(prefix+"/move", snake, func(snake snakes.SnakeService, w http.ResponseWriter, r *http.Request) {
 			bytes, err := ioutil.ReadAll(r.Body)
 			if err != nil {
 				panic(err)
@@ -86,7 +86,7 @@ func RouteSnakes() {
 			w.Write(payload)
 		})
 
-		handleRoute(prefix+"/end", func(w http.ResponseWriter, r *http.Request) {
+		handleRoute(prefix+"/end", snake, func(snake snakes.SnakeService, w http.ResponseWriter, r *http.Request) {
 			bytes, err := ioutil.ReadAll(r.Body)
 			if err != nil {
 				panic(err)
