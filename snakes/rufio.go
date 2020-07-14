@@ -7,6 +7,10 @@ import (
 	"github.com/JMTyler/battlesnake/_/position"
 	"github.com/JMTyler/battlesnake/_/utils"
 	"github.com/JMTyler/battlesnake/snakes/rufio/tactics"
+	"github.com/goccy/go-yaml"
+	"os"
+	"path/filepath"
+	"runtime"
 )
 
 type Rufio struct{}
@@ -82,8 +86,19 @@ func (me *Rufio) GetName() string {
 	return "rufio"
 }
 
-func (me *Rufio) GetInfo() map[string]string {
-	return map[string]string{}
+func (me *Rufio) GetInfo() SnakeInfo {
+	// TODO: It's a *lot* more work to load info from a file now than it was in Node... is it worth it?
+	file, err := os.Open(currentDir() + "/rufio/info.yaml")
+	if err != nil {
+		panic(err)
+	}
+
+	var info SnakeInfo
+	decoder := yaml.NewDecoder(file)
+	if err := decoder.Decode(&info); err != nil {
+		panic(err)
+	}
+	return info
 }
 
 func (me *Rufio) StartGame(context snek.Context) {
@@ -108,4 +123,9 @@ func (me *Rufio) EndGame(context snek.Context) {
 
 	snek.DeleteState(context)
 	utils.PruneGames(context)
+}
+
+func currentDir() string {
+	_, filename, _, _ := runtime.Caller(0)
+	return filepath.Dir(filename)
 }

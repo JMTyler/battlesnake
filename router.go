@@ -36,8 +36,8 @@ func RouteSnakes() {
 		prefix := "/" + snake.GetName()
 		handleRoute(prefix, func(w http.ResponseWriter, r *http.Request) {
 			info := snake.GetInfo()
-			info["apiversion"] = "1"
-			info["author"] = "JMTyler"
+			info.APIVersion = "1"
+			info.Author = "JMTyler"
 
 			payload, _ := json.Marshal(info)
 			w.Write(payload)
