@@ -25,7 +25,7 @@ type State struct {
 }
 
 type Game struct {
-	GameID  string
+	ID      string
 	Timeout int
 	Dev     bool
 }
