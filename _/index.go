@@ -8,15 +8,15 @@ type TacticOptions struct {
 }
 
 type Position struct {
-	X int
-	Y int
+	X int `json:"x"`
+	Y int `json:"y"`
 }
 
 type Context struct {
-	Turn  int
-	Game  Game
-	You   Snake
-	Board Board
+	Turn  int   `json:"turn"`
+	Game  Game  `json:"game"`
+	You   Snake `json:"you"`
+	Board Board `json:"board"`
 }
 
 type State struct {
@@ -25,24 +25,24 @@ type State struct {
 }
 
 type Game struct {
-	ID      string
-	Timeout int
-	Dev     bool
+	ID      string `json:"id"`
+	Timeout int    `json:"timeout"`
+	Dev     bool   `json:"dev"`
 }
 
 type Snake struct {
-	ID     string
-	Head   Position
-	Body   []Position
-	Length int
-	Health int
+	ID     string     `json:"id"`
+	Head   Position   `json:"head"`
+	Body   []Position `json:"body"`
+	Length int        `json:"length"`
+	Health int        `json:"health"`
 }
 
 type Board struct {
-	Width  int
-	Height int
-	Snakes []Snake
-	Food   []Position
+	Width  int        `json:"width"`
+	Height int        `json:"height"`
+	Snakes []Snake    `json:"snakes"`
+	Food   []Position `json:"food"`
 }
 
 type SnakeState struct {

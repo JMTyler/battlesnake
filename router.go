@@ -14,7 +14,7 @@ import (
 var the_snakes = []snakes.SnakeService{
 	&snakes.Local{},
 	&snakes.Rufio{},
-	//		snakes.Proxy,
+	&snakes.Proxy{},
 }
 
 func handleRoute(route string, snake snakes.SnakeService, f func(snakes.SnakeService, http.ResponseWriter, *http.Request)) {
