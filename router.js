@@ -24,12 +24,12 @@ module.exports = _.transform(files, (router, file) => {
 	});
 
 	router.post(`/${name}/move`, async (req, res) => {
-		const start = Date.now();
-
 		await utils.RecordFrame(req.body);
-		const move = await snake.Move(req.body);
 
-		const duration = Date.now() - start;
+		const start = Date.now();
+		const move = await snake.Move(req.body);
+		const duration = (Date.now() - start) * 1000;
+
 		await utils.RecordFrame(req.body, { move, duration });
 
 		return res.send({ move });
