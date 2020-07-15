@@ -74,7 +74,7 @@ const PruneGames = async (context) => {
 	// And delete it.
 	await db.Frames.destroy({ game_id });
 
-	return await PruneGames();
+	return await PruneGames(context);
 };
 
 module.exports = {
