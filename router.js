@@ -1,10 +1,12 @@
-const _       = require('lodash');
-const express = require('express');
-const fs      = require('fs');
+const _               = require('lodash');
+const express         = require('express');
+const fs              = require('fs');
+const { performance } = require('perf_hooks');
 
 const utils = require('./utils');
 
 const files = fs.readdirSync('./snakes');
+
 
 // TODO: Setup root paths to default to local snake.
 module.exports = _.transform(files, (router, file) => {
@@ -26,9 +28,9 @@ module.exports = _.transform(files, (router, file) => {
 	router.post(`/${name}/move`, async (req, res) => {
 		await utils.RecordFrame(req.body);
 
-		const start = Date.now();
+		const start = performance.now();
 		const move = await snake.Move(req.body);
-		const duration = (Date.now() - start) * 1000;
+		const duration = Math.floor((performance.now() - start) * 1000);
 
 		await utils.RecordFrame(req.body, { move, duration });
 
