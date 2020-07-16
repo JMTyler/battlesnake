@@ -14,8 +14,10 @@ func main() {
 	RouteSnakes()
 
 	port := config.Get("port", "80")
+	go http.ListenAndServe(":"+port, nil)
+
 	fmt.Println("🐍 listening on port", port)
 	fmt.Println()
 
-	http.ListenAndServe(":"+port, nil)
+	WaitForKillSignal()
 }
