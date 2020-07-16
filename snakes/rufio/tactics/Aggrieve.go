@@ -7,7 +7,7 @@ import (
 )
 
 func chooseAdjacentCell(prey snek.Snake, context snek.Context, state snek.State) snek.Position {
-	var targetOptions map[string]snek.Position
+	targetOptions := make(map[string]snek.Position)
 	for dir, pos := range position.GetAdjacentTiles(prey.Head) {
 		if position.IsSafe(pos, context) {
 			targetOptions[dir] = pos

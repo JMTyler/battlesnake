@@ -9,7 +9,7 @@ import (
 	"strings"
 )
 
-var config map[string]string = make(map[string]string)
+var config = make(map[string]string)
 
 func Get(path string, def string) string {
 	initConfig()
