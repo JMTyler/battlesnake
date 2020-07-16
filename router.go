@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"time"
 	//	"github.com/JMTyler/battlesnake/_/utils"
+	"github.com/JMTyler/battlesnake/_/db"
 	"github.com/JMTyler/battlesnake/snakes"
 	"io/ioutil"
 )
@@ -70,11 +71,18 @@ func RouteSnakes() {
 				panic(err)
 			}
 
+			frame := db.NewFrame(ctx)
+			if !ctx.Game.Dev {
+				frame.Insert()
+			}
+
 			start := time.Now()
-			//			await utils.RecordFrame(req.body);
 			move := snake.Move(ctx)
 			duration := time.Now().Sub(start).Microseconds()
-			//			await utils.RecordFrame(req.body, { move, duration });
+
+			if !ctx.Game.Dev {
+				frame.Update(move, duration)
+			}
 			fmt.Printf("Move took %vμs.\n", duration)
 
 			payload, err := json.Marshal(map[string]string{

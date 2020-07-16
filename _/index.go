@@ -32,6 +32,7 @@ type Game struct {
 
 type Snake struct {
 	ID     string     `json:"id"`
+	Name   string     `json:"name"`
 	Head   Position   `json:"head"`
 	Body   []Position `json:"body"`
 	Length int        `json:"length"`

@@ -4,15 +4,8 @@ import (
 	snek "github.com/JMTyler/battlesnake/_"
 	//	"github.com/JMTyler/battlesnake/_/config"
 	"fmt"
-	//	"time"
 	"strings"
 )
-
-//let db = require("./db")
-//db.Connect(config.get("database_url"))
-//	.then((_db) => {
-//		db = _db
-//	})
 
 func Leftpad(str string, pad int) string {
 	prefix := strings.Repeat(" ", pad-len(str))
@@ -21,6 +14,7 @@ func Leftpad(str string, pad int) string {
 
 var previousTurn int = -1
 
+// TODO: Merge LogMove() and Frame.Insert()/.Update(), once we can be sure which move was the final choice.
 func LogMove(turn int, move string, comment string) {
 	if turn > previousTurn+1 {
 		fmt.Println(" [ ... ]")
@@ -35,36 +29,6 @@ func LogMove(turn int, move string, comment string) {
 	previousTurn = turn
 
 	fmt.Printf(" %s %s :  %s\n", turnTag, moveTag, comment)
-}
-
-// TODO: Merge LogMove and RecordFrame, once we can be sure which move was the final choice.
-func RecordFrame(context snek.Context, update struct{} /*= null*/) {
-	if context.Game.Dev {
-		return
-	}
-
-	//	NOW := time.Now()
-
-	//	if (update) {
-	//		return await db.Frames.update({
-	//			game_id  : context.game.id,
-	//			snake_id : context.you.id,
-	//			turn     : context.turn,
-	//		}, {
-	//			...update,
-	//			updated_at : NOW,
-	//		})
-	//	}
-	//
-	//	return await db.Frames.insert({
-	//		context,
-	//		game_id    : context.game.id,
-	//		snake_id   : context.you.id,
-	//		name       : context.you.name,
-	//		turn       : context.turn,
-	//		created_at : NOW,
-	//		updated_at : NOW,
-	//	}, { onConflict: { action: "ignore" } })
 }
 
 func PruneGames(context snek.Context) {
