@@ -1,7 +1,6 @@
 package db
 
 import (
-	"context"
 	"fmt"
 	"github.com/JMTyler/battlesnake/_/config"
 	"github.com/go-pg/pg"
@@ -70,12 +69,10 @@ func CloseDatabase() {
 
 type dbLogger struct{}
 
-func (d dbLogger) BeforeQuery(ctx context.Context, q *pg.QueryEvent) (context.Context, error) {
+func (d dbLogger) BeforeQuery(q *pg.QueryEvent) {
 	sql, _ := q.FormattedQuery()
 	fmt.Println("[SQL]", sql)
-	return ctx, nil
 }
 
-func (d dbLogger) AfterQuery(ctx context.Context, q *pg.QueryEvent) error {
-	return nil
+func (d dbLogger) AfterQuery(q *pg.QueryEvent) {
 }
