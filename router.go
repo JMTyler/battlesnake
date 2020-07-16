@@ -12,6 +12,8 @@ import (
 	"io/ioutil"
 )
 
+const debug bool = false
+
 var the_snakes = []snakes.SnakeService{
 	&snakes.Local{},
 	&snakes.Rufio{},
@@ -25,7 +27,9 @@ func handleRoute(route string, snake snakes.SnakeService, f func(snakes.SnakeSer
 		if r.Method == "OPTIONS" {
 			return
 		}
-		fmt.Println("[http]", r.Method, r.RequestURI)
+		if debug {
+			fmt.Println("[http]", r.Method, r.RequestURI)
+		}
 		w.Header().Add("Content-Type", "application/json")
 		f(snake, w, r)
 	})
@@ -83,7 +87,6 @@ func RouteSnakes() {
 			if !ctx.Game.Dev {
 				frame.Update(move, duration)
 			}
-			fmt.Printf("Move took %vμs.\n", duration)
 
 			payload, err := json.Marshal(map[string]string{
 				"move": move,
