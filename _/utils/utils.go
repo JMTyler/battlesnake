@@ -1,8 +1,6 @@
 package utils
 
 import (
-	snek "github.com/JMTyler/battlesnake/_"
-	//	"github.com/JMTyler/battlesnake/_/config"
 	"fmt"
 	"strings"
 )
@@ -29,26 +27,4 @@ func LogMove(turn int, move string, comment string) {
 	previousTurn = turn
 
 	fmt.Printf(" %s %s :  %s\n", turnTag, moveTag, comment)
-}
-
-func PruneGames(context snek.Context) {
-	if context.Game.Dev {
-		return
-	}
-
-	//	const numRows = _.toNumber(await db.Frames.count())
-	//	if (numRows < 9500) {
-	//		return
-	//	}
-	//
-	//	// Find the oldest game in the database.
-	//	const { game_id } = await db.Frames.findOne({ important: false }, {
-	//		fields : ["game_id"],
-	//		order  : [{ field: "created_at", direction: "asc" }],
-	//	})
-	//
-	//	// And delete it.
-	//	await db.Frames.destroy({ game_id })
-	//
-	//	return await PruneGames()
 }

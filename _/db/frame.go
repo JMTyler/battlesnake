@@ -61,6 +61,30 @@ func (f *Frame) Update(move string, duration int64) {
 	}
 }
 
+func PruneGames() {
+	for {
+		numRows, err := DB.Model(&Frame{}).Count()
+		if err != nil {
+			panic(err)
+		}
+
+		if numRows < 10000 {
+			return
+		}
+
+		// Find the oldest game in the database.
+		var gameID string
+		if err := DB.Model(&Frame{}).Column("game_id").Limit(1).Order("created_at ASC").Where("important = ?", false).Select(&gameID); err != nil {
+			panic(err)
+		}
+
+		// And delete it.
+		if _, err := DB.Model(&Frame{}).Where("game_id = ?", gameID).Delete(); err != nil {
+			panic(err)
+		}
+	}
+}
+
 func (f *Frame) String() string {
 	return fmt.Sprintf("Frame{game:%v, snake:%v, turn:%v -> move:%v}", f.GameID, f.SnakeID, f.Turn, f.Move)
 }

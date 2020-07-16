@@ -106,6 +106,10 @@ func RouteSnakes() {
 			}
 
 			snake.EndGame(ctx)
+
+			if !ctx.Game.Dev {
+				db.PruneGames()
+			}
 		})
 	}
 }
