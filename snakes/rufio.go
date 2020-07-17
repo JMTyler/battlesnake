@@ -3,7 +3,7 @@ package snakes
 import (
 	"fmt"
 	snek "github.com/JMTyler/battlesnake/_"
-	//	"github.com/JMTyler/battlesnake/_/movement"
+	"github.com/JMTyler/battlesnake/_/movement"
 	"github.com/JMTyler/battlesnake/_/position"
 	"github.com/JMTyler/battlesnake/_/utils"
 	"github.com/JMTyler/battlesnake/snakes/rufio/tactics"
@@ -55,6 +55,8 @@ func (me *Rufio) Move(context snek.Context) string {
 			break
 		}
 	}
+
+	movement.InitPathfinder(&context)
 
 	move := ""
 	for _, tactic := range strategy {

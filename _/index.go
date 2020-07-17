@@ -1,5 +1,10 @@
 package tactics
 
+import (
+	"fmt"
+	"gonum.org/v1/gonum/graph/traverse"
+)
+
 type TacticOptions struct {
 	Health       int
 	Distance     int
@@ -40,15 +45,25 @@ type Snake struct {
 }
 
 type Board struct {
-	Width  int        `json:"width"`
-	Height int        `json:"height"`
-	Snakes []Snake    `json:"snakes"`
-	Food   []Position `json:"food"`
+	Width  int            `json:"width"`
+	Height int            `json:"height"`
+	Snakes []Snake        `json:"snakes"`
+	Food   []Position     `json:"food"`
+	Graph  traverse.Graph `json:", ignore"`
 }
 
 type SnakeState struct {
 	Head Position
 	Move string
+}
+
+func (pos Position) ID() int64 {
+	// HACK: Should replace this magic number with context.Board.Width somehow.
+	return int64(pos.X + (pos.Y * 11))
+}
+
+func (pos Position) String() string {
+	return fmt.Sprintf("(%d,%d)", pos.X, pos.Y)
 }
 
 var states = make(map[string]State)

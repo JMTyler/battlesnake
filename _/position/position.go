@@ -5,12 +5,21 @@ import (
 )
 
 func GetAdjacentTiles(pos snek.Position) map[string]snek.Position {
-	return map[string]snek.Position{
-		"up":    {X: pos.X, Y: pos.Y + 1},
-		"down":  {X: pos.X, Y: pos.Y - 1},
-		"left":  {X: pos.X - 1, Y: pos.Y},
-		"right": {X: pos.X + 1, Y: pos.Y},
+	// HACK: Should replace these magic numbers with context.Board.Width somehow.
+	cells := make(map[string]snek.Position)
+	if pos.Y < 10 {
+		cells["up"] = snek.Position{pos.X, pos.Y + 1}
 	}
+	if pos.Y > 0 {
+		cells["down"] = snek.Position{pos.X, pos.Y - 1}
+	}
+	if pos.X > 0 {
+		cells["left"] = snek.Position{pos.X - 1, pos.Y}
+	}
+	if pos.X < 10 {
+		cells["right"] = snek.Position{pos.X + 1, pos.Y}
+	}
+	return cells
 }
 
 func IsOutsideBoard(pos snek.Position, board snek.Board) bool {
@@ -22,7 +31,7 @@ func IsDeadly(pos snek.Position, context snek.Context) bool {
 		return true
 	}
 
-	for _, cell := range context.You.Body[:len(context.You.Body)-1] {
+	for _, cell := range context.You.Body[1 : len(context.You.Body)-1] {
 		if cell == pos {
 			// self collision
 			return true

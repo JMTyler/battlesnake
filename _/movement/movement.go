@@ -3,30 +3,35 @@ package movement
 import (
 	snek "github.com/JMTyler/battlesnake/_"
 	"github.com/JMTyler/battlesnake/_/position"
+	"gonum.org/v1/gonum/graph/path"
+	"gonum.org/v1/gonum/graph/simple"
 	"math"
 )
 
-//var pathfinding struct{}
-//const pathfinding = require('pathfinding')
-//const pathfinder = new pathfinding.JumpPointFinder({ diagonalMovement: pathfinding.DiagonalMovement.Never })
-
-//func InitPathfinder(context snek.Context) {
-//	const grid = new pathfinding.Grid(context.board.width, context.board.height)
-//
-//	_.each(_.initial(context.you.body), ({ x, y }) => {
-//		grid.setWalkableAt(x, y, false)
-//	})
-//
-//	// TODO: Consider adding a safeGrid (this is a riskyGrid) that also avoids risky cells.
-//	_.each(context.board.snakes, (snake) => {
-//		_.each(_.initial(snake.body), ({ x, y }) => {
-//			grid.setWalkableAt(x, y, false)
-//		})
-//	})
-//
-//	// Make context.grid an accessor that always returns a clone.
-//	Object.defineProperty(context, 'grid', { get: () => grid.clone() })
-//}
+func InitPathfinder(context *snek.Context) {
+	grid := simple.NewUndirectedGraph()
+	for x := 0; x < context.Board.Width; x++ {
+		for y := 0; y < context.Board.Height; y++ {
+			node := snek.Position{x, y}
+			if !position.IsDeadly(node, *context) {
+				grid.AddNode(node)
+			}
+		}
+	}
+	for x := 0; x < context.Board.Width; x++ {
+		for y := 0; y < context.Board.Height; y++ {
+			node := snek.Position{x, y}
+			if grid.Node(node.ID()) != nil {
+				for _, cell := range position.GetAdjacentTiles(node) {
+					if grid.Node(cell.ID()) != nil {
+						grid.SetEdge(grid.NewEdge(node, cell))
+					}
+				}
+			}
+		}
+	}
+	context.Board.Graph = grid
+}
 
 // TODO: Use pathfinding distance, not direct distance.
 func GetDistance(origin snek.Position, target snek.Position) int {
@@ -86,33 +91,14 @@ func GetVector(origin snek.Position, target snek.Position) Vector {
 }
 
 func ApproachTarget(target snek.Position, context snek.Context) string {
-	//	const path = pathfinder.findPath(you.head.x, you.head.y, target.x, target.y, grid)
-	//	const nextCell = path[1]
-	//	if !nextCell {
-	//		return "up"
-	//	}
-	//	const pos = snek.Position{X: nextCell[0], Y: nextCell[1]}
-	//	return position.ToDirection(pos, you.head)
-
-	vector := GetVector(context.You.Head, target)
-	adjacent := position.GetAdjacentTiles(context.You.Head)
-
-	// TODO: Support target being a straight line away, making left/right or up/down equal choices.
-	moveX := adjacent[vector.Dir.X]
-	if !position.IsSafe(moveX, context) {
-		return vector.Dir.Y
+	shortest, _ := path.AStar(context.You.Head, target, context.Board.Graph, nil)
+	nodes, _ := shortest.To(target.ID())
+	if len(nodes) < 2 {
+		// TODO: Should probably make this an empty string (and eventually error) so something else can decide where to go.
+		return "up"
 	}
-
-	moveY := adjacent[vector.Dir.Y]
-	if !position.IsSafe(moveY, context) {
-		return vector.Dir.X
-	}
-
-	if context.You.Head.X != target.X {
-		return vector.Dir.X
-	}
-
-	return vector.Dir.Y
+	nextCell := nodes[1].(snek.Position)
+	return position.ToDirection(nextCell, context.You.Head)
 }
 
 func FindClosestTarget(origin snek.Position, targets []snek.Position) snek.Position {
