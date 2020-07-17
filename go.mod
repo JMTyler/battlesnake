@@ -1,6 +1,7 @@
 module github.com/JMTyler/battlesnake
 
 go 1.14
+// +heroku goVersion go1.14
 
 require (
 	github.com/fatih/color v1.9.0 // indirect
