@@ -1,7 +1,7 @@
 package db
 
 import (
-	"github.com/go-pg/pg"
+	"github.com/go-pg/pg/v9"
 )
 
 func migrate() error {
