@@ -1,8 +1,13 @@
+package db
 
-module.exports = async (db) => {
-	// TODO: Use an actual migration library, not raw queries.
-	await db.withTransaction(async (tx) => {
-		await tx.query(`
+import (
+	"github.com/go-pg/pg/v9"
+)
+
+func migrate() error {
+	// TODO: Use an actual migration library, not just raw idempotent queries.
+	return DB.RunInTransaction(func(tx *pg.Tx) error {
+		if _, err := tx.Exec(`
 			CREATE TABLE IF NOT EXISTS "Frames" (
 				id         bigserial   NOT NULL,
 				created_at timestamptz NOT NULL DEFAULT now(),
@@ -18,19 +23,24 @@ module.exports = async (db) => {
 				PRIMARY KEY (id),
 				UNIQUE (game_id, turn, snake_id)
 			);
-		`);
+		`); err != nil {
+			return err
+		}
 
-		await tx.query(`
+		if _, err := tx.Exec(`
 			ALTER TABLE "Frames"
 			ADD COLUMN IF NOT EXISTS important boolean NOT NULL DEFAULT false;
-		`);
+		`); err != nil {
+			return err
+		}
 
-		await tx.query(`
+		if _, err := tx.Exec(`
 			ALTER TABLE "Frames"
 			ADD COLUMN IF NOT EXISTS duration integer DEFAULT NULL;
-		`);
-	});
+		`); err != nil {
+			return err
+		}
 
-	// Tell Massive to introspect the database again now that we've modified the schema.
-	await db.reload();
-};
+		return nil
+	})
+}
