@@ -17,7 +17,7 @@ type Rufio struct{}
 
 type Tactic struct {
 	Description string
-	Run         func(snek.Context, snek.State) string
+	Run         func(snek.Context, *snek.State) string
 }
 
 var strategy = []Tactic{

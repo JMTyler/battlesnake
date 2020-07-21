@@ -10,8 +10,8 @@ import (
 const centreWidth = 3
 const centreHeight = 3
 
-func GoCentre() func(snek.Context, snek.State) string {
-	return func(context snek.Context, state snek.State) string {
+func GoCentre() func(snek.Context, *snek.State) string {
+	return func(context snek.Context, state *snek.State) string {
 		leftEdge := (context.Board.Width - centreWidth) / 2
 		bottomEdge := (context.Board.Height - centreHeight) / 2
 

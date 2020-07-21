@@ -6,7 +6,7 @@ import (
 	"github.com/JMTyler/battlesnake/_/position"
 )
 
-func chooseAdjacentCell(prey snek.Snake, context snek.Context, state snek.State) snek.Position {
+func chooseAdjacentCell(prey snek.Snake, context snek.Context, state *snek.State) snek.Position {
 	targetOptions := make(map[string]snek.Position)
 	for dir, pos := range position.GetAdjacentTiles(prey.Head) {
 		if position.IsSafe(pos, context) {
@@ -31,12 +31,12 @@ func chooseAdjacentCell(prey snek.Snake, context snek.Context, state snek.State)
 	return movement.FindClosestTarget(context.You.Head, targets)
 }
 
-func Aggrieve(options snek.TacticOptions) func(snek.Context, snek.State) string {
+func Aggrieve(options snek.TacticOptions) func(snek.Context, *snek.State) string {
 	if options.Advantage == 0 {
 		options.Advantage = 1
 	}
 
-	return func(context snek.Context, state snek.State) string {
+	return func(context snek.Context, state *snek.State) string {
 		var weaklings []snek.Position
 		for _, snake := range context.Board.Snakes {
 			if context.You.Length >= snake.Length+options.Advantage {

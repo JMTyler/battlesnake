@@ -66,20 +66,20 @@ func (pos Position) String() string {
 	return fmt.Sprintf("(%d,%d)", pos.X, pos.Y)
 }
 
-var states = make(map[string]State)
+var states = make(map[string]*State)
 
 func InitState(context Context, value State) {
-	states[context.Game.ID+"---"+context.You.ID] = value
+	states[context.Game.ID+"---"+context.You.ID] = &value
 }
 
 func DeleteState(context Context) {
 	delete(states, context.Game.ID+"---"+context.You.ID)
 }
 
-func GetState(context Context) State {
+func GetState(context Context) *State {
 	state, ok := states[context.Game.ID+"---"+context.You.ID]
 	if !ok {
-		return State{Move: "right", Snakes: make(map[string]SnakeState)}
+		return &State{Move: "right", Snakes: make(map[string]SnakeState)}
 	}
 	return state
 }

@@ -12,8 +12,8 @@ var rotate = map[string]string{
 	"up":    "right",
 }
 
-func RotateUntilSafe() func(snek.Context, snek.State) string {
-	return func(context snek.Context, state snek.State) string {
+func RotateUntilSafe() func(snek.Context, *snek.State) string {
+	return func(context snek.Context, state *snek.State) string {
 		adjacent := position.GetAdjacentTiles(context.You.Head)
 
 		isSafe := false

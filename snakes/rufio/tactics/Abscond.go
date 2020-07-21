@@ -15,12 +15,12 @@ func clamp(val int, min int, max int) int {
 	return val
 }
 
-func Abscond(options snek.TacticOptions) func(snek.Context, snek.State) string {
+func Abscond(options snek.TacticOptions) func(snek.Context, *snek.State) string {
 	if options.Disadvantage == 0 {
 		options.Disadvantage = 1
 	}
 
-	return func(context snek.Context, state snek.State) string {
+	return func(context snek.Context, state *snek.State) string {
 		var predators []snek.Position
 		for _, snake := range context.Board.Snakes {
 			if context.You.Length <= snake.Length-options.Disadvantage {
