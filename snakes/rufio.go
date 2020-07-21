@@ -66,7 +66,13 @@ func (me *Rufio) Move(context snek.Context) string {
 		}
 
 		utils.LogMove(context.Turn, result, tactic.Description)
-		isSafe := position.IsSafe(adjacent[result], context)
+
+		pos, withinBounds := adjacent[result]
+		if !withinBounds {
+			continue
+		}
+
+		isSafe := position.IsSafe(pos, context)
 		if !isSafe {
 			continue
 		}
