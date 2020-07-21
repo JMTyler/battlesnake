@@ -19,15 +19,15 @@ type Tactic struct {
 }
 
 var strategy = []Tactic{
-	Tactic{"Easy Kill", tactics.Aggrieve(snek.TacticOptions{Advantage: 1, Distance: 1})},
-	Tactic{"Quick Snack", tactics.Eat(snek.TacticOptions{Distance: 2})},
-	Tactic{"Abscond", tactics.Abscond(snek.TacticOptions{Disadvantage: 1, Distance: 3})},
-	Tactic{"Aggrieve", tactics.Aggrieve(snek.TacticOptions{Advantage: 2})},
-	Tactic{"Hungry", tactics.Eat(snek.TacticOptions{})},
-	Tactic{"Go Centre", tactics.GoCentre()},
-	Tactic{"Continue", tactics.Continue()},
-	Tactic{"Seek Tail", tactics.SeekTail()},
-	Tactic{"Rotate Until Safe", tactics.RotateUntilSafe()},
+	Tactic{"Easy Kill", (&tactics.Aggrieve{Advantage: 1, Distance: 1}).Run},
+	Tactic{"Quick Snack", (&tactics.Eat{Distance: 2}).Run},
+	Tactic{"Abscond", (&tactics.Abscond{Disadvantage: 1, Distance: 3}).Run},
+	Tactic{"Aggrieve", (&tactics.Aggrieve{Advantage: 2}).Run},
+	Tactic{"Hungry", (&tactics.Eat{}).Run},
+	Tactic{"Go Centre", (&tactics.GoCentre{}).Run},
+	Tactic{"Continue", (&tactics.Continue{}).Run},
+	Tactic{"Seek Tail", (&tactics.SeekTail{}).Run},
+	Tactic{"Rotate Until Safe", (&tactics.RotateUntilSafe{}).Run},
 }
 
 func (me *Rufio) Move(context snek.Context) string {
