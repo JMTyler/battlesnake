@@ -94,8 +94,10 @@ func ApproachTarget(target snek.Position, context snek.Context) string {
 	shortest, _ := path.AStar(context.You.Head, target, context.Board.Graph, nil)
 	nodes, _ := shortest.To(target.ID())
 	if len(nodes) < 2 {
-		// TODO: Should probably make this an empty string (and eventually error) so something else can decide where to go.
-		return "up"
+		return ""
+	}
+	if nodes[len(nodes)-1] != target {
+		return ""
 	}
 	nextCell := nodes[1].(snek.Position)
 	return position.ToDirection(nextCell, context.You.Head)
