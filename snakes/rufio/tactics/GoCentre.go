@@ -7,18 +7,25 @@ import (
 	"math/rand"
 )
 
-const centreWidth = 3
-const centreHeight = 3
-
-type GoCentre struct{}
+type GoCentre struct {
+	Width  int
+	Height int
+}
 
 func (tactic GoCentre) Run(context snek.Context, state *snek.State) string {
-	leftEdge := (context.Board.Width - centreWidth) / 2
-	bottomEdge := (context.Board.Height - centreHeight) / 2
+	if tactic.Width == 0 {
+		tactic.Width = 1
+	}
+	if tactic.Height == 0 {
+		tactic.Height = 1
+	}
+
+	leftEdge := (context.Board.Width - tactic.Width) / 2
+	bottomEdge := (context.Board.Height - tactic.Height) / 2
 
 	var centreCells []snek.Position
-	for x := leftEdge; x < leftEdge+centreWidth; x++ {
-		for y := bottomEdge; y < bottomEdge+centreHeight; y++ {
+	for x := leftEdge; x < leftEdge+tactic.Width; x++ {
+		for y := bottomEdge; y < bottomEdge+tactic.Height; y++ {
 			pos := snek.Position{X: x, Y: y}
 			if position.IsSafe(pos, context) {
 				centreCells = append(centreCells, pos)
