@@ -7,8 +7,14 @@ import (
 )
 
 type Aggrieve struct {
+	Name string
+
 	Advantage int
 	Distance  int
+}
+
+func (t *Aggrieve) Description() string {
+	return t.Name
 }
 
 func (tactic *Aggrieve) Run(context snek.Context, state *snek.State) string {

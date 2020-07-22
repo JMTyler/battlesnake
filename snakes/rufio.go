@@ -13,21 +13,21 @@ import (
 
 type Rufio struct{}
 
-type Tactic struct {
-	Description string
-	Run         func(snek.Context, *snek.State) string
+type Tactic interface {
+	Description() string
+	Run(snek.Context, *snek.State) string
 }
 
 var strategy = []Tactic{
-	Tactic{"Easy Kill", (&tactics.Aggrieve{Advantage: 1, Distance: 1}).Run},
-	Tactic{"Quick Snack", (&tactics.Eat{Distance: 2}).Run},
-	Tactic{"Abscond", (&tactics.Abscond{Disadvantage: 1, Distance: 3}).Run},
-	Tactic{"Aggrieve", (&tactics.Aggrieve{Advantage: 2}).Run},
-	Tactic{"Hungry", (&tactics.Eat{}).Run},
-	Tactic{"Go Centre", (&tactics.GoCentre{}).Run},
-	Tactic{"Continue", (&tactics.Continue{}).Run},
-	Tactic{"Seek Tail", (&tactics.SeekTail{}).Run},
-	Tactic{"Rotate Until Safe", (&tactics.RotateUntilSafe{}).Run},
+	&tactics.Aggrieve{Name: "Easy Kill", Advantage: 1, Distance: 1},
+	&tactics.Eat{Name: "Quick Snack", Distance: 2},
+	&tactics.Abscond{Name: "Abscond", Disadvantage: 1, Distance: 3},
+	&tactics.Aggrieve{Name: "Hunt", Advantage: 2},
+	&tactics.Eat{Name: "Hungry"},
+	&tactics.GoCentre{"Go Centre"},
+	&tactics.Continue{"Continue"},
+	&tactics.SeekTail{"Seek Tail"},
+	&tactics.RotateUntilSafe{"Rotate Until Safe"},
 }
 
 func (me *Rufio) Move(context snek.Context) string {
@@ -63,7 +63,7 @@ func (me *Rufio) Move(context snek.Context) string {
 			continue
 		}
 
-		utils.LogMove(context.Turn, result, tactic.Description)
+		utils.LogMove(context.Turn, result, tactic.Description())
 
 		pos, withinBounds := adjacent[result]
 		if !withinBounds {

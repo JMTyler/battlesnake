@@ -7,8 +7,14 @@ import (
 )
 
 type Eat struct {
+	Name string
+
 	Health   int
 	Distance int
+}
+
+func (t *Eat) Description() string {
+	return t.Name
 }
 
 // TODO: Is it realistic for us to figure out how to use Infinity / -Infinity as default tactic instead of zero values?

@@ -10,7 +10,11 @@ import (
 const centreWidth = 3
 const centreHeight = 3
 
-type GoCentre struct{}
+type GoCentre struct{ Name string }
+
+func (t *GoCentre) Description() string {
+	return t.Name
+}
 
 func (tactic *GoCentre) Run(context snek.Context, state *snek.State) string {
 	leftEdge := (context.Board.Width - centreWidth) / 2
