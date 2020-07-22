@@ -10,15 +10,14 @@ type Abscond struct {
 	Distance     int
 }
 
-func (tactic Abscond) Run(context snek.Context, _ *snek.State) string {
-
-	if tactic.Disadvantage == 0 {
-		tactic.Disadvantage = 1
+func (opts Abscond) Run(context snek.Context, _ *snek.State) string {
+	if opts.Disadvantage == 0 {
+		opts.Disadvantage = 1
 	}
 
 	var predators []snek.Position
 	for _, snake := range context.Board.Snakes {
-		if context.You.Length <= snake.Length-tactic.Disadvantage {
+		if context.You.Length <= snake.Length-opts.Disadvantage {
 			predators = append(predators, snake.Head)
 		}
 	}
@@ -29,9 +28,9 @@ func (tactic Abscond) Run(context snek.Context, _ *snek.State) string {
 
 	predator := movement.FindClosestTarget(context.You.Head, predators)
 
-	if tactic.Distance > 0 {
+	if opts.Distance > 0 {
 		distanceToPredator := movement.GetDistance(context.You.Head, predator)
-		if distanceToPredator > tactic.Distance {
+		if distanceToPredator > opts.Distance {
 			return ""
 		}
 	}

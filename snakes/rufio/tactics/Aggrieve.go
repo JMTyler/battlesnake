@@ -11,14 +11,14 @@ type Aggrieve struct {
 	Distance  int
 }
 
-func (tactic Aggrieve) Run(context snek.Context, state *snek.State) string {
-	if tactic.Advantage == 0 {
-		tactic.Advantage = 1
+func (opts Aggrieve) Run(context snek.Context, state *snek.State) string {
+	if opts.Advantage == 0 {
+		opts.Advantage = 1
 	}
 
 	var weaklings []snek.Position
 	for _, snake := range context.Board.Snakes {
-		if context.You.Length >= snake.Length+tactic.Advantage {
+		if context.You.Length >= snake.Length+opts.Advantage {
 			weaklings = append(weaklings, snake.Head)
 		}
 	}
@@ -28,9 +28,9 @@ func (tactic Aggrieve) Run(context snek.Context, state *snek.State) string {
 
 	closestSnake := movement.FindClosestTarget(context.You.Head, weaklings)
 
-	if tactic.Distance > 0 {
+	if opts.Distance > 0 {
 		distanceToSnake := movement.GetDistance(context.You.Head, closestSnake)
-		if distanceToSnake > tactic.Distance {
+		if distanceToSnake > opts.Distance {
 			return ""
 		}
 	}

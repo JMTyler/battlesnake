@@ -12,20 +12,20 @@ type GoCentre struct {
 	Height int
 }
 
-func (tactic GoCentre) Run(context snek.Context, _ *snek.State) string {
-	if tactic.Width == 0 {
-		tactic.Width = 1
+func (opts GoCentre) Run(context snek.Context, _ *snek.State) string {
+	if opts.Width == 0 {
+		opts.Width = 1
 	}
-	if tactic.Height == 0 {
-		tactic.Height = 1
+	if opts.Height == 0 {
+		opts.Height = 1
 	}
 
-	leftEdge := (context.Board.Width - tactic.Width) / 2
-	bottomEdge := (context.Board.Height - tactic.Height) / 2
+	leftEdge := (context.Board.Width - opts.Width) / 2
+	bottomEdge := (context.Board.Height - opts.Height) / 2
 
 	var centreCells []snek.Position
-	for x := leftEdge; x < leftEdge+tactic.Width; x++ {
-		for y := bottomEdge; y < bottomEdge+tactic.Height; y++ {
+	for x := leftEdge; x < leftEdge+opts.Width; x++ {
+		for y := bottomEdge; y < bottomEdge+opts.Height; y++ {
 			pos := snek.Position{X: x, Y: y}
 			if position.IsSafe(pos, context) {
 				centreCells = append(centreCells, pos)
