@@ -1,4 +1,4 @@
-package tactics
+package battlesnake
 
 import (
 	"fmt"
@@ -15,11 +15,6 @@ type Context struct {
 	Game  Game  `json:"game"`
 	You   Snake `json:"you"`
 	Board Board `json:"board"`
-}
-
-type State struct {
-	Move   string
-	Snakes map[string]SnakeState
 }
 
 type Game struct {
@@ -45,11 +40,6 @@ type Board struct {
 	Graph  traverse.Graph `json:", ignore"`
 }
 
-type SnakeState struct {
-	Head Position
-	Move string
-}
-
 func (pos Position) ID() int64 {
 	// HACK: Should replace this magic number with context.Board.Width somehow.
 	return int64(pos.X + (pos.Y * 11))
@@ -57,22 +47,4 @@ func (pos Position) ID() int64 {
 
 func (pos Position) String() string {
 	return fmt.Sprintf("(%d,%d)", pos.X, pos.Y)
-}
-
-var states = make(map[string]*State)
-
-func InitState(context Context, value State) {
-	states[context.Game.ID+"---"+context.You.ID] = &value
-}
-
-func DeleteState(context Context) {
-	delete(states, context.Game.ID+"---"+context.You.ID)
-}
-
-func GetState(context Context) *State {
-	state, ok := states[context.Game.ID+"---"+context.You.ID]
-	if !ok {
-		return &State{Move: "right", Snakes: make(map[string]SnakeState)}
-	}
-	return state
 }

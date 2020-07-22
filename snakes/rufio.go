@@ -29,15 +29,7 @@ func (me *Rufio) Move(context snek.Context) string {
 	state := snek.GetState(context)
 	adjacent := position.GetAdjacentTiles(context.You.Head)
 
-	// Figure out which move each snake took during the *last* turn, and toss it into state.
-	for _, snake := range context.Board.Snakes {
-		prev, exists := state.Snakes[snake.ID]
-		move := "up"
-		if exists {
-			move = position.ToDirection(snake.Head, prev.Head)
-		}
-		state.Snakes[snake.ID] = snek.SnakeState{Head: snake.Head, Move: move}
-	}
+	state.UpdateSnakeHistory(context)
 
 	// Remove `You` snake from the `Snakes` array since we only ever want an array of enemies.
 	for i, snake := range context.Board.Snakes {
