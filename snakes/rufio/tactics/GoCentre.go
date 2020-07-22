@@ -12,7 +12,7 @@ type GoCentre struct {
 	Height int
 }
 
-func (tactic GoCentre) Run(context snek.Context, state *snek.State) string {
+func (tactic GoCentre) Run(context snek.Context, _ *snek.State) string {
 	if tactic.Width == 0 {
 		tactic.Width = 1
 	}

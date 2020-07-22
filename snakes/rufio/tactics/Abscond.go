@@ -10,7 +10,7 @@ type Abscond struct {
 	Distance     int
 }
 
-func (tactic Abscond) Run(context snek.Context, state *snek.State) string {
+func (tactic Abscond) Run(context snek.Context, _ *snek.State) string {
 
 	if tactic.Disadvantage == 0 {
 		tactic.Disadvantage = 1
