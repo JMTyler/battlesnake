@@ -12,13 +12,9 @@ var rotate = map[string]string{
 	"up":    "right",
 }
 
-type RotateUntilSafe struct{ Name string }
+type RotateUntilSafe struct{}
 
-func (t *RotateUntilSafe) Description() string {
-	return t.Name
-}
-
-func (tactic *RotateUntilSafe) Run(context snek.Context, state *snek.State) string {
+func (tactic RotateUntilSafe) Run(context snek.Context, state *snek.State) string {
 	adjacent := position.GetAdjacentTiles(context.You.Head)
 
 	isSafe := false

@@ -7,17 +7,11 @@ import (
 )
 
 type Aggrieve struct {
-	Name string
-
 	Advantage int
 	Distance  int
 }
 
-func (t *Aggrieve) Description() string {
-	return t.Name
-}
-
-func (tactic *Aggrieve) Run(context snek.Context, state *snek.State) string {
+func (tactic Aggrieve) Run(context snek.Context, state *snek.State) string {
 	if tactic.Advantage == 0 {
 		tactic.Advantage = 1
 	}

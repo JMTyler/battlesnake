@@ -13,21 +13,16 @@ import (
 
 type Rufio struct{}
 
-type Tactic interface {
-	Description() string
-	Run(snek.Context, *snek.State) string
-}
-
-var strategy = []Tactic{
-	&tactics.Aggrieve{Name: "Easy Kill", Advantage: 1, Distance: 1},
-	&tactics.Eat{Name: "Quick Snack", Distance: 2},
-	&tactics.Abscond{Name: "Abscond", Disadvantage: 1, Distance: 3},
-	&tactics.Aggrieve{Name: "Hunt", Advantage: 2},
-	&tactics.Eat{Name: "Hungry"},
-	&tactics.GoCentre{"Go Centre"},
-	&tactics.Continue{"Continue"},
-	&tactics.SeekTail{"Seek Tail"},
-	&tactics.RotateUntilSafe{"Rotate Until Safe"},
+var strategy = []tactics.Tactic{
+	tactics.New("Easy Kill", tactics.Aggrieve{Advantage: 1, Distance: 1}),
+	tactics.New("Quick Snack", tactics.Eat{Distance: 2}),
+	tactics.New("Abscond", tactics.Abscond{Disadvantage: 1, Distance: 3}),
+	tactics.New("Hunt", tactics.Aggrieve{Advantage: 2}),
+	tactics.New("Hungry", tactics.Eat{}),
+	tactics.New("Go Centre", tactics.GoCentre{}),
+	tactics.New("Continue", tactics.Continue{}),
+	tactics.New("Seek Tail", tactics.SeekTail{}),
+	tactics.New("Rotate Until Safe", tactics.RotateUntilSafe{}),
 }
 
 func (me *Rufio) Move(context snek.Context) string {

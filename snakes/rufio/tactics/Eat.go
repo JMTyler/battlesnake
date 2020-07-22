@@ -7,20 +7,14 @@ import (
 )
 
 type Eat struct {
-	Name string
-
 	Health   int
 	Distance int
-}
-
-func (t *Eat) Description() string {
-	return t.Name
 }
 
 // TODO: Is it realistic for us to figure out how to use Infinity / -Infinity as default tactic instead of zero values?
 // Yes, I think this problem solves itself once we switch to tactics being structs, since the constructor can set defaults.
 
-func (tactic *Eat) Run(context snek.Context, state *snek.State) string {
+func (tactic Eat) Run(context snek.Context, state *snek.State) string {
 	if tactic.Health > 0 {
 		if context.You.Health > tactic.Health {
 			return ""

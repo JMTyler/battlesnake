@@ -6,17 +6,11 @@ import (
 )
 
 type Abscond struct {
-	Name string
-
 	Disadvantage int
 	Distance     int
 }
 
-func (t *Abscond) Description() string {
-	return t.Name
-}
-
-func (tactic *Abscond) Run(context snek.Context, state *snek.State) string {
+func (tactic Abscond) Run(context snek.Context, state *snek.State) string {
 
 	if tactic.Disadvantage == 0 {
 		tactic.Disadvantage = 1
