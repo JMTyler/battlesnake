@@ -34,7 +34,7 @@ func (state *State) UpdateSnakeHistory(context Context) {
 		prev, exists := state.Snakes[snake.ID]
 		move := "up"
 		if exists {
-			move = position.ToDirection(snake.Head, prev.Head)
+			move = prev.Head.ToDirection(snake.Head)
 		}
 		state.Snakes[snake.ID] = SnakeState{snake.Head, move}
 	}

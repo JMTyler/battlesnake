@@ -3,7 +3,6 @@ package tactics
 import (
 	snek "github.com/JMTyler/battlesnake/_"
 	"github.com/JMTyler/battlesnake/_/movement"
-	"github.com/JMTyler/battlesnake/_/position"
 	"math/rand"
 )
 
@@ -27,7 +26,7 @@ func (opts GoCentre) Run(context snek.Context, _ *snek.State) string {
 	for x := leftEdge; x < leftEdge+opts.Width; x++ {
 		for y := bottomEdge; y < bottomEdge+opts.Height; y++ {
 			pos := snek.Position{X: x, Y: y}
-			if position.IsSafe(pos, context) {
+			if pos.IsSafe(context) {
 				centreCells = append(centreCells, pos)
 			}
 		}

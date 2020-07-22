@@ -2,7 +2,6 @@ package movement
 
 import (
 	snek "github.com/JMTyler/battlesnake/_"
-	"github.com/JMTyler/battlesnake/_/position"
 	"gonum.org/v1/gonum/graph/path"
 	"gonum.org/v1/gonum/graph/simple"
 	"math"
@@ -13,7 +12,7 @@ func InitPathfinder(context *snek.Context) {
 	for x := 0; x < context.Board.Width; x++ {
 		for y := 0; y < context.Board.Height; y++ {
 			node := snek.Position{x, y}
-			if !position.IsDeadly(node, *context) {
+			if !node.IsDeadly(*context) {
 				grid.AddNode(node)
 			}
 		}
@@ -22,7 +21,7 @@ func InitPathfinder(context *snek.Context) {
 		for y := 0; y < context.Board.Height; y++ {
 			node := snek.Position{x, y}
 			if grid.Node(node.ID()) != nil {
-				for _, cell := range position.GetAdjacentTiles(node) {
+				for _, cell := range node.GetAdjacentTiles() {
 					if grid.Node(cell.ID()) != nil {
 						grid.SetEdge(grid.NewEdge(node, cell))
 					}
@@ -100,7 +99,7 @@ func ApproachTarget(target snek.Position, context snek.Context) string {
 		return ""
 	}
 	nextCell := nodes[1].(snek.Position)
-	return position.ToDirection(nextCell, context.You.Head)
+	return context.You.Head.ToDirection(nextCell)
 }
 
 func FindClosestTarget(origin snek.Position, targets []snek.Position) snek.Position {

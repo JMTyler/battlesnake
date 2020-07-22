@@ -3,7 +3,6 @@ package tactics
 import (
 	snek "github.com/JMTyler/battlesnake/_"
 	"github.com/JMTyler/battlesnake/_/movement"
-	"github.com/JMTyler/battlesnake/_/position"
 )
 
 type Aggrieve struct {
@@ -53,8 +52,8 @@ func (opts Aggrieve) Run(context snek.Context, state *snek.State) string {
 
 func chooseAdjacentCell(prey snek.Snake, context snek.Context, state *snek.State) snek.Position {
 	targetOptions := make(map[string]snek.Position)
-	for dir, pos := range position.GetAdjacentTiles(prey.Head) {
-		if position.IsSafe(pos, context) {
+	for dir, pos := range prey.Head.GetAdjacentTiles() {
+		if pos.IsSafe(context) {
 			targetOptions[dir] = pos
 		}
 	}

@@ -4,7 +4,6 @@ import (
 	"fmt"
 	snek "github.com/JMTyler/battlesnake/_"
 	"github.com/JMTyler/battlesnake/_/movement"
-	"github.com/JMTyler/battlesnake/_/position"
 	"github.com/JMTyler/battlesnake/_/utils"
 	"github.com/JMTyler/battlesnake/snakes/rufio/tactics"
 	"path/filepath"
@@ -27,7 +26,7 @@ var strategy = []tactics.Tactic{
 
 func (me *Rufio) Move(context snek.Context) string {
 	state := snek.GetState(context)
-	adjacent := position.GetAdjacentTiles(context.You.Head)
+	adjacent := context.You.Head.GetAdjacentTiles()
 
 	state.UpdateSnakeHistory(context)
 
@@ -55,7 +54,7 @@ func (me *Rufio) Move(context snek.Context) string {
 			continue
 		}
 
-		isSafe := position.IsSafe(pos, context)
+		isSafe := pos.IsSafe(context)
 		if !isSafe {
 			continue
 		}
