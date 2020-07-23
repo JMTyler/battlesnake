@@ -121,3 +121,7 @@ func FindClosestTarget(origin snek.Position, targets []snek.Position) snek.Posit
 	}
 	return targets[shortestIndex]
 }
+
+func FindClosestFood(context snek.Context) snek.Position {
+	return FindClosestTarget(context.You.Head, context.Board.Food)
+}

@@ -28,16 +28,8 @@ func (me *Rufio) Move(context snek.Context) string {
 	state := snek.GetState(context)
 	adjacent := context.You.Head.GetAdjacentCells()
 
+	context.Board.LoadEnemies(context)
 	state.UpdateSnakeHistory(context)
-
-	// Remove `You` snake from the `Snakes` array since we only ever want an array of enemies.
-	for i, snake := range context.Board.Snakes {
-		if snake.ID == context.You.ID {
-			context.Board.Snakes = append(context.Board.Snakes[:i], context.Board.Snakes[i+1:]...)
-			break
-		}
-	}
-
 	movement.InitPathfinder(&context)
 
 	move := ""
@@ -109,8 +101,7 @@ func (me *Rufio) StartGame(context snek.Context) {
 
 func (me *Rufio) EndGame(context snek.Context) {
 	result := "LOSE"
-	// dangerous array access
-	if context.You.ID == context.Board.Snakes[0].ID {
+	if len(context.Board.Snakes) > 0 && context.You.ID == context.Board.Snakes[0].ID {
 		result = "WIN"
 	}
 

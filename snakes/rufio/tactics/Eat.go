@@ -2,7 +2,6 @@ package tactics
 
 import (
 	snek "github.com/JMTyler/battlesnake/_"
-	"github.com/JMTyler/battlesnake/_/board"
 	"github.com/JMTyler/battlesnake/_/movement"
 )
 
@@ -21,7 +20,7 @@ func (opts Eat) Run(context snek.Context, _ *snek.State) string {
 		}
 	}
 
-	food := board.FindClosestFood(context)
+	food := movement.FindClosestFood(context)
 	if food == (snek.Position{}) {
 		return ""
 	}

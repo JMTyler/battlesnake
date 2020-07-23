@@ -67,7 +67,7 @@ func (pos Position) IsDeadly(context Context) bool {
 		}
 	}
 
-	for _, snake := range context.Board.Snakes {
+	for _, snake := range context.Board.Enemies {
 		collision := false
 		for _, cell := range snake.Body() {
 			if cell == pos {
@@ -86,7 +86,7 @@ func (pos Position) IsDeadly(context Context) bool {
 }
 
 func (pos Position) IsRisky(context Context) bool {
-	for _, snake := range context.Board.Snakes {
+	for _, snake := range context.Board.Enemies {
 		// TODO: Should we use range and iterate over the adjacent map instead?
 		gettinSpicy := pos == snake.Head.Adjacent("left") ||
 			pos == snake.Head.Adjacent("right") ||

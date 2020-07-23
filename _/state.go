@@ -30,7 +30,7 @@ func GetState(context Context) *State {
 
 func (state *State) UpdateSnakeHistory(context Context) {
 	// Figure out which move each snake took during the *last* turn, and toss it into state.
-	for _, snake := range context.Board.Snakes {
+	for _, snake := range context.Board.Enemies {
 		prev, exists := state.Snakes[snake.ID]
 		move := "up"
 		if exists {

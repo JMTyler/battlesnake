@@ -16,7 +16,7 @@ func (opts Abscond) Run(context snek.Context, _ *snek.State) string {
 	}
 
 	var predators []snek.Position
-	for _, snake := range context.Board.Snakes {
+	for _, snake := range context.Board.Enemies {
 		if context.You.Length <= snake.Length-opts.Disadvantage {
 			predators = append(predators, snake.Head)
 		}
