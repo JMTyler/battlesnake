@@ -15,7 +15,7 @@ func (opts Abscond) Run(context snek.Context, _ *snek.State) string {
 		opts.Disadvantage = 1
 	}
 
-	var predators []snek.Position
+	var predators []snek.Cell
 	for _, snake := range context.Board.Enemies {
 		if context.You.Length <= snake.Length-opts.Disadvantage {
 			predators = append(predators, snake.Head)
@@ -38,7 +38,7 @@ func (opts Abscond) Run(context snek.Context, _ *snek.State) string {
 	vector := movement.GetVector(context.You.Head, predator)
 	xEscapeVector := -1 * vector.Weight.X
 	yEscapeVector := -1 * vector.Weight.Y
-	escapeTarget := snek.Position{
+	escapeTarget := snek.Cell{
 		X: clamp(xEscapeVector+context.You.Head.X, 0, context.Board.Width-1),
 		Y: clamp(yEscapeVector+context.You.Head.Y, 0, context.Board.Height-1),
 	}

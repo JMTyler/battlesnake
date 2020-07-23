@@ -15,7 +15,7 @@ func (opts Aggrieve) Run(context snek.Context, state *snek.State) string {
 		opts.Advantage = 1
 	}
 
-	var weaklings []snek.Position
+	var weaklings []snek.Cell
 	for _, snake := range context.Board.Enemies {
 		if context.You.Length >= snake.Length+opts.Advantage {
 			weaklings = append(weaklings, snake.Head)
@@ -43,22 +43,22 @@ func (opts Aggrieve) Run(context snek.Context, state *snek.State) string {
 	}
 
 	target := chooseAdjacentCell(prey, context, state)
-	if target == (snek.Position{}) {
+	if target == (snek.Cell{}) {
 		return ""
 	}
 
 	return movement.ApproachTarget(target, context)
 }
 
-func chooseAdjacentCell(prey snek.Snake, context snek.Context, state *snek.State) snek.Position {
-	targetOptions := make(map[string]snek.Position)
-	for dir, pos := range prey.Head.GetAdjacentCells() {
-		if pos.IsSafe(context) {
-			targetOptions[dir] = pos
+func chooseAdjacentCell(prey snek.Snake, context snek.Context, state *snek.State) snek.Cell {
+	targetOptions := make(map[string]snek.Cell)
+	for dir, cell := range prey.Head.GetAdjacentCells() {
+		if cell.IsSafe(context) {
+			targetOptions[dir] = cell
 		}
 	}
 	if len(targetOptions) == 0 {
-		return snek.Position{}
+		return snek.Cell{}
 	}
 
 	preysLastMove := state.Snakes[prey.ID].Move
@@ -67,9 +67,9 @@ func chooseAdjacentCell(prey snek.Snake, context snek.Context, state *snek.State
 		return forwardCell
 	}
 
-	var targets []snek.Position
-	for _, pos := range targetOptions {
-		targets = append(targets, pos)
+	var targets []snek.Cell
+	for _, cell := range targetOptions {
+		targets = append(targets, cell)
 	}
 
 	return movement.FindClosestTarget(context.You.Head, targets)

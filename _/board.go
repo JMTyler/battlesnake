@@ -8,7 +8,7 @@ type Board struct {
 	Width  int            `json:"width"`
 	Height int            `json:"height"`
 	Snakes []Snake        `json:"snakes"`
-	Food   []Position     `json:"food"`
+	Food   []Cell         `json:"food"`
 	Graph  traverse.Graph `json:", ignore"`
 
 	Enemies []Snake

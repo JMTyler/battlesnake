@@ -22,12 +22,12 @@ func (opts GoCentre) Run(context snek.Context, _ *snek.State) string {
 	leftEdge := (context.Board.Width - opts.Width) / 2
 	bottomEdge := (context.Board.Height - opts.Height) / 2
 
-	var centreCells []snek.Position
+	var centreCells []snek.Cell
 	for x := leftEdge; x < leftEdge+opts.Width; x++ {
 		for y := bottomEdge; y < bottomEdge+opts.Height; y++ {
-			pos := snek.Position{X: x, Y: y}
-			if pos.IsSafe(context) {
-				centreCells = append(centreCells, pos)
+			cell := snek.Cell{x, y}
+			if cell.IsSafe(context) {
+				centreCells = append(centreCells, cell)
 			}
 		}
 	}

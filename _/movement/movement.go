@@ -11,7 +11,7 @@ func InitPathfinder(context *snek.Context) {
 	grid := simple.NewUndirectedGraph()
 	for x := 0; x < context.Board.Width; x++ {
 		for y := 0; y < context.Board.Height; y++ {
-			node := snek.Position{x, y}
+			node := snek.Cell{x, y}
 			if !node.IsDeadly(*context) {
 				grid.AddNode(node)
 			}
@@ -19,7 +19,7 @@ func InitPathfinder(context *snek.Context) {
 	}
 	for x := 0; x < context.Board.Width; x++ {
 		for y := 0; y < context.Board.Height; y++ {
-			node := snek.Position{x, y}
+			node := snek.Cell{x, y}
 			if grid.Node(node.ID()) != nil {
 				for _, cell := range node.GetAdjacentCells() {
 					if grid.Node(cell.ID()) != nil {
@@ -33,12 +33,12 @@ func InitPathfinder(context *snek.Context) {
 }
 
 // TODO: Use pathfinding distance, not direct distance.
-func GetDistance(origin snek.Position, target snek.Position) int {
+func GetDistance(origin snek.Cell, target snek.Cell) int {
 	x := math.Abs(float64(target.X - origin.X))
 	y := math.Abs(float64(target.Y - origin.Y))
 	return int(x + y)
 }
-func GetDistances(origin snek.Position, targets []snek.Position) []int {
+func GetDistances(origin snek.Cell, targets []snek.Cell) []int {
 	var distances []int
 	for _, target := range targets {
 		distances = append(distances, GetDistance(origin, target))
@@ -57,7 +57,7 @@ type Vector struct {
 	}
 }
 
-func GetVector(origin snek.Position, target snek.Position) Vector {
+func GetVector(origin snek.Cell, target snek.Cell) Vector {
 	x := target.X - origin.X
 	y := target.Y - origin.Y
 
@@ -89,7 +89,7 @@ func GetVector(origin snek.Position, target snek.Position) Vector {
 	}
 }
 
-func ApproachTarget(target snek.Position, context snek.Context) string {
+func ApproachTarget(target snek.Cell, context snek.Context) string {
 	shortest, _ := path.AStar(context.You.Head, target, context.Board.Graph, nil)
 	nodes, _ := shortest.To(target.ID())
 	if len(nodes) < 2 {
@@ -98,17 +98,17 @@ func ApproachTarget(target snek.Position, context snek.Context) string {
 	if nodes[len(nodes)-1] != target {
 		return ""
 	}
-	nextCell := nodes[1].(snek.Position)
+	nextCell := nodes[1].(snek.Cell)
 	return context.You.Head.ToDirection(nextCell)
 }
 
-func FindClosestTarget(origin snek.Position, targets []snek.Position) snek.Position {
+func FindClosestTarget(origin snek.Cell, targets []snek.Cell) snek.Cell {
 	if len(targets) == 1 {
 		return targets[0]
 	}
 
 	if len(targets) == 0 {
-		return snek.Position{}
+		return snek.Cell{}
 	}
 
 	distances := GetDistances(origin, targets)
@@ -122,6 +122,6 @@ func FindClosestTarget(origin snek.Position, targets []snek.Position) snek.Posit
 	return targets[shortestIndex]
 }
 
-func FindClosestFood(context snek.Context) snek.Position {
+func FindClosestFood(context snek.Context) snek.Cell {
 	return FindClosestTarget(context.You.Head, context.Board.Food)
 }

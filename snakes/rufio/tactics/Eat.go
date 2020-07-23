@@ -21,7 +21,7 @@ func (opts Eat) Run(context snek.Context, _ *snek.State) string {
 	}
 
 	food := movement.FindClosestFood(context)
-	if food == (snek.Position{}) {
+	if food == (snek.Cell{}) {
 		return ""
 	}
 
