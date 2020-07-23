@@ -52,7 +52,7 @@ func (opts Aggrieve) Run(context snek.Context, state *snek.State) string {
 
 func chooseAdjacentCell(prey snek.Snake, context snek.Context, state *snek.State) snek.Position {
 	targetOptions := make(map[string]snek.Position)
-	for dir, pos := range prey.Head.GetAdjacentTiles() {
+	for dir, pos := range prey.Head.GetAdjacentCells() {
 		if pos.IsSafe(context) {
 			targetOptions[dir] = pos
 		}

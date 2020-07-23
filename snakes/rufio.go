@@ -26,7 +26,7 @@ var strategy = []tactics.Tactic{
 
 func (me *Rufio) Move(context snek.Context) string {
 	state := snek.GetState(context)
-	adjacent := context.You.Head.GetAdjacentTiles()
+	adjacent := context.You.Head.GetAdjacentCells()
 
 	state.UpdateSnakeHistory(context)
 

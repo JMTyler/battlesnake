@@ -21,7 +21,7 @@ func InitPathfinder(context *snek.Context) {
 		for y := 0; y < context.Board.Height; y++ {
 			node := snek.Position{x, y}
 			if grid.Node(node.ID()) != nil {
-				for _, cell := range node.GetAdjacentTiles() {
+				for _, cell := range node.GetAdjacentCells() {
 					if grid.Node(cell.ID()) != nil {
 						grid.SetEdge(grid.NewEdge(node, cell))
 					}

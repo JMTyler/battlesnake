@@ -18,22 +18,37 @@ func (pos Position) String() string {
 	return fmt.Sprintf("(%d,%d)", pos.X, pos.Y)
 }
 
-func (pos Position) GetAdjacentTiles() map[string]Position {
+func (pos Position) GetAdjacentCells() map[string]Position {
 	// HACK: Should replace these magic numbers with context.Board.Width somehow.
 	cells := make(map[string]Position)
 	if pos.Y < 10 {
-		cells["up"] = Position{pos.X, pos.Y + 1}
+		cells["up"] = pos.Adjacent("up")
 	}
 	if pos.Y > 0 {
-		cells["down"] = Position{pos.X, pos.Y - 1}
+		cells["down"] = pos.Adjacent("down")
 	}
 	if pos.X > 0 {
-		cells["left"] = Position{pos.X - 1, pos.Y}
+		cells["left"] = pos.Adjacent("left")
 	}
 	if pos.X < 10 {
-		cells["right"] = Position{pos.X + 1, pos.Y}
+		cells["right"] = pos.Adjacent("right")
 	}
 	return cells
+}
+
+func (pos Position) Adjacent(dir string) Position {
+	switch dir {
+	case "up":
+		return Position{pos.X, pos.Y + 1}
+	case "down":
+		return Position{pos.X, pos.Y - 1}
+	case "left":
+		return Position{pos.X - 1, pos.Y}
+	case "right":
+		return Position{pos.X + 1, pos.Y}
+	}
+	// TODO: error?
+	return Position{}
 }
 
 func (pos Position) IsOutsideBoard(board Board) bool {
@@ -72,12 +87,11 @@ func (pos Position) IsDeadly(context Context) bool {
 
 func (pos Position) IsRisky(context Context) bool {
 	for _, snake := range context.Board.Snakes {
-		adjacent := snake.Head.GetAdjacentTiles()
-		// TODO: should be able to use range to iterate over the adjacent map instead
-		gettinSpicy := pos == adjacent["left"] ||
-			pos == adjacent["right"] ||
-			pos == adjacent["up"] ||
-			pos == adjacent["down"]
+		// TODO: Should we use range and iterate over the adjacent map instead?
+		gettinSpicy := pos == snake.Head.Adjacent("left") ||
+			pos == snake.Head.Adjacent("right") ||
+			pos == snake.Head.Adjacent("up") ||
+			pos == snake.Head.Adjacent("down")
 
 		if gettinSpicy {
 			if context.You.Length <= snake.Length {
