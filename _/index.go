@@ -17,15 +17,6 @@ type Game struct {
 	Dev     bool   `json:"dev"`
 }
 
-type Snake struct {
-	ID     string     `json:"id"`
-	Name   string     `json:"name"`
-	Head   Position   `json:"head"`
-	Body   []Position `json:"body"`
-	Length int        `json:"length"`
-	Health int        `json:"health"`
-}
-
 type Board struct {
 	Width  int            `json:"width"`
 	Height int            `json:"height"`

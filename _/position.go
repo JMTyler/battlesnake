@@ -60,7 +60,7 @@ func (pos Position) IsDeadly(context Context) bool {
 		return true
 	}
 
-	for _, cell := range context.You.Body[1 : len(context.You.Body)-1] {
+	for _, cell := range context.You.Body()[1:] {
 		if cell == pos {
 			// self collision
 			return true
@@ -69,7 +69,7 @@ func (pos Position) IsDeadly(context Context) bool {
 
 	for _, snake := range context.Board.Snakes {
 		collision := false
-		for _, cell := range snake.Body[:len(snake.Body)-1] {
+		for _, cell := range snake.Body() {
 			if cell == pos {
 				collision = true
 			}

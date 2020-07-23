@@ -8,5 +8,5 @@ import (
 type SeekTail struct{}
 
 func (_ SeekTail) Run(context snek.Context, _ *snek.State) string {
-	return movement.ApproachTarget(context.You.Body[len(context.You.Body)-1], context)
+	return movement.ApproachTarget(context.You.Tail(), context)
 }
