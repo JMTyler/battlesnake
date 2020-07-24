@@ -3,34 +3,8 @@ package movement
 import (
 	snek "github.com/JMTyler/battlesnake/_"
 	"gonum.org/v1/gonum/graph/path"
-	"gonum.org/v1/gonum/graph/simple"
 	"math"
 )
-
-func InitPathfinder(context *snek.Context) {
-	grid := simple.NewUndirectedGraph()
-	for x := 0; x < context.Board.Width; x++ {
-		for y := 0; y < context.Board.Height; y++ {
-			node := snek.Cell{x, y}
-			if !node.IsDeadly(*context) {
-				grid.AddNode(node)
-			}
-		}
-	}
-	for x := 0; x < context.Board.Width; x++ {
-		for y := 0; y < context.Board.Height; y++ {
-			node := snek.Cell{x, y}
-			if grid.Node(node.ID()) != nil {
-				for _, cell := range node.GetAdjacentCells() {
-					if grid.Node(cell.ID()) != nil {
-						grid.SetEdge(grid.NewEdge(node, cell))
-					}
-				}
-			}
-		}
-	}
-	context.Board.Graph = grid
-}
 
 // TODO: Use pathfinding distance, not direct distance.
 func GetDistance(origin snek.Cell, target snek.Cell) int {

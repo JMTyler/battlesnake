@@ -3,7 +3,6 @@ package snakes
 import (
 	"fmt"
 	snek "github.com/JMTyler/battlesnake/_"
-	"github.com/JMTyler/battlesnake/_/movement"
 	"github.com/JMTyler/battlesnake/_/utils"
 	"github.com/JMTyler/battlesnake/snakes/rufio/tactics"
 	"path/filepath"
@@ -29,8 +28,8 @@ func (me *Rufio) Move(context snek.Context) string {
 	adjacent := context.You.Head.GetAdjacentCells()
 
 	context.Board.LoadEnemies(context)
+	context.Board.LoadGraph(context)
 	state.UpdateSnakeHistory(context)
-	movement.InitPathfinder(&context)
 
 	move := ""
 	for _, tactic := range strategy {
