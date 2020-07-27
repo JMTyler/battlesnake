@@ -28,7 +28,7 @@ func (opts Aggrieve) Run(context snek.Context, state *snek.State) string {
 	closestSnake := movement.FindClosestTarget(context.You.Head, weaklings)
 
 	if opts.Distance > 0 {
-		distanceToSnake := movement.GetDistance(context.You.Head, closestSnake)
+		distanceToSnake := context.You.Head.GetDistance(closestSnake)
 		if distanceToSnake > opts.Distance {
 			return ""
 		}

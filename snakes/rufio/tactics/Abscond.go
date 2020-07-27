@@ -29,13 +29,13 @@ func (opts Abscond) Run(context snek.Context, _ *snek.State) string {
 	predator := movement.FindClosestTarget(context.You.Head, predators)
 
 	if opts.Distance > 0 {
-		distanceToPredator := movement.GetDistance(context.You.Head, predator)
+		distanceToPredator := context.You.Head.GetDistance(predator)
 		if distanceToPredator > opts.Distance {
 			return ""
 		}
 	}
 
-	vector := movement.GetVector(context.You.Head, predator)
+	vector := context.You.Head.GetVector(predator)
 	xEscapeVector := -1 * vector.Weight.X
 	yEscapeVector := -1 * vector.Weight.Y
 	escapeTarget := snek.Cell{
