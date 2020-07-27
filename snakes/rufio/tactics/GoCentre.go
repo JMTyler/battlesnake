@@ -2,7 +2,6 @@ package tactics
 
 import (
 	snek "github.com/JMTyler/battlesnake/_"
-	"github.com/JMTyler/battlesnake/_/movement"
 	"math/rand"
 )
 
@@ -38,5 +37,5 @@ func (opts GoCentre) Run(context snek.Context, _ *snek.State) string {
 
 	index := rand.Intn(len(centreCells))
 	target := centreCells[index]
-	return movement.ApproachTarget(target, context)
+	return context.You.Head.ApproachTarget(target, context)
 }

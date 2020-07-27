@@ -2,7 +2,6 @@ package tactics
 
 import (
 	snek "github.com/JMTyler/battlesnake/_"
-	"github.com/JMTyler/battlesnake/_/movement"
 )
 
 type Aggrieve struct {
@@ -25,7 +24,7 @@ func (opts Aggrieve) Run(context snek.Context, state *snek.State) string {
 		return ""
 	}
 
-	closestSnake := movement.FindClosestTarget(context.You.Head, weaklings)
+	closestSnake := context.You.Head.FindClosestTarget(weaklings)
 
 	if opts.Distance > 0 {
 		distanceToSnake := context.You.Head.GetDistance(closestSnake)
@@ -47,7 +46,7 @@ func (opts Aggrieve) Run(context snek.Context, state *snek.State) string {
 		return ""
 	}
 
-	return movement.ApproachTarget(target, context)
+	return context.You.Head.ApproachTarget(target, context)
 }
 
 func chooseAdjacentCell(prey snek.Snake, context snek.Context, state *snek.State) snek.Cell {
@@ -72,5 +71,5 @@ func chooseAdjacentCell(prey snek.Snake, context snek.Context, state *snek.State
 		targets = append(targets, cell)
 	}
 
-	return movement.FindClosestTarget(context.You.Head, targets)
+	return context.You.Head.FindClosestTarget(targets)
 }

@@ -2,7 +2,6 @@ package tactics
 
 import (
 	snek "github.com/JMTyler/battlesnake/_"
-	"github.com/JMTyler/battlesnake/_/movement"
 )
 
 type Abscond struct {
@@ -26,7 +25,7 @@ func (opts Abscond) Run(context snek.Context, _ *snek.State) string {
 		return ""
 	}
 
-	predator := movement.FindClosestTarget(context.You.Head, predators)
+	predator := context.You.Head.FindClosestTarget(predators)
 
 	if opts.Distance > 0 {
 		distanceToPredator := context.You.Head.GetDistance(predator)
@@ -43,7 +42,7 @@ func (opts Abscond) Run(context snek.Context, _ *snek.State) string {
 		Y: clamp(yEscapeVector+context.You.Head.Y, 0, context.Board.Height-1),
 	}
 
-	return movement.ApproachTarget(escapeTarget, context)
+	return context.You.Head.ApproachTarget(escapeTarget, context)
 }
 
 func clamp(val int, min int, max int) int {

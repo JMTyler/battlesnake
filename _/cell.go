@@ -211,3 +211,31 @@ func (origin Cell) PathTo(target Cell, context Context) []Cell {
 	}
 	return cells[1:]
 }
+
+func (you Cell) ApproachTarget(target Cell, context Context) string {
+	cells := you.PathTo(target, context)
+	if cells == nil {
+		return ""
+	}
+	return you.ToDirection(cells[0])
+}
+
+func (origin Cell) FindClosestTarget(targets []Cell) Cell {
+	if len(targets) == 1 {
+		return targets[0]
+	}
+
+	if len(targets) == 0 {
+		return Cell{}
+	}
+
+	distances := origin.GetDistances(targets)
+
+	shortestIndex := 0
+	for ix, distance := range distances {
+		if distance < distances[shortestIndex] {
+			shortestIndex = ix
+		}
+	}
+	return targets[shortestIndex]
+}
