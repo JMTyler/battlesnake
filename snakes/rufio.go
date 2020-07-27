@@ -32,6 +32,7 @@ func (me *Rufio) Move(context snek.Context) string {
 	state.UpdateSnakeHistory(context)
 
 	move := ""
+	riskyBusiness := ""
 	for _, tactic := range strategy {
 		result := tactic.Run(context, state)
 		if result == "" {
@@ -45,8 +46,10 @@ func (me *Rufio) Move(context snek.Context) string {
 			continue
 		}
 
-		isSafe := cell.IsSafe(context)
-		if !isSafe {
+		if !cell.IsSafe(context) {
+			if !cell.IsDeadly(context) && riskyBusiness == "" {
+				riskyBusiness = result
+			}
 			continue
 		}
 
@@ -57,6 +60,12 @@ func (me *Rufio) Move(context snek.Context) string {
 	if move != "" {
 		state.Move = move
 		return move
+	}
+
+	if riskyBusiness != "" {
+		utils.LogMove(context.Turn, riskyBusiness, "Risky Business")
+		state.Move = riskyBusiness
+		return riskyBusiness
 	}
 
 	utils.LogMove(context.Turn, state.Move, "welp 👋")
