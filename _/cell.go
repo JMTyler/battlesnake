@@ -113,6 +113,11 @@ func (cell Cell) IsRisky(context Context) bool {
 		}
 	}
 
+	pathToTail := cell.PathTo(context.You.Tail(), context)
+	if pathToTail == nil {
+		return true
+	}
+
 	return false
 }
 
