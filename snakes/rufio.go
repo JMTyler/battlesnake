@@ -3,8 +3,6 @@ package snakes
 import (
 	"fmt"
 	snek "github.com/JMTyler/battlesnake/_"
-	"github.com/JMTyler/battlesnake/_/movement"
-	"github.com/JMTyler/battlesnake/_/position"
 	"github.com/JMTyler/battlesnake/_/utils"
 	"github.com/JMTyler/battlesnake/snakes/rufio/tactics"
 	"path/filepath"
@@ -27,27 +25,11 @@ var strategy = []tactics.Tactic{
 
 func (me *Rufio) Move(context snek.Context) string {
 	state := snek.GetState(context)
-	adjacent := position.GetAdjacentTiles(context.You.Head)
+	adjacent := context.You.Head.GetAdjacentCells()
 
-	// Figure out which move each snake took during the *last* turn, and toss it into state.
-	for _, snake := range context.Board.Snakes {
-		prev, exists := state.Snakes[snake.ID]
-		move := "up"
-		if exists {
-			move = position.ToDirection(snake.Head, prev.Head)
-		}
-		state.Snakes[snake.ID] = snek.SnakeState{Head: snake.Head, Move: move}
-	}
-
-	// Remove `You` snake from the `Snakes` array since we only ever want an array of enemies.
-	for i, snake := range context.Board.Snakes {
-		if snake.ID == context.You.ID {
-			context.Board.Snakes = append(context.Board.Snakes[:i], context.Board.Snakes[i+1:]...)
-			break
-		}
-	}
-
-	movement.InitPathfinder(&context)
+	context.Board.LoadEnemies(context)
+	context.Board.LoadGraph(context)
+	state.UpdateSnakeHistory(context)
 
 	move := ""
 	for _, tactic := range strategy {
@@ -58,12 +40,12 @@ func (me *Rufio) Move(context snek.Context) string {
 
 		utils.LogMove(context.Turn, result, tactic.Description())
 
-		pos, withinBounds := adjacent[result]
+		cell, withinBounds := adjacent[result]
 		if !withinBounds {
 			continue
 		}
 
-		isSafe := position.IsSafe(pos, context)
+		isSafe := cell.IsSafe(context)
 		if !isSafe {
 			continue
 		}
@@ -118,8 +100,7 @@ func (me *Rufio) StartGame(context snek.Context) {
 
 func (me *Rufio) EndGame(context snek.Context) {
 	result := "LOSE"
-	// dangerous array access
-	if context.You.ID == context.Board.Snakes[0].ID {
+	if len(context.Board.Snakes) > 0 && context.You.ID == context.Board.Snakes[0].ID {
 		result = "WIN"
 	}
 

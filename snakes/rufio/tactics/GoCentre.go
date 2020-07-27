@@ -2,8 +2,6 @@ package tactics
 
 import (
 	snek "github.com/JMTyler/battlesnake/_"
-	"github.com/JMTyler/battlesnake/_/movement"
-	"github.com/JMTyler/battlesnake/_/position"
 	"math/rand"
 )
 
@@ -23,12 +21,12 @@ func (opts GoCentre) Run(context snek.Context, _ *snek.State) string {
 	leftEdge := (context.Board.Width - opts.Width) / 2
 	bottomEdge := (context.Board.Height - opts.Height) / 2
 
-	var centreCells []snek.Position
+	var centreCells []snek.Cell
 	for x := leftEdge; x < leftEdge+opts.Width; x++ {
 		for y := bottomEdge; y < bottomEdge+opts.Height; y++ {
-			pos := snek.Position{X: x, Y: y}
-			if position.IsSafe(pos, context) {
-				centreCells = append(centreCells, pos)
+			cell := snek.Cell{x, y}
+			if cell.IsSafe(context) {
+				centreCells = append(centreCells, cell)
 			}
 		}
 	}
@@ -39,5 +37,5 @@ func (opts GoCentre) Run(context snek.Context, _ *snek.State) string {
 
 	index := rand.Intn(len(centreCells))
 	target := centreCells[index]
-	return movement.ApproachTarget(target, context)
+	return context.You.Head.ApproachTarget(target, context)
 }

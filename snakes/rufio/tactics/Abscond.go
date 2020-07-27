@@ -2,7 +2,6 @@ package tactics
 
 import (
 	snek "github.com/JMTyler/battlesnake/_"
-	"github.com/JMTyler/battlesnake/_/movement"
 )
 
 type Abscond struct {
@@ -15,8 +14,8 @@ func (opts Abscond) Run(context snek.Context, _ *snek.State) string {
 		opts.Disadvantage = 1
 	}
 
-	var predators []snek.Position
-	for _, snake := range context.Board.Snakes {
+	var predators []snek.Cell
+	for _, snake := range context.Board.Enemies {
 		if context.You.Length <= snake.Length-opts.Disadvantage {
 			predators = append(predators, snake.Head)
 		}
@@ -26,24 +25,24 @@ func (opts Abscond) Run(context snek.Context, _ *snek.State) string {
 		return ""
 	}
 
-	predator := movement.FindClosestTarget(context.You.Head, predators)
+	predator := context.You.Head.FindClosestTarget(predators)
 
 	if opts.Distance > 0 {
-		distanceToPredator := movement.GetDistance(context.You.Head, predator)
+		distanceToPredator := context.You.Head.GetDistance(predator)
 		if distanceToPredator > opts.Distance {
 			return ""
 		}
 	}
 
-	vector := movement.GetVector(context.You.Head, predator)
+	vector := context.You.Head.GetVector(predator)
 	xEscapeVector := -1 * vector.Weight.X
 	yEscapeVector := -1 * vector.Weight.Y
-	escapeTarget := snek.Position{
+	escapeTarget := snek.Cell{
 		X: clamp(xEscapeVector+context.You.Head.X, 0, context.Board.Width-1),
 		Y: clamp(yEscapeVector+context.You.Head.Y, 0, context.Board.Height-1),
 	}
 
-	return movement.ApproachTarget(escapeTarget, context)
+	return context.You.Head.ApproachTarget(escapeTarget, context)
 }
 
 func clamp(val int, min int, max int) int {

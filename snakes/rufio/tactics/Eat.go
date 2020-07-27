@@ -2,8 +2,6 @@ package tactics
 
 import (
 	snek "github.com/JMTyler/battlesnake/_"
-	"github.com/JMTyler/battlesnake/_/board"
-	"github.com/JMTyler/battlesnake/_/movement"
 )
 
 type Eat struct {
@@ -21,17 +19,17 @@ func (opts Eat) Run(context snek.Context, _ *snek.State) string {
 		}
 	}
 
-	food := board.FindClosestFood(context)
-	if food == (snek.Position{}) {
+	food := context.You.Head.FindClosestTarget(context.Board.Food)
+	if food == (snek.Cell{}) {
 		return ""
 	}
 
 	if opts.Distance > 0 {
-		distanceToFood := movement.GetDistance(context.You.Head, food)
+		distanceToFood := context.You.Head.GetDistance(food)
 		if distanceToFood > opts.Distance {
 			return ""
 		}
 	}
 
-	return movement.ApproachTarget(food, context)
+	return context.You.Head.ApproachTarget(food, context)
 }
