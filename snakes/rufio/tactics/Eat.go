@@ -6,29 +6,32 @@ import (
 	"github.com/JMTyler/battlesnake/_/movement"
 )
 
-// TODO: Is it realistic for us to figure out how to use Infinity / -Infinity as default options instead of zero values?
+type Eat struct {
+	Health   int
+	Distance int
+}
+
+// TODO: Is it realistic for us to figure out how to use Infinity / -Infinity as default tactic instead of zero values?
 // Yes, I think this problem solves itself once we switch to tactics being structs, since the constructor can set defaults.
 
-func Eat(options snek.TacticOptions) func(snek.Context, *snek.State) string {
-	return func(context snek.Context, state *snek.State) string {
-		if options.Health > 0 {
-			if context.You.Health > options.Health {
-				return ""
-			}
-		}
-
-		food := board.FindClosestFood(context)
-		if food == (snek.Position{}) {
+func (opts Eat) Run(context snek.Context, _ *snek.State) string {
+	if opts.Health > 0 {
+		if context.You.Health > opts.Health {
 			return ""
 		}
-
-		if options.Distance > 0 {
-			distanceToFood := movement.GetDistance(context.You.Head, food)
-			if distanceToFood > options.Distance {
-				return ""
-			}
-		}
-
-		return movement.ApproachTarget(food, context)
 	}
+
+	food := board.FindClosestFood(context)
+	if food == (snek.Position{}) {
+		return ""
+	}
+
+	if opts.Distance > 0 {
+		distanceToFood := movement.GetDistance(context.You.Head, food)
+		if distanceToFood > opts.Distance {
+			return ""
+		}
+	}
+
+	return movement.ApproachTarget(food, context)
 }

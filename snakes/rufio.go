@@ -13,28 +13,21 @@ import (
 
 type Rufio struct{}
 
-type Tactic struct {
-	Description string
-	Run         func(snek.Context, *snek.State) string
-}
-
-var strategy = []Tactic{
-	Tactic{"Easy Kill", tactics.Aggrieve(snek.TacticOptions{Advantage: 1, Distance: 1})},
-	Tactic{"Quick Snack", tactics.Eat(snek.TacticOptions{Distance: 2})},
-	Tactic{"Abscond", tactics.Abscond(snek.TacticOptions{Disadvantage: 1, Distance: 3})},
-	Tactic{"Aggrieve", tactics.Aggrieve(snek.TacticOptions{Advantage: 2})},
-	Tactic{"Hungry", tactics.Eat(snek.TacticOptions{})},
-	Tactic{"Go Centre", tactics.GoCentre()},
-	Tactic{"Continue", tactics.Continue()},
-	Tactic{"Seek Tail", tactics.SeekTail()},
-	Tactic{"Rotate Until Safe", tactics.RotateUntilSafe()},
+var strategy = []tactics.Tactic{
+	tactics.New("Easy Kill", tactics.Aggrieve{Advantage: 1, Distance: 1}),
+	tactics.New("Quick Snack", tactics.Eat{Distance: 2}),
+	tactics.New("Abscond", tactics.Abscond{Disadvantage: 1, Distance: 3}),
+	tactics.New("Hunt", tactics.Aggrieve{Advantage: 2}),
+	tactics.New("Hungry", tactics.Eat{}),
+	tactics.New("Go Centre", tactics.GoCentre{Width: 3, Height: 3}),
+	tactics.New("Continue", tactics.Continue{}),
+	tactics.New("Seek Tail", tactics.SeekTail{}),
+	tactics.New("Rotate Until Safe", tactics.RotateUntilSafe{}),
 }
 
 func (me *Rufio) Move(context snek.Context) string {
 	state := snek.GetState(context)
 	adjacent := position.GetAdjacentTiles(context.You.Head)
-
-	//	movement.InitPathfinder(context)
 
 	// Figure out which move each snake took during the *last* turn, and toss it into state.
 	for _, snake := range context.Board.Snakes {
@@ -63,7 +56,7 @@ func (me *Rufio) Move(context snek.Context) string {
 			continue
 		}
 
-		utils.LogMove(context.Turn, result, tactic.Description)
+		utils.LogMove(context.Turn, result, tactic.Description())
 
 		pos, withinBounds := adjacent[result]
 		if !withinBounds {

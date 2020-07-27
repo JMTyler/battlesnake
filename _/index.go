@@ -5,13 +5,6 @@ import (
 	"gonum.org/v1/gonum/graph/traverse"
 )
 
-type TacticOptions struct {
-	Health       int
-	Distance     int
-	Advantage    int
-	Disadvantage int
-}
-
 type Position struct {
 	X int `json:"x"`
 	Y int `json:"y"`

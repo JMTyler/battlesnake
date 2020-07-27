@@ -7,30 +7,37 @@ import (
 	"math/rand"
 )
 
-const centreWidth = 3
-const centreHeight = 3
+type GoCentre struct {
+	Width  int
+	Height int
+}
 
-func GoCentre() func(snek.Context, *snek.State) string {
-	return func(context snek.Context, state *snek.State) string {
-		leftEdge := (context.Board.Width - centreWidth) / 2
-		bottomEdge := (context.Board.Height - centreHeight) / 2
+func (opts GoCentre) Run(context snek.Context, _ *snek.State) string {
+	if opts.Width == 0 {
+		opts.Width = 1
+	}
+	if opts.Height == 0 {
+		opts.Height = 1
+	}
 
-		var centreCells []snek.Position
-		for x := leftEdge; x < leftEdge+centreWidth; x++ {
-			for y := bottomEdge; y < bottomEdge+centreHeight; y++ {
-				pos := snek.Position{X: x, Y: y}
-				if position.IsSafe(pos, context) {
-					centreCells = append(centreCells, pos)
-				}
+	leftEdge := (context.Board.Width - opts.Width) / 2
+	bottomEdge := (context.Board.Height - opts.Height) / 2
+
+	var centreCells []snek.Position
+	for x := leftEdge; x < leftEdge+opts.Width; x++ {
+		for y := bottomEdge; y < bottomEdge+opts.Height; y++ {
+			pos := snek.Position{X: x, Y: y}
+			if position.IsSafe(pos, context) {
+				centreCells = append(centreCells, pos)
 			}
 		}
-
-		if len(centreCells) == 0 {
-			return ""
-		}
-
-		index := rand.Intn(len(centreCells))
-		target := centreCells[index]
-		return movement.ApproachTarget(target, context)
 	}
+
+	if len(centreCells) == 0 {
+		return ""
+	}
+
+	index := rand.Intn(len(centreCells))
+	target := centreCells[index]
+	return movement.ApproachTarget(target, context)
 }
