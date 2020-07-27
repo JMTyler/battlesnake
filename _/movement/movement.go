@@ -2,20 +2,14 @@ package movement
 
 import (
 	snek "github.com/JMTyler/battlesnake/_"
-	"gonum.org/v1/gonum/graph/path"
 )
 
 func ApproachTarget(target snek.Cell, context snek.Context) string {
-	shortest, _ := path.AStar(context.You.Head, target, context.Board.Graph, nil)
-	nodes, _ := shortest.To(target.ID())
-	if len(nodes) < 2 {
+	cells := context.You.Head.PathTo(target, context)
+	if cells == nil {
 		return ""
 	}
-	if nodes[len(nodes)-1] != target {
-		return ""
-	}
-	nextCell := nodes[1].(snek.Cell)
-	return context.You.Head.ToDirection(nextCell)
+	return context.You.Head.ToDirection(cells[0])
 }
 
 func FindClosestTarget(origin snek.Cell, targets []snek.Cell) snek.Cell {

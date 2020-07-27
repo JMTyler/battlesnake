@@ -2,6 +2,7 @@ package battlesnake
 
 import (
 	"fmt"
+	"gonum.org/v1/gonum/graph/path"
 	"math"
 )
 
@@ -192,4 +193,21 @@ func (origin Cell) GetVector(target Cell) Vector {
 			y,
 		},
 	}
+}
+
+func (origin Cell) PathTo(target Cell, context Context) []Cell {
+	shortest, _ := path.AStar(origin, target, context.Board.Graph, nil)
+	nodes, _ := shortest.To(target.ID())
+	if len(nodes) < 2 {
+		return nil
+	}
+	if nodes[len(nodes)-1] != target {
+		return nil
+	}
+
+	cells := make([]Cell, len(nodes))
+	for ix, node := range nodes {
+		cells[ix] = node.(Cell)
+	}
+	return cells[1:]
 }
