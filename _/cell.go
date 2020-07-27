@@ -206,9 +206,6 @@ func (origin Cell) PathTo(target Cell, context Context) []Cell {
 	if len(nodes) < 2 {
 		return nil
 	}
-	if nodes[len(nodes)-1] != target {
-		return nil
-	}
 
 	cells := make([]Cell, len(nodes))
 	for ix, node := range nodes {
