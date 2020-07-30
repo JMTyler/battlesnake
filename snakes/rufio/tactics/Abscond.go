@@ -37,10 +37,10 @@ func (opts Abscond) Run(context snek.Context, _ *snek.State) string {
 	vector := context.You.Head.GetVector(predator)
 	xEscapeVector := -1 * vector.Weight.X
 	yEscapeVector := -1 * vector.Weight.Y
-	escapeTarget := &snek.Cell{
-		X: clamp(xEscapeVector+context.You.Head.X, 0, context.Board.Width-1),
-		Y: clamp(yEscapeVector+context.You.Head.Y, 0, context.Board.Height-1),
-	}
+	escapeTarget := context.Board.CellAt(
+		clamp(xEscapeVector+context.You.Head.X, 0, context.Board.Width-1),
+		clamp(yEscapeVector+context.You.Head.Y, 0, context.Board.Height-1),
+	)
 
 	return context.You.Head.ApproachTarget(escapeTarget, context)
 }

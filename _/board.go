@@ -13,6 +13,11 @@ type Board struct {
 
 	Graph   traverse.Graph `json:"-"`
 	Enemies []Snake        `json:"-"`
+	Cells   [][]*Cell      `json:"-"`
+}
+
+func (board *Board) CellAt(x int, y int) *Cell {
+	return board.Cells[x][y]
 }
 
 func (board *Board) LoadEnemies(context Context) {
@@ -30,7 +35,7 @@ func (board *Board) LoadGraph(context Context) {
 	board.Graph = grid
 	for x := 0; x < board.Width; x++ {
 		for y := 0; y < board.Height; y++ {
-			node := &Cell{x, y}
+			node := board.CellAt(x, y)
 			if !node.IsDeadly(context) {
 				grid.AddNode(node)
 			}
@@ -38,7 +43,7 @@ func (board *Board) LoadGraph(context Context) {
 	}
 	for x := 0; x < board.Width; x++ {
 		for y := 0; y < board.Height; y++ {
-			node := &Cell{x, y}
+			node := board.CellAt(x, y)
 			if grid.Node(node.ID()) != nil {
 				for _, cell := range node.GetAdjacentCells() {
 					if grid.Node(cell.ID()) != nil {
@@ -46,6 +51,16 @@ func (board *Board) LoadGraph(context Context) {
 					}
 				}
 			}
+		}
+	}
+}
+
+func (board *Board) LoadCells() {
+	board.Cells = make([][]*Cell, board.Width)
+	for x := 0; x < board.Width; x++ {
+		board.Cells[x] = make([]*Cell, board.Height)
+		for y := 0; y < board.Height; y++ {
+			board.Cells[x][y] = &Cell{x, y, board}
 		}
 	}
 }

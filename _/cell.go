@@ -14,6 +14,8 @@ import (
 type Cell struct {
 	X int `json:"x"`
 	Y int `json:"y"`
+
+	board *Board `json:"-"`
 }
 
 type Vector struct {
@@ -54,16 +56,16 @@ func (cell *Cell) GetAdjacentCells() map[string]*Cell {
 	return cells
 }
 
-func (cell *Cell) Adjacent(dir string) *Cell {
+func (origin *Cell) Adjacent(dir string) *Cell {
 	switch dir {
 	case "up":
-		return &Cell{cell.X, cell.Y + 1}
+		return origin.board.CellAt(origin.X, origin.Y+1)
 	case "down":
-		return &Cell{cell.X, cell.Y - 1}
+		return origin.board.CellAt(origin.X, origin.Y-1)
 	case "left":
-		return &Cell{cell.X - 1, cell.Y}
+		return origin.board.CellAt(origin.X-1, origin.Y)
 	case "right":
-		return &Cell{cell.X + 1, cell.Y}
+		return origin.board.CellAt(origin.X+1, origin.Y)
 	}
 	// TODO: error?
 	return nil
