@@ -12,15 +12,17 @@ import (
 type Rufio struct{}
 
 var strategy = []tactics.Tactic{
+	// TODO: only one option
 	tactics.New("Easy Kill", tactics.Aggrieve{Advantage: 1, Distance: 1}),
 	tactics.New("Quick Snack", tactics.Eat{Distance: 2}),
 	tactics.New("Abscond", tactics.Abscond{Disadvantage: 1, Distance: 3}),
 	tactics.New("Hunt", tactics.Aggrieve{Advantage: 2}),
 	tactics.New("Hungry", tactics.Eat{}),
 	tactics.New("Go Centre", tactics.GoCentre{Width: 3, Height: 3}),
-	tactics.New("Continue", tactics.Continue{}),
+	tactics.New("Continue", tactics.Continue{}), // TODO: kill this one
 	tactics.New("Seek Tail", tactics.SeekTail{}),
-	tactics.New("Rotate Until Safe", tactics.RotateUntilSafe{}),
+	// TODO: Seek other snake's tail if available
+	tactics.New("Rotate Until Safe", tactics.RotateUntilSafe{}), // TODO: kill this one
 }
 
 func (me *Rufio) Move(context snek.Context) string {
@@ -67,6 +69,8 @@ func (me *Rufio) Move(context snek.Context) string {
 		state.Move = riskyBusiness
 		return riskyBusiness
 	}
+
+	// TODO: Should still prefer to pick a random adjacent empty cell before fully welping out.
 
 	utils.LogMove(context.Turn, state.Move, "welp 👋")
 	return state.Move

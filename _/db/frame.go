@@ -86,5 +86,5 @@ func PruneGames() {
 }
 
 func (f *Frame) String() string {
-	return fmt.Sprintf("Frame{game:%v, snake:%v, turn:%v -> move:%v}", f.GameID, f.SnakeID, f.Turn, f.Move)
+	return fmt.Sprintf("Frame{game:%q, snake:%q, turn:%v -> move:%v}", f.GameID, f.SnakeID, f.Turn, f.Move)
 }
