@@ -8,7 +8,7 @@ type State struct {
 }
 
 type SnakeState struct {
-	Head Cell
+	Head *Cell
 	Move string
 }
 

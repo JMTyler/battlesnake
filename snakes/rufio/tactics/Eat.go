@@ -20,7 +20,7 @@ func (opts Eat) Run(context snek.Context, _ *snek.State) string {
 	}
 
 	food := context.You.Head.FindClosestTarget(context.Board.Food)
-	if food == (snek.Cell{}) {
+	if *food == (snek.Cell{}) {
 		return ""
 	}
 

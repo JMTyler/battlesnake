@@ -9,7 +9,7 @@ type Board struct {
 	Width  int     `json:"width"`
 	Height int     `json:"height"`
 	Snakes []Snake `json:"snakes"`
-	Food   []Cell  `json:"food"`
+	Food   []*Cell `json:"food"`
 
 	Graph   traverse.Graph `json:"-"`
 	Enemies []Snake        `json:"-"`
@@ -27,9 +27,10 @@ func (board *Board) LoadEnemies(context Context) {
 
 func (board *Board) LoadGraph(context Context) {
 	grid := simple.NewUndirectedGraph()
+	board.Graph = grid
 	for x := 0; x < board.Width; x++ {
 		for y := 0; y < board.Height; y++ {
-			node := Cell{x, y}
+			node := &Cell{x, y}
 			if !node.IsDeadly(context) {
 				grid.AddNode(node)
 			}
@@ -37,7 +38,7 @@ func (board *Board) LoadGraph(context Context) {
 	}
 	for x := 0; x < board.Width; x++ {
 		for y := 0; y < board.Height; y++ {
-			node := Cell{x, y}
+			node := &Cell{x, y}
 			if grid.Node(node.ID()) != nil {
 				for _, cell := range node.GetAdjacentCells() {
 					if grid.Node(cell.ID()) != nil {
@@ -47,5 +48,4 @@ func (board *Board) LoadGraph(context Context) {
 			}
 		}
 	}
-	board.Graph = grid
 }
