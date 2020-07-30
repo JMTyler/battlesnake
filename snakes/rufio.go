@@ -25,7 +25,7 @@ var strategy = []tactics.Tactic{
 	tactics.New("Rotate Until Safe", tactics.RotateUntilSafe{}), // TODO: kill this one
 }
 
-func (me *Rufio) Move(context snek.Context) string {
+func (me *Rufio) Move(context *snek.Context) string {
 	state := snek.GetState(context)
 	adjacent := context.You.Head.GetAdjacentCells()
 
@@ -114,17 +114,17 @@ func (me *Rufio) GetInfo() SnakeInfo {
 	}
 }
 
-func (me *Rufio) StartGame(context snek.Context) {
-	snek.InitState(context, snek.State{
+func (me *Rufio) StartGame(context *snek.Context) {
+	snek.InitState(context, &snek.State{
 		Move:   "right",
-		Snakes: make(map[string]snek.SnakeState),
+		Snakes: make(map[string]*snek.SnakeState),
 	})
 
 	fmt.Println("-----")
 	fmt.Println()
 }
 
-func (me *Rufio) EndGame(context snek.Context) {
+func (me *Rufio) EndGame(context *snek.Context) {
 	result := "LOSE"
 	if len(context.Board.Snakes) > 0 && context.You.ID == context.Board.Snakes[0].ID {
 		result = "WIN"

@@ -2,9 +2,9 @@ package battlesnake
 
 type Context struct {
 	Turn  int   `json:"turn"`
-	Game  Game  `json:"game"`
-	You   Snake `json:"you"`
-	Board Board `json:"board"`
+	Game  *Game  `json:"game"`
+	You   *Snake `json:"you"`
+	Board *Board `json:"board"`
 }
 
 type Game struct {

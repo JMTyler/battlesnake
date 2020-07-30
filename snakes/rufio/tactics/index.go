@@ -9,11 +9,11 @@ import (
 
 type Tactic interface {
 	Description() string
-	Run(snek.Context, *snek.State) string
+	Run(*snek.Context, *snek.State) string
 }
 
 type runnable interface {
-	Run(snek.Context, *snek.State) string
+	Run(*snek.Context, *snek.State) string
 }
 
 type wrapper struct {
@@ -21,16 +21,16 @@ type wrapper struct {
 	tactic      runnable
 }
 
-func (w wrapper) Description() string {
+func (w *wrapper) Description() string {
 	return w.description
 }
 
-func (w wrapper) Run(context snek.Context, state *snek.State) string {
+func (w *wrapper) Run(context *snek.Context, state *snek.State) string {
 	return w.tactic.Run(context, state)
 }
 
 func New(description string, tactic runnable) Tactic {
-	return wrapper{
+	return &wrapper{
 		description: description,
 		tactic:      tactic,
 	}

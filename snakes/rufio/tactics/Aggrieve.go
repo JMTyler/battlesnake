@@ -9,7 +9,7 @@ type Aggrieve struct {
 	Distance  int
 }
 
-func (opts Aggrieve) Run(context snek.Context, state *snek.State) string {
+func (opts Aggrieve) Run(context *snek.Context, state *snek.State) string {
 	if opts.Advantage == 0 {
 		opts.Advantage = 1
 	}
@@ -33,7 +33,7 @@ func (opts Aggrieve) Run(context snek.Context, state *snek.State) string {
 		}
 	}
 
-	var prey snek.Snake
+	var prey *snek.Snake
 	// TODO: Would be nice if there's a way to break out of this when we find it?  I can't remember.
 	for _, snake := range context.Board.Enemies {
 		if snake.Head == closestSnake {
@@ -49,7 +49,7 @@ func (opts Aggrieve) Run(context snek.Context, state *snek.State) string {
 	return context.You.Head.ApproachTarget(target, context)
 }
 
-func chooseAdjacentCell(prey snek.Snake, context snek.Context, state *snek.State) *snek.Cell {
+func chooseAdjacentCell(prey *snek.Snake, context *snek.Context, state *snek.State) *snek.Cell {
 	targetOptions := make(map[string]*snek.Cell)
 	for dir, cell := range prey.Head.GetAdjacentCells() {
 		if cell.IsSafe(context) {

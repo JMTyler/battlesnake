@@ -71,11 +71,11 @@ func (origin *Cell) Adjacent(dir string) *Cell {
 	return nil
 }
 
-func (cell *Cell) IsOutsideBoard(board Board) bool {
+func (cell *Cell) IsOutsideBoard(board *Board) bool {
 	return cell.X < 0 || cell.Y < 0 || cell.X >= board.Width || cell.Y >= board.Height
 }
 
-func (cell *Cell) IsDeadly(context Context) bool {
+func (cell *Cell) IsDeadly(context *Context) bool {
 	if cell.IsOutsideBoard(context.Board) {
 		return true
 	}
@@ -105,7 +105,7 @@ func (cell *Cell) IsDeadly(context Context) bool {
 	return false
 }
 
-func (cell *Cell) IsRisky(context Context) bool {
+func (cell *Cell) IsRisky(context *Context) bool {
 	for _, snake := range context.Board.Enemies {
 		// TODO: Should we use range and iterate over the adjacent map instead?
 		gettinSpicy := cell == snake.Head.Adjacent("left") ||
@@ -128,7 +128,7 @@ func (cell *Cell) IsRisky(context Context) bool {
 	return false
 }
 
-func (cell *Cell) IsSafe(context Context) bool {
+func (cell *Cell) IsSafe(context *Context) bool {
 	return !cell.IsDeadly(context) && !cell.IsRisky(context)
 }
 
@@ -175,7 +175,7 @@ func (origin *Cell) GetDistances(targets []*Cell) []int {
 	return distances
 }
 
-func (origin *Cell) GetVector(target *Cell) Vector {
+func (origin *Cell) GetVector(target *Cell) *Vector {
 	x := target.X - origin.X
 	y := target.Y - origin.Y
 
@@ -189,7 +189,7 @@ func (origin *Cell) GetVector(target *Cell) Vector {
 		yDir = "up"
 	}
 
-	return Vector{
+	return &Vector{
 		Dir: struct {
 			X string
 			Y string
@@ -207,7 +207,7 @@ func (origin *Cell) GetVector(target *Cell) Vector {
 	}
 }
 
-func (origin *Cell) PathTo(target *Cell, context Context) []*Cell {
+func (origin *Cell) PathTo(target *Cell, context *Context) []*Cell {
 	shortest, _ := path.AStar(origin, target, context.Board.Graph, nil)
 	nodes, _ := shortest.To(target.ID())
 	if len(nodes) < 2 {
@@ -221,7 +221,7 @@ func (origin *Cell) PathTo(target *Cell, context Context) []*Cell {
 	return cells[1:]
 }
 
-func (you *Cell) ApproachTarget(target *Cell, context Context) string {
+func (you *Cell) ApproachTarget(target *Cell, context *Context) string {
 	cells := you.PathTo(target, context)
 	if cells == nil {
 		return ""

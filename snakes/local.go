@@ -20,14 +20,14 @@ func (me *Local) GetInfo() SnakeInfo {
 	}
 }
 
-func (me *Local) StartGame(context snek.Context) {
+func (me *Local) StartGame(context *snek.Context) {
 	rufio.StartGame(context)
 }
 
-func (me *Local) Move(context snek.Context) string {
+func (me *Local) Move(context *snek.Context) string {
 	return rufio.Move(context)
 }
 
-func (me *Local) EndGame(context snek.Context) {
+func (me *Local) EndGame(context *snek.Context) {
 	rufio.EndGame(context)
 }

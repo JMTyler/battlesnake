@@ -13,7 +13,7 @@ var rotate = map[string]string{
 
 type RotateUntilSafe struct{}
 
-func (_ RotateUntilSafe) Run(context snek.Context, state *snek.State) string {
+func (_ RotateUntilSafe) Run(context *snek.Context, state *snek.State) string {
 	adjacent := context.You.Head.GetAdjacentCells()
 
 	isSafe := false

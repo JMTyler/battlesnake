@@ -10,7 +10,7 @@ type GoCentre struct {
 	Height int
 }
 
-func (opts GoCentre) Run(context snek.Context, _ *snek.State) string {
+func (opts GoCentre) Run(context *snek.Context, _ *snek.State) string {
 	if opts.Width == 0 {
 		opts.Width = 1
 	}
