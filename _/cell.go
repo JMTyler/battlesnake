@@ -66,7 +66,7 @@ func (cell *Cell) Adjacent(dir string) *Cell {
 		return &Cell{cell.X + 1, cell.Y}
 	}
 	// TODO: error?
-	return &Cell{}
+	return nil
 }
 
 func (cell *Cell) IsOutsideBoard(board Board) bool {
@@ -130,7 +130,7 @@ func (cell *Cell) IsSafe(context Context) bool {
 	return !cell.IsDeadly(context) && !cell.IsRisky(context)
 }
 
-func (a *Cell) Matches (b *Cell) bool {
+func (a *Cell) Matches(b *Cell) bool {
 	return *a == *b
 }
 
@@ -233,7 +233,7 @@ func (origin *Cell) FindClosestTarget(targets []*Cell) *Cell {
 	}
 
 	if len(targets) == 0 {
-		return &Cell{}
+		return nil
 	}
 
 	distances := origin.GetDistances(targets)

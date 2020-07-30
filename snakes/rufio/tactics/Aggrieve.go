@@ -42,7 +42,7 @@ func (opts Aggrieve) Run(context snek.Context, state *snek.State) string {
 	}
 
 	target := chooseAdjacentCell(prey, context, state)
-	if *target == (snek.Cell{}) {
+	if target == nil {
 		return ""
 	}
 
@@ -57,7 +57,7 @@ func chooseAdjacentCell(prey snek.Snake, context snek.Context, state *snek.State
 		}
 	}
 	if len(targetOptions) == 0 {
-		return &snek.Cell{}
+		return nil
 	}
 
 	preysLastMove := state.Snakes[prey.ID].Move
