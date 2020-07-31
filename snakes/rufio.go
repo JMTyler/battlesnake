@@ -12,7 +12,7 @@ import (
 type Rufio struct{}
 
 var strategy = []tactics.Tactic{
-	// TODO: only one option
+	tactics.New("Only One Option", tactics.OnlyOneOption{}),
 	tactics.New("Easy Kill", tactics.Aggrieve{Advantage: 1, Distance: 1}),
 	tactics.New("Quick Snack", tactics.Eat{Distance: 2}),
 	tactics.New("Abscond", tactics.Abscond{Disadvantage: 1, Distance: 3}),
@@ -71,6 +71,19 @@ func (me *Rufio) Move(context snek.Context) string {
 	}
 
 	// TODO: Should still prefer to pick a random adjacent empty cell before fully welping out.
+	nonWalls := make([]string, 0)
+	isContinueOpen := false
+	for dir, _ := range adjacent {
+		nonWalls = append(nonWalls, dir)
+		if dir == state.Move {
+			isContinueOpen = true
+			break
+		}
+	}
+
+	if !isContinueOpen {
+		state.Move = nonWalls[0]
+	}
 
 	utils.LogMove(context.Turn, state.Move, "welp 👋")
 	return state.Move
