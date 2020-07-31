@@ -12,7 +12,7 @@ import (
 type Rufio struct{}
 
 var strategy = []tactics.Tactic{
-	// TODO: only one option
+	tactics.New("Only One Option", tactics.OnlyOneOption{}),
 	tactics.New("Easy Kill", tactics.Aggrieve{Advantage: 1, Distance: 1}),
 	tactics.New("Quick Snack", tactics.Eat{Distance: 2}),
 	tactics.New("Abscond", tactics.Abscond{Disadvantage: 1, Distance: 3}),
