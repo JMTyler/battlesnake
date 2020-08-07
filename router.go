@@ -75,6 +75,7 @@ func RouteSnakes() {
 			if err := json.Unmarshal(bytes, &ctx); err != nil {
 				panic(err)
 			}
+			ctx.Prepare()
 
 			frame := db.NewFrame(ctx)
 			if !ctx.Game.Dev {
@@ -108,6 +109,7 @@ func RouteSnakes() {
 			if err := json.Unmarshal(bytes, &ctx); err != nil {
 				panic(err)
 			}
+			ctx.Prepare()
 
 			snake.EndGame(ctx)
 
