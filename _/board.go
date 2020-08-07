@@ -6,10 +6,11 @@ import (
 )
 
 type Board struct {
-	Width  int      `json:"width"`
-	Height int      `json:"height"`
-	Snakes []*Snake `json:"snakes"`
-	Food   []*Cell  `json:"food"`
+	Width   int      `json:"width"`
+	Height  int      `json:"height"`
+	Snakes  []*Snake `json:"snakes"`
+	Food    []*Cell  `json:"food"`
+	Hazards []*Cell  `json:"hazards"`
 
 	Graph   traverse.Graph `json:"-"`
 	Enemies []*Snake       `json:"-"`
@@ -28,6 +29,15 @@ func (board *Board) Prepare(ctx *Context) {
 	for ix, food := range board.Food {
 		board.Food[ix] = board.CellAt(food.X, food.Y)
 		board.Food[ix].AddTags("food")
+	}
+
+	// Replace hazards array with cell singletons.
+	if board.Hazards == nil {
+		board.Hazards = make([]*Cell, 0)
+	}
+	for ix, hazard := range board.Hazards {
+		board.Hazards[ix] = board.CellAt(hazard.X, hazard.Y)
+		board.Hazards[ix].AddTags("hazard")
 	}
 
 	board.loadEnemies(ctx)

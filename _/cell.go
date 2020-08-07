@@ -132,6 +132,10 @@ func (cell *Cell) IsRisky(context *Context) bool {
 		}
 	}
 
+	if cell.HasTags("hazard") {
+		return true
+	}
+
 	// TODO: This check is more trouble than it's worth - add it back in later, after making it more comprehensive.
 	//pathToTail := cell.PathTo(context.You.Tail(), context)
 	//if pathToTail == nil {
