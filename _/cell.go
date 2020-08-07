@@ -32,8 +32,7 @@ type Vector struct {
 }
 
 func (cell *Cell) ID() int64 {
-	// HACK: Should replace this magic number with context.Board.Width somehow.
-	return int64(cell.X + (cell.Y * 11))
+	return int64(cell.X + (cell.Y * cell.board.Width))
 }
 
 func (cell *Cell) String() string {
@@ -41,9 +40,8 @@ func (cell *Cell) String() string {
 }
 
 func (cell *Cell) GetAdjacentCells() map[string]*Cell {
-	// HACK: Should replace these magic numbers with context.Board.Width somehow.
 	cells := make(map[string]*Cell)
-	if cell.Y < 10 {
+	if cell.Y < cell.board.Height-1 {
 		cells["up"] = cell.Adjacent("up")
 	}
 	if cell.Y > 0 {
@@ -52,7 +50,7 @@ func (cell *Cell) GetAdjacentCells() map[string]*Cell {
 	if cell.X > 0 {
 		cells["left"] = cell.Adjacent("left")
 	}
-	if cell.X < 10 {
+	if cell.X < cell.board.Width-1 {
 		cells["right"] = cell.Adjacent("right")
 	}
 	return cells
