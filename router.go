@@ -57,9 +57,10 @@ func RouteSnakes() {
 			}
 
 			var ctx *snek.Context
-			if err := json.Unmarshal(bytes, ctx); err != nil {
+			if err := json.Unmarshal(bytes, &ctx); err != nil {
 				panic(err)
 			}
+			ctx.Prepare()
 
 			snake.StartGame(ctx)
 		})
@@ -71,7 +72,7 @@ func RouteSnakes() {
 			}
 
 			var ctx *snek.Context
-			if err := json.Unmarshal(bytes, ctx); err != nil {
+			if err := json.Unmarshal(bytes, &ctx); err != nil {
 				panic(err)
 			}
 
@@ -104,7 +105,7 @@ func RouteSnakes() {
 			}
 
 			var ctx *snek.Context
-			if err := json.Unmarshal(bytes, ctx); err != nil {
+			if err := json.Unmarshal(bytes, &ctx); err != nil {
 				panic(err)
 			}
 
