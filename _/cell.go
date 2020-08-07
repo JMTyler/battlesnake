@@ -133,7 +133,7 @@ func (cell *Cell) IsSafe(context *Context) bool {
 }
 
 func (a *Cell) Matches(b *Cell) bool {
-	return *a == *b
+	return a == b
 }
 
 func (from *Cell) ToDirection(to *Cell) string {
