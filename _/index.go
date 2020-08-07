@@ -12,3 +12,7 @@ type Game struct {
 	Timeout int    `json:"timeout"`
 	Dev     bool   `json:"dev"`
 }
+
+func (ctx *Context) Prepare() {
+	ctx.Board.Prepare(ctx)
+}

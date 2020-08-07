@@ -6,16 +6,18 @@ import (
 	"math"
 )
 
-// TODO: Cells should be singletons, instantiated once per request, at the start.
 // They should already know if anything resides on them, and whether they're deadly or risky, such that we don't have to
 // have the same loops checking for the same qualities numerous times each request.
-// Perhaps access the cell singleton using ctx.Board.CellAt(x, y)?
 // We can then fix the ID() and GetAdjacentCells() calculations.  Which will allow us to handle the August challenge.
 type Cell struct {
 	X int `json:"x"`
 	Y int `json:"y"`
 
 	board *Board `json:"-"`
+}
+
+func (cell *Cell) Prepare(ctx *Context) {
+	cell.board = ctx.Board
 }
 
 type Vector struct {

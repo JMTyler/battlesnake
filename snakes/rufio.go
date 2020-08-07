@@ -29,8 +29,6 @@ func (me *Rufio) Move(context *snek.Context) string {
 	state := snek.GetState(context)
 	adjacent := context.You.Head.GetAdjacentCells()
 
-	context.Board.LoadEnemies(context)
-	context.Board.LoadGraph(context)
 	state.UpdateSnakeHistory(context)
 
 	move := ""

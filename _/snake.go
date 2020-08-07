@@ -9,6 +9,14 @@ type Snake struct {
 	Health   int     `json:"health"`
 }
 
+func (snake *Snake) Prepare(ctx *Context) {
+	// Replace head and body with cell singletons.
+	snake.Head = ctx.Board.CellAt(snake.Head.X, snake.Head.Y)
+	for ix, part := range snake.FullBody {
+		snake.FullBody[ix] = ctx.Board.CellAt(part.X, part.Y)
+	}
+}
+
 func (snake *Snake) Body() []*Cell {
 	return snake.FullBody[:len(snake.FullBody)-1]
 }
