@@ -36,6 +36,9 @@ func (board *Board) Prepare(ctx *Context) {
 }
 
 func (board *Board) CellAt(x int, y int) *Cell {
+	if x < 0 || y < 0 || x >= board.Width || y >= board.Height {
+		return nil
+	}
 	return board.Cells[x][y]
 }
 
