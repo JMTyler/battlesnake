@@ -12,7 +12,7 @@ type Eat struct {
 // TODO: Is it realistic for us to figure out how to use Infinity / -Infinity as default tactic instead of zero values?
 // Yes, I think this problem solves itself once we switch to tactics being structs, since the constructor can set defaults.
 
-func (opts Eat) Run(context snek.Context, _ *snek.State) string {
+func (opts Eat) Run(context *snek.Context, _ *snek.State) string {
 	if opts.Health > 0 {
 		if context.You.Health > opts.Health {
 			return ""
@@ -20,7 +20,7 @@ func (opts Eat) Run(context snek.Context, _ *snek.State) string {
 	}
 
 	food := context.You.Head.FindClosestTarget(context.Board.Food)
-	if food == (snek.Cell{}) {
+	if food == nil {
 		return ""
 	}
 

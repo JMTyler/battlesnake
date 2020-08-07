@@ -21,7 +21,7 @@ type Frame struct {
 	Move      string `pg:","`
 	Duration  int64  `pg:","`
 
-	Context snek.Context `pg:","`
+	Context *snek.Context `pg:","`
 }
 
 type frameKey struct {
@@ -31,7 +31,7 @@ type frameKey struct {
 	Turn int `pg:", required, notnull, use_zero"`
 }
 
-func NewFrame(context snek.Context) *Frame {
+func NewFrame(context *snek.Context) *Frame {
 	return &Frame{
 		GameID:  context.Game.ID,
 		SnakeID: context.You.ID,

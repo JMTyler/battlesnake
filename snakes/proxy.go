@@ -35,7 +35,7 @@ func (me *Proxy) GetInfo() SnakeInfo {
 	return info
 }
 
-func (me *Proxy) StartGame(context snek.Context) {
+func (me *Proxy) StartGame(context *snek.Context) {
 	b, err := json.Marshal(context)
 	if err != nil {
 		panic(err)
@@ -48,7 +48,7 @@ func (me *Proxy) StartGame(context snek.Context) {
 
 }
 
-func (me *Proxy) Move(context snek.Context) string {
+func (me *Proxy) Move(context *snek.Context) string {
 	b, err := json.Marshal(context)
 	if err != nil {
 		panic(err)
@@ -72,7 +72,7 @@ func (me *Proxy) Move(context snek.Context) string {
 	return payload["move"]
 }
 
-func (me *Proxy) EndGame(context snek.Context) {
+func (me *Proxy) EndGame(context *snek.Context) {
 	b, err := json.Marshal(context)
 	if err != nil {
 		panic(err)

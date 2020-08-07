@@ -6,6 +6,6 @@ import (
 
 type Continue struct{}
 
-func (_ Continue) Run(_ snek.Context, state *snek.State) string {
+func (_ Continue) Run(_ *snek.Context, state *snek.State) string {
 	return state.Move
 }

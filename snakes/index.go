@@ -15,7 +15,7 @@ type SnakeInfo struct {
 type SnakeService interface {
 	GetName() string
 	GetInfo() SnakeInfo
-	StartGame(snek.Context)
-	Move(snek.Context) string
-	EndGame(snek.Context)
+	StartGame(*snek.Context)
+	Move(*snek.Context) string
+	EndGame(*snek.Context)
 }
