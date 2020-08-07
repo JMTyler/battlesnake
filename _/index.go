@@ -1,7 +1,7 @@
 package battlesnake
 
 type Context struct {
-	Turn  int   `json:"turn"`
+	Turn  int    `json:"turn"`
 	Game  *Game  `json:"game"`
 	You   *Snake `json:"you"`
 	Board *Board `json:"board"`

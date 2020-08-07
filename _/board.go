@@ -12,8 +12,8 @@ type Board struct {
 	Food   []*Cell  `json:"food"`
 
 	Graph   traverse.Graph `json:"-"`
-	Enemies []*Snake        `json:"-"`
-	Cells   [][]*Cell       `json:"-"`
+	Enemies []*Snake       `json:"-"`
+	Cells   [][]*Cell      `json:"-"`
 }
 
 func (board *Board) Prepare(ctx *Context) {
