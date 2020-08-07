@@ -15,6 +15,35 @@ func (snake *Snake) Prepare(ctx *Context) {
 	for ix, part := range snake.FullBody {
 		snake.FullBody[ix] = ctx.Board.CellAt(part.X, part.Y)
 	}
+
+	snake.Head.AddTags("head")
+	snake.Tail().AddTags("tail")
+	for _, part := range snake.Body() {
+		part.AddTags("body")
+	}
+
+	if snake.ID == ctx.You.ID {
+		for _, part := range snake.FullBody {
+			part.AddTags("you")
+		}
+	} else {
+		lengthTag := "enemy-equal"
+		switch {
+		case snake.Length > ctx.You.Length:
+			lengthTag = "enemy-longer"
+		case snake.Length < ctx.You.Length:
+			lengthTag = "enemy-shorter"
+		}
+
+		for _, part := range snake.FullBody {
+			part.AddTags("enemy", lengthTag)
+		}
+
+		adjacent := snake.Head.GetAdjacentCells()
+		for _, cell := range adjacent {
+			cell.AddTags("enemy-adjacent", lengthTag)
+		}
+	}
 }
 
 func (snake *Snake) Body() []*Cell {

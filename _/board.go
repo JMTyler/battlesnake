@@ -27,6 +27,7 @@ func (board *Board) Prepare(ctx *Context) {
 	// TODO: Can we just update the pointer to `food` instead of caring about the index?
 	for ix, food := range board.Food {
 		board.Food[ix] = board.CellAt(food.X, food.Y)
+		board.Food[ix].AddTags("food")
 	}
 
 	board.loadEnemies(ctx)

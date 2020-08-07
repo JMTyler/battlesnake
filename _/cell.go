@@ -13,11 +13,35 @@ type Cell struct {
 	X int `json:"x"`
 	Y int `json:"y"`
 
-	board *Board `json:"-"`
+	board *Board   `json:"-"`
+	tags  []string `json:"-"`
+}
+
+func (cell *Cell) AddTags(tags ...string) {
+	cell.tags = append(cell.tags, tags...)
+}
+
+func (cell *Cell) HasTags(tags ...string) bool {
+	for _, requiredTag := range tags {
+		if !cell.hasTag(requiredTag) {
+			return false
+		}
+	}
+	return true
+}
+
+func (cell *Cell) hasTag(requiredTag string) bool {
+	for _, cellTag := range cell.tags {
+		if requiredTag == cellTag {
+			return true
+		}
+	}
+	return false
 }
 
 func (cell *Cell) Prepare(ctx *Context) {
 	cell.board = ctx.Board
+	cell.tags = make([]string, 0)
 }
 
 type Vector struct {
@@ -76,54 +100,43 @@ func (cell *Cell) IsOutsideBoard(board *Board) bool {
 }
 
 func (cell *Cell) IsDeadly(context *Context) bool {
+	// TODO: Might not need this check anymore now that the board only provides cells within the bounds.
 	if cell.IsOutsideBoard(context.Board) {
 		return true
 	}
 
-	for _, bodyPart := range context.You.Body()[1:] {
-		if cell == bodyPart {
-			// self collision
-			return true
-		}
+	if cell.HasTags("you", "head") {
+		return false
+	}
+	if cell.HasTags("you", "body") {
+		return true
 	}
 
-	for _, snake := range context.Board.Enemies {
-		collision := false
-		for _, bodyPart := range snake.Body() {
-			if cell == bodyPart {
-				collision = true
-			}
-		}
-
-		if collision {
-			if cell != snake.Head || context.You.Length <= snake.Length {
-				return true
-			}
-		}
+	if cell.HasTags("enemy", "body") {
+		return true
+	}
+	if cell.HasTags("enemy", "head", "enemy-longer") {
+		return true
+	}
+	if cell.HasTags("enemy", "head", "enemy-equal") {
+		return true
 	}
 
 	return false
 }
 
 func (cell *Cell) IsRisky(context *Context) bool {
-	for _, snake := range context.Board.Enemies {
-		// TODO: Should we use range and iterate over the adjacent map instead?
-		gettinSpicy := cell == snake.Head.Adjacent("left") ||
-			cell == snake.Head.Adjacent("right") ||
-			cell == snake.Head.Adjacent("up") ||
-			cell == snake.Head.Adjacent("down")
-
-		if gettinSpicy {
-			if context.You.Length <= snake.Length {
-				return true
-			}
+	if cell.HasTags("enemy-adjacent") {
+		if cell.HasTags("enemy-longer") || cell.HasTags("enemy-equal") {
+			return true
 		}
 	}
 
-	pathToTail := cell.PathTo(context.You.Tail(), context)
-	if pathToTail == nil {
-		return true
-	}
+	// TODO: This check is more trouble than it's worth - add it back in later, after making it more comprehensive.
+	//pathToTail := cell.PathTo(context.You.Tail(), context)
+	//if pathToTail == nil {
+	//	return true
+	//}
 
 	return false
 }
@@ -133,7 +146,7 @@ func (cell *Cell) IsSafe(context *Context) bool {
 }
 
 func (a *Cell) Matches(b *Cell) bool {
-	return a == b
+	return a.X == b.X && a.Y == b.Y
 }
 
 func (from *Cell) ToDirection(to *Cell) string {
@@ -214,11 +227,11 @@ func (origin *Cell) PathTo(target *Cell, context *Context) []*Cell {
 		return nil
 	}
 
-	cells := make([]*Cell, len(nodes))
-	for ix, node := range nodes {
+	cells := make([]*Cell, len(nodes)-1)
+	for ix, node := range nodes[1:] {
 		cells[ix] = node.(*Cell)
 	}
-	return cells[1:]
+	return cells
 }
 
 func (you *Cell) ApproachTarget(target *Cell, context *Context) string {
