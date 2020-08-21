@@ -8,6 +8,9 @@ import (
 )
 
 func main() {
+	initSentry()
+	defer recoverWithSentry()
+
 	db.InitDatabase()
 	defer db.CloseDatabase()
 
