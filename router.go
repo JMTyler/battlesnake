@@ -5,6 +5,7 @@ import (
 	"fmt"
 	snek "github.com/JMTyler/battlesnake/_"
 	"github.com/JMTyler/battlesnake/_/config"
+	"github.com/getsentry/sentry-go"
 	"net/http"
 	"time"
 	//	"github.com/JMTyler/battlesnake/_/utils"
@@ -21,6 +22,25 @@ var the_snakes = []snakes.SnakeService{
 
 func handleRoute(route string, snake snakes.SnakeService, f func(snakes.SnakeService, http.ResponseWriter, *http.Request)) {
 	http.HandleFunc(route, func(w http.ResponseWriter, r *http.Request) {
+		defer func() {
+			w.WriteHeader(500)
+
+			// HACK: Would be simpler to use sentry.Recover() but it doesn't seem to work as expected.
+			err := recover()
+			if err != nil {
+				if exception, ok := err.(error); ok {
+					sentry.CaptureException(exception)
+				} else if str, ok := err.(string); ok {
+					sentry.CaptureMessage(str)
+				} else {
+					sentry.CaptureMessage(fmt.Sprintf("Object: %#v", err))
+				}
+			}
+
+			fmt.Println("Flushing Sentry...")
+			sentry.Flush(time.Second)
+		}()
+
 		w.Header().Add("Access-Control-Allow-Origin", "*")
 		w.Header().Add("Access-Control-Allow-Headers", "*")
 		if r.Method == "OPTIONS" {
