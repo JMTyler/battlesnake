@@ -1,16 +1,20 @@
 module github.com/JMTyler/battlesnake
 
 go 1.14
+
 // +heroku goVersion go1.14
 
 require (
 	github.com/fatih/color v1.9.0 // indirect
-	github.com/go-pg/pg/v9 v9.1.6
-	github.com/goccy/go-yaml v1.7.18
+	github.com/go-pg/pg/v9 v9.1.7
+	github.com/go-pg/urlstruct v0.5.1 // indirect
+	github.com/goccy/go-yaml v1.8.0
 	github.com/mattn/go-colorable v0.1.7 // indirect
-	golang.org/x/crypto v0.0.0-20200709230013-948cd5f35899 // indirect
-	golang.org/x/exp v0.0.0-20200513190911-00229845015e // indirect
-	golang.org/x/sys v0.0.0-20200625212154-ddb9806d33ae // indirect
-	golang.org/x/xerrors v0.0.0-20191204190536-9bdfabe68543 // indirect
-	gonum.org/v1/gonum v0.7.0
+	github.com/vmihailenco/msgpack/v4 v4.3.12 // indirect
+	golang.org/x/crypto v0.0.0-20200820211705-5c72a883971a // indirect
+	golang.org/x/exp v0.0.0-20200819202907-27b6b2ade93b // indirect
+	golang.org/x/net v0.0.0-20200813134508-3edf25e44fcc // indirect
+	golang.org/x/sys v0.0.0-20200820212457-1fb795427249 // indirect
+	golang.org/x/xerrors v0.0.0-20200804184101-5ec99f83aff1 // indirect
+	gonum.org/v1/gonum v0.8.0
 )
