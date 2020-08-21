@@ -81,7 +81,16 @@ func RouteSnakes() {
 			}
 			ctx.Prepare()
 
+			sentry.ConfigureScope(func(scope *sentry.Scope) {
+				scope.SetRequest(r)
+				scope.SetUser(sentry.User{ID: ctx.Game.ID})
+			})
+
 			snake.StartGame(ctx)
+
+			sentry.ConfigureScope(func(scope *sentry.Scope) {
+				scope.Clear()
+			})
 		})
 
 		handleRoute(prefix+"/move", snake, func(snake snakes.SnakeService, w http.ResponseWriter, r *http.Request) {
@@ -96,6 +105,11 @@ func RouteSnakes() {
 			}
 			ctx.Prepare()
 
+			sentry.ConfigureScope(func(scope *sentry.Scope) {
+				scope.SetRequest(r)
+				scope.SetUser(sentry.User{ID: ctx.Game.ID})
+			})
+
 			frame := db.NewFrame(ctx)
 			if !ctx.Game.Dev {
 				frame.Insert()
@@ -108,9 +122,8 @@ func RouteSnakes() {
 			// If move takes longer than 400ms, something is wrong.
 			if duration >= 400000 {
 				sentry.WithScope(func(scope *sentry.Scope) {
-					scope.SetRequest(r)
 					scope.SetLevel(sentry.LevelWarning)
-					scope.SetTag("game", frame.GameID)
+					scope.SetTag("game", fmt.Sprintf("https://play.battlesnake.com/g/%s", frame.GameID))
 					scope.SetTag("turn", fmt.Sprintf("%v", frame.Turn))
 
 					sentry.CaptureMessage("Move took unusually long to calculate.")
@@ -128,6 +141,10 @@ func RouteSnakes() {
 				panic(err)
 			}
 			w.Write(payload)
+
+			sentry.ConfigureScope(func(scope *sentry.Scope) {
+				scope.Clear()
+			})
 		})
 
 		handleRoute(prefix+"/end", snake, func(snake snakes.SnakeService, w http.ResponseWriter, r *http.Request) {
@@ -142,11 +159,20 @@ func RouteSnakes() {
 			}
 			ctx.Prepare()
 
+			sentry.ConfigureScope(func(scope *sentry.Scope) {
+				scope.SetRequest(r)
+				scope.SetUser(sentry.User{ID: ctx.Game.ID})
+			})
+
 			snake.EndGame(ctx)
 
 			if !ctx.Game.Dev {
 				db.PruneGames()
 			}
+
+			sentry.ConfigureScope(func(scope *sentry.Scope) {
+				scope.Clear()
+			})
 		})
 	}
 }
