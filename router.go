@@ -23,11 +23,11 @@ var the_snakes = []snakes.SnakeService{
 func handleRoute(route string, snake snakes.SnakeService, f func(snakes.SnakeService, http.ResponseWriter, *http.Request)) {
 	http.HandleFunc(route, func(w http.ResponseWriter, r *http.Request) {
 		defer func() {
-			w.WriteHeader(500)
-
 			// HACK: Would be simpler to use sentry.Recover() but it doesn't seem to work as expected.
 			err := recover()
 			if err != nil {
+				w.WriteHeader(500)
+
 				if exception, ok := err.(error); ok {
 					sentry.CaptureException(exception)
 				} else if str, ok := err.(string); ok {
@@ -35,10 +35,10 @@ func handleRoute(route string, snake snakes.SnakeService, f func(snakes.SnakeSer
 				} else {
 					sentry.CaptureMessage(fmt.Sprintf("Object: %#v", err))
 				}
-			}
 
-			fmt.Println("Flushing Sentry...")
-			sentry.Flush(time.Second)
+				fmt.Println("Flushing Sentry...")
+				sentry.Flush(time.Second)
+			}
 		}()
 
 		w.Header().Add("Access-Control-Allow-Origin", "*")
@@ -104,6 +104,18 @@ func RouteSnakes() {
 			start := time.Now()
 			move := snake.Move(ctx)
 			duration := time.Now().Sub(start).Microseconds()
+
+			// If move takes longer than 400ms, something is wrong.
+			if duration >= 400000 {
+				sentry.WithScope(func(scope *sentry.Scope) {
+					scope.SetRequest(r)
+					scope.SetLevel(sentry.LevelWarning)
+					scope.SetTag("game", frame.GameID)
+					scope.SetTag("turn", fmt.Sprintf("%v", frame.Turn))
+
+					sentry.CaptureMessage("Move took unusually long to calculate.")
+				})
+			}
 
 			if !ctx.Game.Dev {
 				frame.Update(move, duration)
