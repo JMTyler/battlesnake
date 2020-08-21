@@ -1,2 +1,3 @@
 port: 80
+debug: false
 database_url: ""

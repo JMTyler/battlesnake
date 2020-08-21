@@ -2,6 +2,7 @@ package utils
 
 import (
 	"fmt"
+	"github.com/JMTyler/battlesnake/_/config"
 	"strings"
 )
 
@@ -14,6 +15,10 @@ var previousTurn int = -1
 
 // TODO: Merge LogMove() and Frame.Insert()/.Update(), once we can be sure which move was the final choice.
 func LogMove(turn int, move string, comment string) {
+	if !config.GetBool("debug") {
+		return
+	}
+
 	if turn > previousTurn+1 {
 		fmt.Println(" [ ... ]")
 	}

@@ -21,6 +21,13 @@ func Get(path string, def string) string {
 	return val
 }
 
+func GetBool(path string) bool {
+	initConfig()
+
+	val, ok := config[path]
+	return ok && val == "true"
+}
+
 var initialised = false
 
 func initConfig() {

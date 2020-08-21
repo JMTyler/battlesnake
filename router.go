@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	snek "github.com/JMTyler/battlesnake/_"
+	"github.com/JMTyler/battlesnake/_/config"
 	"net/http"
 	"time"
 	//	"github.com/JMTyler/battlesnake/_/utils"
@@ -11,8 +12,6 @@ import (
 	"github.com/JMTyler/battlesnake/snakes"
 	"io/ioutil"
 )
-
-const debug bool = false
 
 var the_snakes = []snakes.SnakeService{
 	&snakes.Local{},
@@ -27,7 +26,7 @@ func handleRoute(route string, snake snakes.SnakeService, f func(snakes.SnakeSer
 		if r.Method == "OPTIONS" {
 			return
 		}
-		if debug {
+		if config.GetBool("debug") {
 			fmt.Println("[http]", r.Method, r.RequestURI)
 		}
 		w.Header().Add("Content-Type", "application/json")

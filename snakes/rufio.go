@@ -3,6 +3,7 @@ package snakes
 import (
 	"fmt"
 	snek "github.com/JMTyler/battlesnake/_"
+	"github.com/JMTyler/battlesnake/_/config"
 	"github.com/JMTyler/battlesnake/_/utils"
 	"github.com/JMTyler/battlesnake/snakes/rufio/tactics"
 	"path/filepath"
@@ -118,18 +119,22 @@ func (me *Rufio) StartGame(context *snek.Context) {
 		Snakes: make(map[string]*snek.SnakeState),
 	})
 
-	fmt.Println("-----")
-	fmt.Println()
+	if config.GetBool("debug") {
+		fmt.Println("-----")
+		fmt.Println()
+	}
 }
 
 func (me *Rufio) EndGame(context *snek.Context) {
-	result := "LOSE"
-	if len(context.Board.Snakes) > 0 && context.You.ID == context.Board.Snakes[0].ID {
-		result = "WIN"
-	}
+	if config.GetBool("debug") {
+		result := "LOSE"
+		if len(context.Board.Snakes) > 0 && context.You.ID == context.Board.Snakes[0].ID {
+			result = "WIN"
+		}
 
-	fmt.Println()
-	fmt.Printf("* Game Over! %s *\n", result)
+		fmt.Println()
+		fmt.Printf("* Game Over! %s *\n", result)
+	}
 
 	snek.DeleteState(context)
 }

@@ -9,8 +9,6 @@ import (
 	"strings"
 )
 
-var enableLogging bool = false
-
 var DB *pg.DB
 
 func InitDatabase() *pg.DB {
@@ -48,8 +46,7 @@ func InitDatabase() *pg.DB {
 
 	DB = pg.Connect(connOptions)
 
-	// TODO: convert to config (what happens if boolean is converted to string?)
-	if enableLogging {
+	if config.GetBool("debug") {
 		DB.AddQueryHook(dbLogger{})
 		//		pg.SetLogger(new(dbLogger))
 	}
