@@ -11,6 +11,8 @@ import (
 
 var DB *pg.DB
 
+var queue = make(chan func())
+
 func InitDatabase() *pg.DB {
 	if DB != nil {
 		return DB
@@ -63,6 +65,23 @@ func CloseDatabase() {
 		fmt.Println("Closing database connection...")
 		DB.Close()
 	}
+}
+
+func WatchQueue() {
+	for operation := range queue {
+		operation()
+	}
+}
+
+func CloseQueue() {
+	close(queue)
+
+	// Clear out the queue before moving on.
+	for operation := range queue {
+		operation()
+	}
+
+	fmt.Println("Database queue closed.")
 }
 
 type dbLogger struct{}

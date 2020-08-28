@@ -14,6 +14,9 @@ func main() {
 	db.InitDatabase()
 	defer db.CloseDatabase()
 
+	go db.WatchQueue()
+	defer db.CloseQueue()
+
 	RouteSnakes()
 
 	port := config.Get("port", "80")

@@ -112,7 +112,6 @@ func RouteSnakes() {
 		})
 
 		handleRoute(prefix+"/move", snake, func(snake snakes.SnakeService, ctx *snek.Context) []byte {
-
 			frame := db.NewFrame(ctx)
 			if !ctx.Game.Dev {
 				frame.Insert()

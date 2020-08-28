@@ -50,37 +50,43 @@ func (f *Frame) Insert() {
 	f.CreatedAt = NOW
 	f.UpdatedAt = NOW
 
-	if _, err := DB.Model(f).OnConflict("DO NOTHING").Insert(f); err != nil {
-		panic(err)
+	queue <- func() {
+		if _, err := DB.Model(f).OnConflict("DO NOTHING").Insert(f); err != nil {
+			panic(err)
+		}
 	}
 }
 
 func (f *Frame) Update(move string, duration int64) {
-	if _, err := DB.Model(f).WhereStruct(f.getKey()).Set("move = ?, duration = ?, updated_at = ?", move, duration, time.Now()).Update(); err != nil {
-		panic(err)
+	queue <- func() {
+		if _, err := DB.Model(f).WhereStruct(f.getKey()).Set("move = ?, duration = ?, updated_at = ?", move, duration, time.Now()).Update(); err != nil {
+			panic(err)
+		}
 	}
 }
 
 func PruneGames() {
-	for {
-		numRows, err := DB.Model(&Frame{}).Count()
-		if err != nil {
-			panic(err)
-		}
+	queue <- func() {
+		for {
+			numRows, err := DB.Model(&Frame{}).Count()
+			if err != nil {
+				panic(err)
+			}
 
-		if numRows < 10000 {
-			return
-		}
+			if numRows < 10000 {
+				return
+			}
 
-		// Find the oldest game in the database.
-		var gameID string
-		if err := DB.Model(&Frame{}).Column("game_id").Limit(1).Order("created_at ASC").Where("important = ?", false).Select(&gameID); err != nil {
-			panic(err)
-		}
+			// Find the oldest game in the database.
+			var gameID string
+			if err := DB.Model(&Frame{}).Column("game_id").Limit(1).Order("created_at ASC").Where("important = ?", false).Select(&gameID); err != nil {
+				panic(err)
+			}
 
-		// And delete it.
-		if _, err := DB.Model(&Frame{}).Where("game_id = ?", gameID).Delete(); err != nil {
-			panic(err)
+			// And delete it.
+			if _, err := DB.Model(&Frame{}).Where("game_id = ?", gameID).Delete(); err != nil {
+				panic(err)
+			}
 		}
 	}
 }
