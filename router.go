@@ -78,7 +78,7 @@ func handleRoute(route string, snake snakes.SnakeService, f func(snakes.SnakeSer
 		}
 
 		duration := time.Now().Sub(start).Milliseconds()
-		if duration >= 400 {
+		if duration >= 350 {
 			// If request takes longer than 400ms, something is wrong.
 			sentry.WithScope(func(scope *sentry.Scope) {
 				scope.SetLevel(sentry.LevelWarning)
