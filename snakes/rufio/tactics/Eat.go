@@ -24,6 +24,10 @@ func (opts Eat) Run(context *snek.Context, _ *snek.State) string {
 		return ""
 	}
 
+	if food.HasTags("hazard") {
+		return ""
+	}
+
 	if opts.Distance > 0 {
 		distanceToFood := context.You.Head.GetDistance(food)
 		if distanceToFood > opts.Distance {
