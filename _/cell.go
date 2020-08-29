@@ -137,18 +137,19 @@ func (cell *Cell) IsRisky(context *Context) bool {
 		return true
 	}
 
-	// TODO: This check is more trouble than it's worth - add it back in later, after making it more comprehensive.
-	//pathToTail := cell.PathTo(context.You.Tail(), context)
-	//if pathToTail == nil {
-	//	return true
-	//}
-
 	return false
+}
+
+func (cell *Cell) CanReachTail(context *Context) bool {
+	// TODO: Can't seem to path to my tail from right next to it.
+	pathToTail := cell.GetFuturePath(context.You.Tail(), context)
+	// TODO: We still don't want to follow a path if it funnels us through only one spot, especially next to a head.
+	return pathToTail != nil
 }
 
 // TODO: Cell should know its own context, and not have to pass it around everywhere.
 func (cell *Cell) IsSafe(context *Context) bool {
-	return !cell.IsDeadly(context) && !cell.IsRisky(context)
+	return !cell.IsDeadly(context) && !cell.IsRisky(context) && cell.CanReachTail(context)
 }
 
 func (a *Cell) Matches(b *Cell) bool {
