@@ -25,8 +25,8 @@ func (w *wrapper) Description() string {
 	return w.description
 }
 
-func (w *wrapper) Run(context *snek.Context, state *snek.State) string {
-	return w.tactic.Run(context, state)
+func (w *wrapper) Run(ctx *snek.Context, state *snek.State) string {
+	return w.tactic.Run(ctx, state)
 }
 
 func New(description string, tactic runnable) Tactic {

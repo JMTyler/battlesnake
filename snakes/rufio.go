@@ -26,29 +26,29 @@ var strategy = []tactics.Tactic{
 	tactics.New("Rotate Until Safe", tactics.RotateUntilSafe{}), // TODO: kill this one
 }
 
-func (me *Rufio) Move(context *snek.Context) string {
-	state := snek.GetState(context)
-	adjacent := context.You.Head.GetAdjacentCells()
+func (me *Rufio) Move(ctx *snek.Context) string {
+	state := snek.GetState(ctx)
+	adjacent := ctx.You.Head.GetAdjacentCells()
 
-	state.UpdateSnakeHistory(context)
+	state.UpdateSnakeHistory(ctx)
 
 	move := ""
 	riskyBusiness := ""
 	for _, tactic := range strategy {
-		result := tactic.Run(context, state)
+		result := tactic.Run(ctx, state)
 		if result == "" {
 			continue
 		}
 
-		utils.LogMove(context.Turn, result, tactic.Description())
+		utils.LogMove(ctx.Turn, result, tactic.Description())
 
 		cell, withinBounds := adjacent[result]
 		if !withinBounds {
 			continue
 		}
 
-		if !cell.IsSafe(context) {
-			if !cell.IsDeadly(context) && riskyBusiness == "" {
+		if !cell.IsSafe(ctx) {
+			if !cell.IsDeadly(ctx) && riskyBusiness == "" {
 				riskyBusiness = result
 			}
 			continue
@@ -64,7 +64,7 @@ func (me *Rufio) Move(context *snek.Context) string {
 	}
 
 	if riskyBusiness != "" {
-		utils.LogMove(context.Turn, riskyBusiness, "Risky Business")
+		utils.LogMove(ctx.Turn, riskyBusiness, "Risky Business")
 		state.Move = riskyBusiness
 		return riskyBusiness
 	}
@@ -84,7 +84,7 @@ func (me *Rufio) Move(context *snek.Context) string {
 		state.Move = nonWalls[0]
 	}
 
-	utils.LogMove(context.Turn, state.Move, "welp 👋")
+	utils.LogMove(ctx.Turn, state.Move, "welp 👋")
 	return state.Move
 }
 
@@ -113,8 +113,8 @@ func (me *Rufio) GetInfo() SnakeInfo {
 	}
 }
 
-func (me *Rufio) StartGame(context *snek.Context) {
-	snek.InitState(context, &snek.State{
+func (me *Rufio) StartGame(ctx *snek.Context) {
+	snek.InitState(ctx, &snek.State{
 		Move:   "right",
 		Snakes: make(map[string]*snek.SnakeState),
 	})
@@ -125,10 +125,10 @@ func (me *Rufio) StartGame(context *snek.Context) {
 	}
 }
 
-func (me *Rufio) EndGame(context *snek.Context) {
+func (me *Rufio) EndGame(ctx *snek.Context) {
 	if config.GetBool("debug") {
 		result := "LOSE"
-		if len(context.Board.Snakes) > 0 && context.You.ID == context.Board.Snakes[0].ID {
+		if len(ctx.Board.Snakes) > 0 && ctx.You.ID == ctx.Board.Snakes[0].ID {
 			result = "WIN"
 		}
 
@@ -136,7 +136,7 @@ func (me *Rufio) EndGame(context *snek.Context) {
 		fmt.Printf("* Game Over! %s *\n", result)
 	}
 
-	snek.DeleteState(context)
+	snek.DeleteState(ctx)
 }
 
 func currentDir() string {

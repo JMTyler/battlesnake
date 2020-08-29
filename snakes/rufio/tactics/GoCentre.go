@@ -10,7 +10,7 @@ type GoCentre struct {
 	Height int
 }
 
-func (opts GoCentre) Run(context *snek.Context, _ *snek.State) string {
+func (opts GoCentre) Run(ctx *snek.Context, _ *snek.State) string {
 	if opts.Width == 0 {
 		opts.Width = 1
 	}
@@ -18,14 +18,14 @@ func (opts GoCentre) Run(context *snek.Context, _ *snek.State) string {
 		opts.Height = 1
 	}
 
-	leftEdge := (context.Board.Width - opts.Width) / 2
-	bottomEdge := (context.Board.Height - opts.Height) / 2
+	leftEdge := (ctx.Board.Width - opts.Width) / 2
+	bottomEdge := (ctx.Board.Height - opts.Height) / 2
 
 	var centreCells []*snek.Cell
 	for x := leftEdge; x < leftEdge+opts.Width; x++ {
 		for y := bottomEdge; y < bottomEdge+opts.Height; y++ {
-			cell := context.Board.CellAt(x, y)
-			if cell.IsSafe(context) {
+			cell := ctx.Board.CellAt(x, y)
+			if cell.IsSafe(ctx) {
 				centreCells = append(centreCells, cell)
 			}
 		}
@@ -37,5 +37,5 @@ func (opts GoCentre) Run(context *snek.Context, _ *snek.State) string {
 
 	index := rand.Intn(len(centreCells))
 	target := centreCells[index]
-	return context.You.Head.ApproachTarget(target, context)
+	return ctx.You.Head.ApproachTarget(target, ctx)
 }

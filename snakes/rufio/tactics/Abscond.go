@@ -9,14 +9,14 @@ type Abscond struct {
 	Distance     int
 }
 
-func (opts Abscond) Run(context *snek.Context, _ *snek.State) string {
+func (opts Abscond) Run(ctx *snek.Context, _ *snek.State) string {
 	if opts.Disadvantage == 0 {
 		opts.Disadvantage = 1
 	}
 
 	var predators []*snek.Cell
-	for _, snake := range context.Board.Enemies {
-		if context.You.Length <= snake.Length-opts.Disadvantage {
+	for _, snake := range ctx.Board.Enemies {
+		if ctx.You.Length <= snake.Length-opts.Disadvantage {
 			predators = append(predators, snake.Head)
 		}
 	}
@@ -25,24 +25,24 @@ func (opts Abscond) Run(context *snek.Context, _ *snek.State) string {
 		return ""
 	}
 
-	predator := context.You.Head.FindClosestTarget(predators)
+	predator := ctx.You.Head.FindClosestTarget(predators)
 
 	if opts.Distance > 0 {
-		distanceToPredator := context.You.Head.GetDistance(predator)
+		distanceToPredator := ctx.You.Head.GetDistance(predator)
 		if distanceToPredator > opts.Distance {
 			return ""
 		}
 	}
 
-	vector := context.You.Head.GetVector(predator)
+	vector := ctx.You.Head.GetVector(predator)
 	xEscapeVector := -1 * vector.Weight.X
 	yEscapeVector := -1 * vector.Weight.Y
-	escapeTarget := context.Board.CellAt(
-		clamp(xEscapeVector+context.You.Head.X, 0, context.Board.Width-1),
-		clamp(yEscapeVector+context.You.Head.Y, 0, context.Board.Height-1),
+	escapeTarget := ctx.Board.CellAt(
+		clamp(xEscapeVector+ctx.You.Head.X, 0, ctx.Board.Width-1),
+		clamp(yEscapeVector+ctx.You.Head.Y, 0, ctx.Board.Height-1),
 	)
 
-	return context.You.Head.ApproachTarget(escapeTarget, context)
+	return ctx.You.Head.ApproachTarget(escapeTarget, ctx)
 }
 
 func clamp(val int, min int, max int) int {

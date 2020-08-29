@@ -31,13 +31,13 @@ type frameKey struct {
 	Turn int `pg:", required, notnull, use_zero"`
 }
 
-func NewFrame(context *snek.Context) *Frame {
+func NewFrame(ctx *snek.Context) *Frame {
 	return &Frame{
-		GameID:  context.Game.ID,
-		SnakeID: context.You.ID,
-		Name:    context.You.Name,
-		Turn:    context.Turn,
-		Context: context,
+		GameID:  ctx.Game.ID,
+		SnakeID: ctx.You.ID,
+		Name:    ctx.You.Name,
+		Turn:    ctx.Turn,
+		Context: ctx,
 	}
 }
 

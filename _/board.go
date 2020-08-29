@@ -57,18 +57,18 @@ func (board *Board) CellAt(x int, y int) *Cell {
 	return board.Cells[x][y]
 }
 
-func (board *Board) loadEnemies(context *Context) {
+func (board *Board) loadEnemies(ctx *Context) {
 	// Remove `You` snake from the snakes array since we only ever want an array of enemies.
-	for i, snake := range context.Board.Snakes {
-		if snake.ID == context.You.ID {
-			context.You = snake
-			board.Enemies = append(context.Board.Snakes[:i], context.Board.Snakes[i+1:]...)
+	for i, snake := range ctx.Board.Snakes {
+		if snake.ID == ctx.You.ID {
+			ctx.You = snake
+			board.Enemies = append(ctx.Board.Snakes[:i], ctx.Board.Snakes[i+1:]...)
 			break
 		}
 	}
 }
 
-func (board *Board) loadGraphs(context *Context) {
+func (board *Board) loadGraphs(ctx *Context) {
 	riskyGraph := simple.NewUndirectedGraph()
 	safeGraph := simple.NewUndirectedGraph()
 	noHeadsGraph := simple.NewUndirectedGraph()
@@ -80,9 +80,9 @@ func (board *Board) loadGraphs(context *Context) {
 	for x := 0; x < board.Width; x++ {
 		for y := 0; y < board.Height; y++ {
 			node := board.CellAt(x, y)
-			if !node.IsDeadly(context) {
+			if !node.IsDeadly(ctx) {
 				riskyGraph.AddNode(node)
-				if !node.IsRisky(context) {
+				if !node.IsRisky(ctx) {
 					safeGraph.AddNode(node)
 					if !node.HasTags("head") {
 						noHeadsGraph.AddNode(node)

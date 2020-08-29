@@ -13,17 +13,17 @@ var rotate = map[string]string{
 
 type RotateUntilSafe struct{}
 
-func (_ RotateUntilSafe) Run(context *snek.Context, state *snek.State) string {
-	adjacent := context.You.Head.GetAdjacentCells()
+func (_ RotateUntilSafe) Run(ctx *snek.Context, state *snek.State) string {
+	adjacent := ctx.You.Head.GetAdjacentCells()
 
 	isSafe := false
 	move := state.Move
 	for turns := 0; !isSafe && turns < 4; turns += 1 {
 		move = rotate[move]
 		if cell, ok := adjacent[move]; ok {
-			isSafe = cell.IsSafe(context)
+			isSafe = cell.IsSafe(ctx)
 		}
-		//utils.LogMove(context.turn, move, 'Rotate Until Safe');
+		//utils.LogMove(ctx.turn, move, 'Rotate Until Safe');
 	}
 
 	if isSafe {
@@ -32,7 +32,7 @@ func (_ RotateUntilSafe) Run(context *snek.Context, state *snek.State) string {
 
 	// If there are no safe cells nearby, we have to be willing to move into risky cells.
 	// Prioritising our current direction.
-	if cell, ok := adjacent[state.Move]; ok && !cell.IsDeadly(context) {
+	if cell, ok := adjacent[state.Move]; ok && !cell.IsDeadly(ctx) {
 		return state.Move
 	}
 
@@ -40,9 +40,9 @@ func (_ RotateUntilSafe) Run(context *snek.Context, state *snek.State) string {
 	for turns := 0; !isSafe && turns < 4; turns += 1 {
 		move = rotate[move]
 		if cell, ok := adjacent[move]; ok {
-			isSafe = !cell.IsDeadly(context)
+			isSafe = !cell.IsDeadly(ctx)
 		}
-		//utils.LogMove(context.turn, move, 'Rotate Until Risky');
+		//utils.LogMove(ctx.turn, move, 'Rotate Until Risky');
 	}
 
 	return move

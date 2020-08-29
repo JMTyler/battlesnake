@@ -6,7 +6,7 @@ import (
 
 type SeekTail struct{}
 
-func (_ SeekTail) Run(context *snek.Context, _ *snek.State) string {
+func (_ SeekTail) Run(ctx *snek.Context, _ *snek.State) string {
 	// TODO: If can't reach tail, try to approach the closest part to it instead.
-	return context.You.Head.ApproachTarget(context.You.Tail(), context)
+	return ctx.You.Head.ApproachTarget(ctx.You.Tail(), ctx)
 }

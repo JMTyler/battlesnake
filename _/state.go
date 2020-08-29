@@ -12,25 +12,25 @@ type SnakeState struct {
 	Move string
 }
 
-func InitState(context *Context, value *State) {
-	states[context.Game.ID+"---"+context.You.ID] = value
+func InitState(ctx *Context, value *State) {
+	states[ctx.Game.ID+"---"+ctx.You.ID] = value
 }
 
-func DeleteState(context *Context) {
-	delete(states, context.Game.ID+"---"+context.You.ID)
+func DeleteState(ctx *Context) {
+	delete(states, ctx.Game.ID+"---"+ctx.You.ID)
 }
 
-func GetState(context *Context) *State {
-	state, ok := states[context.Game.ID+"---"+context.You.ID]
+func GetState(ctx *Context) *State {
+	state, ok := states[ctx.Game.ID+"---"+ctx.You.ID]
 	if !ok {
 		return &State{Move: "right", Snakes: make(map[string]*SnakeState)}
 	}
 	return state
 }
 
-func (state *State) UpdateSnakeHistory(context *Context) {
+func (state *State) UpdateSnakeHistory(ctx *Context) {
 	// Figure out which move each snake took during the *last* turn, and toss it into state.
-	for _, snake := range context.Board.Enemies {
+	for _, snake := range ctx.Board.Enemies {
 		prev, exists := state.Snakes[snake.ID]
 		move := "up"
 		if exists {

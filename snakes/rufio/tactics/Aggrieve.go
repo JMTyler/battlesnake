@@ -9,14 +9,14 @@ type Aggrieve struct {
 	Distance  int
 }
 
-func (opts Aggrieve) Run(context *snek.Context, state *snek.State) string {
+func (opts Aggrieve) Run(ctx *snek.Context, state *snek.State) string {
 	if opts.Advantage == 0 {
 		opts.Advantage = 1
 	}
 
 	var weaklings []*snek.Cell
-	for _, snake := range context.Board.Enemies {
-		if context.You.Length >= snake.Length+opts.Advantage {
+	for _, snake := range ctx.Board.Enemies {
+		if ctx.You.Length >= snake.Length+opts.Advantage {
 			weaklings = append(weaklings, snake.Head)
 		}
 	}
@@ -24,10 +24,10 @@ func (opts Aggrieve) Run(context *snek.Context, state *snek.State) string {
 		return ""
 	}
 
-	closestSnake := context.You.Head.FindClosestTarget(weaklings)
+	closestSnake := ctx.You.Head.FindClosestTarget(weaklings)
 
 	if opts.Distance > 0 {
-		distanceToSnake := context.You.Head.GetDistance(closestSnake)
+		distanceToSnake := ctx.You.Head.GetDistance(closestSnake)
 		if distanceToSnake > opts.Distance {
 			return ""
 		}
@@ -35,24 +35,24 @@ func (opts Aggrieve) Run(context *snek.Context, state *snek.State) string {
 
 	var prey *snek.Snake
 	// TODO: Would be nice if there's a way to break out of this when we find it?  I can't remember.
-	for _, snake := range context.Board.Enemies {
+	for _, snake := range ctx.Board.Enemies {
 		if snake.Head == closestSnake {
 			prey = snake
 		}
 	}
 
-	target := chooseAdjacentCell(prey, context, state)
+	target := chooseAdjacentCell(prey, ctx, state)
 	if target == nil {
 		return ""
 	}
 
-	return context.You.Head.ApproachTarget(target, context)
+	return ctx.You.Head.ApproachTarget(target, ctx)
 }
 
-func chooseAdjacentCell(prey *snek.Snake, context *snek.Context, state *snek.State) *snek.Cell {
+func chooseAdjacentCell(prey *snek.Snake, ctx *snek.Context, state *snek.State) *snek.Cell {
 	targetOptions := make(map[string]*snek.Cell)
 	for dir, cell := range prey.Head.GetAdjacentCells() {
-		if cell.IsSafe(context) {
+		if cell.IsSafe(ctx) {
 			targetOptions[dir] = cell
 		}
 	}
@@ -71,5 +71,5 @@ func chooseAdjacentCell(prey *snek.Snake, context *snek.Context, state *snek.Sta
 		targets = append(targets, cell)
 	}
 
-	return context.You.Head.FindClosestTarget(targets)
+	return ctx.You.Head.FindClosestTarget(targets)
 }
