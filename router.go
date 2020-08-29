@@ -48,7 +48,7 @@ func handleRoute(route string, snake snakes.SnakeService, f func(snakes.SnakeSer
 		if r.Method == "OPTIONS" {
 			return
 		}
-		if config.GetBool("debug") {
+		if config.GetBool("logging.router") {
 			fmt.Println("[http]", r.Method, r.RequestURI)
 		}
 		w.Header().Add("Content-Type", "application/json")

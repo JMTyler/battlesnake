@@ -48,7 +48,7 @@ func InitDatabase() *pg.DB {
 
 	DB = pg.Connect(connOptions)
 
-	if config.GetBool("debug") {
+	if config.GetBool("logging.sql") {
 		DB.AddQueryHook(dbLogger{})
 		//		pg.SetLogger(new(dbLogger))
 	}
