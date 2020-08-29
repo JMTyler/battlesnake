@@ -46,6 +46,7 @@ func (snake *Snake) Prepare(ctx *Context) {
 	}
 }
 
+// TODO: Body() and Tail() should both be fields that are set during Prepare().
 func (snake *Snake) Body() []*Cell {
 	return snake.FullBody[:len(snake.FullBody)-1]
 }

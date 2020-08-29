@@ -3,6 +3,7 @@ package battlesnake
 import (
 	"fmt"
 	"gonum.org/v1/gonum/graph/path"
+	"gonum.org/v1/gonum/graph/traverse"
 	"math"
 )
 
@@ -145,6 +146,7 @@ func (cell *Cell) IsRisky(context *Context) bool {
 	return false
 }
 
+// TODO: Cell should know its own context, and not have to pass it around everywhere.
 func (cell *Cell) IsSafe(context *Context) bool {
 	return !cell.IsDeadly(context) && !cell.IsRisky(context)
 }
@@ -224,8 +226,8 @@ func (origin *Cell) GetVector(target *Cell) *Vector {
 	}
 }
 
-func (origin *Cell) PathTo(target *Cell, context *Context) []*Cell {
-	shortest, _ := path.AStar(origin, target, context.Board.Graph, nil)
+func (origin *Cell) PathTo(target *Cell, graph traverse.Graph) []*Cell {
+	shortest, _ := path.AStar(origin, target, graph, nil)
 	nodes, _ := shortest.To(target.ID())
 	if len(nodes) < 2 {
 		return nil
@@ -238,8 +240,20 @@ func (origin *Cell) PathTo(target *Cell, context *Context) []*Cell {
 	return cells
 }
 
+func (origin *Cell) GetRiskyPath(target *Cell, context *Context) []*Cell {
+	return origin.PathTo(target, context.Board.RiskyGraph)
+}
+
+func (origin *Cell) GetSafePath(target *Cell, context *Context) []*Cell {
+	return origin.PathTo(target, context.Board.SafeGraph)
+}
+
+func (origin *Cell) GetFuturePath(target *Cell, context *Context) []*Cell {
+	return origin.PathTo(target, context.Board.FutureGraph)
+}
+
 func (you *Cell) ApproachTarget(target *Cell, context *Context) string {
-	cells := you.PathTo(target, context)
+	cells := you.GetRiskyPath(target, context)
 	if cells == nil {
 		return ""
 	}

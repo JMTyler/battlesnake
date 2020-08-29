@@ -12,9 +12,13 @@ type Board struct {
 	Food    []*Cell  `json:"food"`
 	Hazards []*Cell  `json:"hazards"`
 
-	Graph   traverse.Graph `json:"-"`
-	Enemies []*Snake       `json:"-"`
-	Cells   [][]*Cell      `json:"-"`
+	RiskyGraph  traverse.Graph `json:"-"`
+	SafeGraph   traverse.Graph `json:"-"`
+	FutureGraph traverse.Graph `json:"-"`
+
+	// TODO: Rename Enemies to Foes.
+	Enemies []*Snake  `json:"-"`
+	Cells   [][]*Cell `json:"-"`
 }
 
 func (board *Board) Prepare(ctx *Context) {
@@ -43,7 +47,7 @@ func (board *Board) Prepare(ctx *Context) {
 	board.loadEnemies(ctx)
 
 	// everything needs to be prepared/loaded before this, so we can just check the tags on the cells
-	board.loadGraph(ctx)
+	board.loadGraphs(ctx)
 }
 
 func (board *Board) CellAt(x int, y int) *Cell {
@@ -64,24 +68,53 @@ func (board *Board) loadEnemies(context *Context) {
 	}
 }
 
-func (board *Board) loadGraph(context *Context) {
-	grid := simple.NewUndirectedGraph()
-	board.Graph = grid
+func (board *Board) loadGraphs(context *Context) {
+	riskyGraph := simple.NewUndirectedGraph()
+	safeGraph := simple.NewUndirectedGraph()
+	noHeadsGraph := simple.NewUndirectedGraph()
+
+	board.RiskyGraph = riskyGraph
+	board.SafeGraph = safeGraph
+	board.FutureGraph = noHeadsGraph
+
 	for x := 0; x < board.Width; x++ {
 		for y := 0; y < board.Height; y++ {
 			node := board.CellAt(x, y)
 			if !node.IsDeadly(context) {
-				grid.AddNode(node)
+				riskyGraph.AddNode(node)
+				if !node.IsRisky(context) {
+					safeGraph.AddNode(node)
+					if !node.HasTags("head") {
+						noHeadsGraph.AddNode(node)
+					}
+				}
+			}
+			if node.HasTags("tail") && noHeadsGraph.Node(node.ID()) == nil {
+				noHeadsGraph.AddNode(node)
 			}
 		}
 	}
 	for x := 0; x < board.Width; x++ {
 		for y := 0; y < board.Height; y++ {
 			node := board.CellAt(x, y)
-			if grid.Node(node.ID()) != nil {
+			if riskyGraph.Node(node.ID()) != nil {
 				for _, cell := range node.GetAdjacentCells() {
-					if grid.Node(cell.ID()) != nil {
-						grid.SetEdge(grid.NewEdge(node, cell))
+					if riskyGraph.Node(cell.ID()) != nil {
+						riskyGraph.SetEdge(riskyGraph.NewEdge(node, cell))
+					}
+				}
+			}
+			if safeGraph.Node(node.ID()) != nil {
+				for _, cell := range node.GetAdjacentCells() {
+					if safeGraph.Node(cell.ID()) != nil {
+						safeGraph.SetEdge(safeGraph.NewEdge(node, cell))
+					}
+				}
+			}
+			if noHeadsGraph.Node(node.ID()) != nil {
+				for _, cell := range node.GetAdjacentCells() {
+					if noHeadsGraph.Node(cell.ID()) != nil {
+						noHeadsGraph.SetEdge(noHeadsGraph.NewEdge(node, cell))
 					}
 				}
 			}
