@@ -14,7 +14,7 @@ type Rufio struct{}
 
 var strategy = []tactics.Tactic{
 	tactics.New("Only One Option", tactics.OnlyOneOption{}),
-	tactics.New("Easy Kill", tactics.Aggrieve{Advantage: 1, Distance: 1}),
+	tactics.New("Easy Kill", tactics.Aggrieve{Advantage: 1, Distance: 2}),
 	tactics.New("Quick Snack", tactics.Eat{Distance: 2}),
 	tactics.New("Abscond", tactics.Abscond{Disadvantage: 1, Distance: 3}),
 	tactics.New("Hunt", tactics.Aggrieve{Advantage: 2}),
