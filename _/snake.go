@@ -7,6 +7,7 @@ type Snake struct {
 	FullBody []*Cell `json:"body"`
 	Length   int     `json:"length"`
 	Health   int     `json:"health"`
+	Squad    string  `json:"squad"`
 }
 
 func (snake *Snake) Prepare(ctx *Context) {

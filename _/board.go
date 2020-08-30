@@ -16,8 +16,9 @@ type Board struct {
 	SafeGraph   traverse.Graph `json:"-"`
 	FutureGraph traverse.Graph `json:"-"`
 
-	Foes  []*Snake  `json:"-"`
-	Cells [][]*Cell `json:"-"`
+	Friends []*Snake  `json:"-"`
+	Foes    []*Snake  `json:"-"`
+	Cells   [][]*Cell `json:"-"`
 }
 
 func (board *Board) Prepare(ctx *Context) {
@@ -43,7 +44,7 @@ func (board *Board) Prepare(ctx *Context) {
 		board.Hazards[ix].AddTags("hazard")
 	}
 
-	board.loadEnemies(ctx)
+	board.loadSnakes(ctx)
 
 	// everything needs to be prepared/loaded before this, so we can just check the tags on the cells
 	board.loadGraphs(ctx)
@@ -56,13 +57,19 @@ func (board *Board) CellAt(x int, y int) *Cell {
 	return board.Cells[x][y]
 }
 
-func (board *Board) loadEnemies(ctx *Context) {
-	// Remove `You` snake from the snakes array since we only ever want an array of enemies.
-	for i, snake := range ctx.Board.Snakes {
+func (board *Board) loadSnakes(ctx *Context) {
+	board.Friends = make([]*Snake, 0)
+	board.Foes = make([]*Snake, 0)
+
+	for _, snake := range ctx.Board.Snakes {
 		if snake.ID == ctx.You.ID {
 			ctx.You = snake
-			board.Foes = append(ctx.Board.Snakes[:i], ctx.Board.Snakes[i+1:]...)
-			break
+		} else {
+			if ctx.You.Squad == "" || snake.Squad != ctx.You.Squad {
+				board.Foes = append(board.Foes, snake)
+			} else {
+				board.Friends = append(board.Friends, snake)
+			}
 		}
 	}
 }
