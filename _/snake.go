@@ -27,6 +27,15 @@ func (snake *Snake) Prepare(ctx *Context) {
 		for _, part := range snake.FullBody {
 			part.AddTags("you")
 		}
+	} else if snake.Squad == ctx.You.Squad && snake.Squad != "" {
+		for _, part := range snake.FullBody {
+			part.AddTags("friend")
+		}
+
+		adjacent := snake.Head.GetAdjacentCells()
+		for _, cell := range adjacent {
+			cell.AddTags("friend-adjacent")
+		}
 	} else {
 		lengthTag := "enemy-equal"
 		switch {
