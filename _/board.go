@@ -16,9 +16,8 @@ type Board struct {
 	SafeGraph   traverse.Graph `json:"-"`
 	FutureGraph traverse.Graph `json:"-"`
 
-	// TODO: Rename Enemies to Foes.
-	Enemies []*Snake  `json:"-"`
-	Cells   [][]*Cell `json:"-"`
+	Foes  []*Snake  `json:"-"`
+	Cells [][]*Cell `json:"-"`
 }
 
 func (board *Board) Prepare(ctx *Context) {
@@ -62,7 +61,7 @@ func (board *Board) loadEnemies(ctx *Context) {
 	for i, snake := range ctx.Board.Snakes {
 		if snake.ID == ctx.You.ID {
 			ctx.You = snake
-			board.Enemies = append(ctx.Board.Snakes[:i], ctx.Board.Snakes[i+1:]...)
+			board.Foes = append(ctx.Board.Snakes[:i], ctx.Board.Snakes[i+1:]...)
 			break
 		}
 	}

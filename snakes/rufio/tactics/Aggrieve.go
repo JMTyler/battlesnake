@@ -15,7 +15,7 @@ func (opts Aggrieve) Run(ctx *snek.Context, state *snek.State) string {
 	}
 
 	var weaklings []*snek.Cell
-	for _, snake := range ctx.Board.Enemies {
+	for _, snake := range ctx.Board.Foes {
 		if ctx.You.Length >= snake.Length+opts.Advantage {
 			weaklings = append(weaklings, snake.Head)
 		}
@@ -35,7 +35,7 @@ func (opts Aggrieve) Run(ctx *snek.Context, state *snek.State) string {
 
 	var prey *snek.Snake
 	// TODO: Would be nice if there's a way to break out of this when we find it?  I can't remember.
-	for _, snake := range ctx.Board.Enemies {
+	for _, snake := range ctx.Board.Foes {
 		if snake.Head == closestSnake {
 			prey = snake
 		}
