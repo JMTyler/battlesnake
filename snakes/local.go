@@ -6,7 +6,7 @@ import (
 
 type Local struct{}
 
-var rufio *Rufio = &Rufio{}
+var snake SnakeService = &Tavros{}
 
 func (me *Local) GetName() string {
 	return "local"
@@ -21,13 +21,13 @@ func (me *Local) GetInfo() SnakeInfo {
 }
 
 func (me *Local) StartGame(ctx *snek.Context) {
-	rufio.StartGame(ctx)
+	snake.StartGame(ctx)
 }
 
 func (me *Local) Move(ctx *snek.Context) string {
-	return rufio.Move(ctx)
+	return snake.Move(ctx)
 }
 
 func (me *Local) EndGame(ctx *snek.Context) {
-	rufio.EndGame(ctx)
+	snake.EndGame(ctx)
 }
