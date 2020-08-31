@@ -26,9 +26,8 @@ func (me *Tavros) Move(ctx *snek.Context) string {
 
 	move := ""
 
-	if ctx.You.Health <= 20 {
-		food := ctx.You.Head.FindClosestTarget(ctx.Board.Food)
-		if food != nil {
+	if food := ctx.You.Head.FindClosestTarget(ctx.Board.Food); food != nil {
+		if ctx.You.Health <= 20 || ctx.You.Head.GetDistance(food) <= 2 {
 			move = ctx.You.Head.ApproachTarget(food, ctx)
 		}
 	}
