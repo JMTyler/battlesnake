@@ -113,6 +113,10 @@ func (cell *Cell) IsDeadly(ctx *Context) bool {
 		return true
 	}
 
+	if cell.HasTags("friend", "head") {
+		return true
+	}
+
 	if cell.HasTags("enemy", "body") {
 		return true
 	}
@@ -131,6 +135,10 @@ func (cell *Cell) IsRisky(ctx *Context) bool {
 		if cell.HasTags("enemy-longer") || cell.HasTags("enemy-equal") {
 			return true
 		}
+	}
+
+	if cell.HasTags("friend-adjacent") {
+		return true
 	}
 
 	if cell.HasTags("hazard") {

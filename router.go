@@ -18,6 +18,7 @@ var the_snakes = []snakes.SnakeService{
 	&snakes.Local{},
 	&snakes.Rufio{},
 	&snakes.Proxy{},
+	&snakes.Tavros{},
 }
 
 func handleRoute(route string, snake snakes.SnakeService, f func(snakes.SnakeService, *snek.Context) []byte) {
