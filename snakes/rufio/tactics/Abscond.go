@@ -42,8 +42,8 @@ func (opts Abscond) Run(ctx *snek.Context, _ *snek.State) string {
 		clamp(yEscapeVector+ctx.You.Head.Y, 0, ctx.Board.Height-1),
 	)
 
-	/* Sometimes escapeTarget gets clamped such that there's nothing to do (clamped to your current position if you're
-	   next to the wall, for example), causing this tactic to get skipped.  This is a problem when there are still
+	/* Sometimes escapeTarget can't be directly satisfied (clamped to your current position if you're next to the wall;
+	   target is on your own body; etc.), causing this tactic to get skipped.  This is a problem when there are still
 	   valid ways to abscond and you really should be taking them.
 	   TODO: Make the escape target/vector smarter so you still abscond when you need to abscond. */
 	return ctx.You.Head.ApproachTarget(escapeTarget, ctx)

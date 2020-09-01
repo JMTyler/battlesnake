@@ -188,11 +188,12 @@ func (from *Cell) ToDirection(to *Cell) string {
 	return "down"
 }
 
-// TODO: Use pathfinding distance, not direct distance.
 func (origin *Cell) GetDistance(target *Cell) int {
-	x := math.Abs(float64(target.X - origin.X))
-	y := math.Abs(float64(target.Y - origin.Y))
-	return int(x + y)
+	path := origin.PathTo(target, origin.board.RiskyGraph)
+	if path == nil {
+		return math.MaxInt32
+	}
+	return len(path)
 }
 
 func (origin *Cell) GetDistances(targets []*Cell) []int {
