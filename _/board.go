@@ -86,9 +86,9 @@ func (board *Board) loadGraphs(ctx *Context) {
 	for x := 0; x < board.Width; x++ {
 		for y := 0; y < board.Height; y++ {
 			node := board.CellAt(x, y)
-			if !node.IsDeadly(ctx) {
+			if !node.IsDeadly() {
 				riskyGraph.AddNode(node)
-				if !node.IsRisky(ctx) {
+				if !node.IsRisky() {
 					safeGraph.AddNode(node)
 					if !node.HasTags("head") {
 						noHeadsGraph.AddNode(node)

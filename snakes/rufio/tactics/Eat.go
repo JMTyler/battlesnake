@@ -35,5 +35,5 @@ func (opts Eat) Run(ctx *snek.Context, _ *snek.State) string {
 		}
 	}
 
-	return ctx.You.Head.ApproachTarget(food, ctx)
+	return ctx.You.Head.ApproachTarget(food)
 }

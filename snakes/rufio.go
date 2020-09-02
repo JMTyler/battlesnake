@@ -46,7 +46,7 @@ func (me *Rufio) Move(ctx *snek.Context) string {
 		}
 
 		if !cell.IsSafe(ctx) {
-			if !cell.IsDeadly(ctx) && riskyBusiness == "" {
+			if !cell.IsDeadly() && riskyBusiness == "" {
 				riskyBusiness = result
 			}
 			continue

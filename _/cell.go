@@ -104,9 +104,9 @@ func (cell *Cell) IsOutsideBoard(board *Board) bool {
 	return cell.X < 0 || cell.Y < 0 || cell.X >= board.Width || cell.Y >= board.Height
 }
 
-func (cell *Cell) IsDeadly(ctx *Context) bool {
+func (cell *Cell) IsDeadly() bool {
 	// TODO: Might not need this check anymore now that the board only provides cells within the bounds.
-	if cell.IsOutsideBoard(ctx.Board) {
+	if cell.IsOutsideBoard(cell.board) {
 		return true
 	}
 
@@ -134,7 +134,7 @@ func (cell *Cell) IsDeadly(ctx *Context) bool {
 	return false
 }
 
-func (cell *Cell) IsRisky(ctx *Context) bool {
+func (cell *Cell) IsRisky() bool {
 	if cell.HasTags("enemy-adjacent") {
 		if cell.HasTags("enemy-longer") || cell.HasTags("enemy-equal") {
 			return true
@@ -154,16 +154,16 @@ func (cell *Cell) IsRisky(ctx *Context) bool {
 	return false
 }
 
-func (cell *Cell) CanReachTail(ctx *Context) bool {
+func (cell *Cell) CanReachTail(snake *Snake) bool {
 	// TODO: Can't seem to path to my tail from right next to it.
-	pathToTail := cell.GetFuturePath(ctx.You.Tail(), ctx)
+	pathToTail := cell.GetFuturePath(snake.Tail())
 	// TODO: We still don't want to follow a path if it funnels us through only one spot, especially next to a head.
 	return pathToTail != nil
 }
 
 // TODO: Cell should know its own context, and not have to pass it around everywhere.
 func (cell *Cell) IsSafe(ctx *Context) bool {
-	return !cell.IsDeadly(ctx) && !cell.IsRisky(ctx) && cell.CanReachTail(ctx)
+	return !cell.IsDeadly() && !cell.IsRisky() && cell.CanReachTail(ctx.You)
 }
 
 func (a *Cell) Matches(b *Cell) bool {
@@ -260,20 +260,20 @@ func (origin *Cell) PathTo(target *Cell, graph traverse.Graph) []*Cell {
 	return cells
 }
 
-func (origin *Cell) GetRiskyPath(target *Cell, ctx *Context) []*Cell {
-	return origin.PathTo(target, ctx.Board.RiskyGraph)
+func (origin *Cell) GetRiskyPath(target *Cell) []*Cell {
+	return origin.PathTo(target, origin.board.RiskyGraph)
 }
 
-func (origin *Cell) GetSafePath(target *Cell, ctx *Context) []*Cell {
-	return origin.PathTo(target, ctx.Board.SafeGraph)
+func (origin *Cell) GetSafePath(target *Cell) []*Cell {
+	return origin.PathTo(target, origin.board.SafeGraph)
 }
 
-func (origin *Cell) GetFuturePath(target *Cell, ctx *Context) []*Cell {
-	return origin.PathTo(target, ctx.Board.FutureGraph)
+func (origin *Cell) GetFuturePath(target *Cell) []*Cell {
+	return origin.PathTo(target, origin.board.FutureGraph)
 }
 
-func (you *Cell) ApproachTarget(target *Cell, ctx *Context) string {
-	cells := you.GetRiskyPath(target, ctx)
+func (you *Cell) ApproachTarget(target *Cell) string {
+	cells := you.GetRiskyPath(target)
 	if cells == nil {
 		return ""
 	}

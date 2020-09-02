@@ -46,7 +46,7 @@ func (opts Aggrieve) Run(ctx *snek.Context, state *snek.State) string {
 		return ""
 	}
 
-	return ctx.You.Head.ApproachTarget(target, ctx)
+	return ctx.You.Head.ApproachTarget(target)
 }
 
 func chooseAdjacentCell(prey *snek.Snake, ctx *snek.Context, state *snek.State) *snek.Cell {
