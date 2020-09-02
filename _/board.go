@@ -33,6 +33,9 @@ func (board *Board) Prepare(ctx *Context) {
 	for ix, food := range board.Food {
 		board.Food[ix] = board.CellAt(food.X, food.Y)
 		board.Food[ix].AddTags("food")
+		for _, cell := range board.Food[ix].Neighbours() {
+			cell.AddTags("food-adjacent")
+		}
 	}
 
 	// Replace hazards array with cell singletons.

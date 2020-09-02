@@ -69,7 +69,7 @@ func handleRoute(route string, snake snakes.SnakeService, f func(snakes.SnakeSer
 			sentry.ConfigureScope(func(scope *sentry.Scope) {
 				scope.SetRequest(r)
 				scope.SetUser(sentry.User{ID: ctx.Game.ID})
-				scope.SetTag("game", fmt.Sprintf("https://play.battlesnake.com/g/%s", ctx.Game.ID))
+				scope.SetTag("game", fmt.Sprintf("https://play.battlesnake.com/g/%s/?turn=%v", ctx.Game.ID, ctx.Turn))
 				scope.SetTag("turn", fmt.Sprintf("%v", ctx.Turn))
 			})
 		}

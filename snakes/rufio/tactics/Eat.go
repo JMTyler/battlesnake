@@ -19,12 +19,11 @@ func (opts Eat) Run(ctx *snek.Context, _ *snek.State) string {
 		}
 	}
 
-	food := ctx.You.Head.FindClosest(ctx.Board.Food)
+	foods := snek.FilterCells(ctx.Board.Food, func(cell *snek.Cell) bool {
+		return !cell.IsRisky()
+	})
+	food := ctx.You.Head.FindClosest(foods)
 	if food == nil {
-		return ""
-	}
-
-	if food.HasTags("hazard") {
 		return ""
 	}
 

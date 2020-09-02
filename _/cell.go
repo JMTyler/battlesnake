@@ -142,13 +142,13 @@ func (cell *Cell) IsDeadly() bool {
 }
 
 func (cell *Cell) IsRisky() bool {
-	if cell.HasTags("enemy-adjacent") {
-		if cell.HasTags("enemy-longer") || cell.HasTags("enemy-equal") {
-			return true
-		}
-	}
-
 	if cell.HasTags("friend-adjacent") {
+		return true
+	}
+	if cell.HasTags("enemy-adjacent", "enemy-longer") {
+		return true
+	}
+	if cell.HasTags("enemy-adjacent", "enemy-equal") {
 		return true
 	}
 
@@ -156,7 +156,13 @@ func (cell *Cell) IsRisky() bool {
 		return true
 	}
 
-	// TODO: Maybe consider all cells around the edges of the board to be risky?
+	// Cells at the edge of the board are risky, since you might get cut off.  But it's worth it if there's food.
+	// TODO: This isn't working very well yet. Maybe we need something less serious than "risky."
+	//if !cell.HasTags("food") && !cell.HasTags("food-adjacent") {
+	//	if cell.X == 0 || cell.Y == 0 || cell.X == cell.board.Width-1 || cell.Y == cell.board.Height-1 {
+	//		return true
+	//	}
+	//}
 
 	return false
 }
@@ -304,4 +310,14 @@ func (origin *Cell) FindClosest(targets []*Cell) *Cell {
 		}
 	}
 	return targets[shortestIndex]
+}
+
+func FilterCells(cells []*Cell, predicate func(*Cell) bool) []*Cell {
+	result := make([]*Cell, 0)
+	for _, cell := range cells {
+		if predicate(cell) {
+			result = append(result, cell)
+		}
+	}
+	return result
 }
