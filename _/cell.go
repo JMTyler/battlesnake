@@ -97,13 +97,13 @@ func (origin *Cell) Neighbour(dir string) *Cell {
 	return nil
 }
 
-func (cell *Cell) IsOutsideBoard(board *Board) bool {
-	return cell.X < 0 || cell.Y < 0 || cell.X >= board.Width || cell.Y >= board.Height
+func (cell *Cell) IsOutsideBoard() bool {
+	return cell.X < 0 || cell.Y < 0 || cell.X >= cell.board.Width || cell.Y >= cell.board.Height
 }
 
 func (cell *Cell) IsDeadly() bool {
 	// TODO: Might not need this check anymore now that the board only provides cells within the bounds.
-	if cell.IsOutsideBoard(cell.board) {
+	if cell.IsOutsideBoard() {
 		return true
 	}
 
@@ -125,6 +125,16 @@ func (cell *Cell) IsDeadly() bool {
 		return true
 	}
 	if cell.HasTags("enemy", "head", "enemy-equal") {
+		return true
+	}
+
+	if cell.HasTags("food", "friend-adjacent") {
+		return true
+	}
+	if cell.HasTags("food", "enemy-adjacent", "enemy-longer") {
+		return true
+	}
+	if cell.HasTags("food", "enemy-adjacent", "enemy-equal") {
 		return true
 	}
 
