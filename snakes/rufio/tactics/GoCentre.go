@@ -45,5 +45,5 @@ func (opts GoCentre) Run(ctx *snek.Context, _ *snek.State) string {
 
 	index := rand.Intn(len(centreCells))
 	target := centreCells[index]
-	return ctx.You.Head.ApproachTarget(target)
+	return ctx.You.Head.Approach(target)
 }

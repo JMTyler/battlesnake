@@ -24,9 +24,34 @@ var strategy = []tactics.Tactic{
 	// TODO: Seek other snake's tail if available
 }
 
+func (me *Rufio) GetName() string {
+	return "rufio"
+}
+
+func (me *Rufio) GetInfo() SnakeInfo {
+	// TODO: It's a *lot* more work to load info from a file now than it was in Node... is it worth it?
+	//	file, err := os.Open(currentDir() + "/rufio/info.yaml")
+	//	if err != nil {
+	//		panic(err)
+	//	}
+	//
+	//	var info SnakeInfo
+	//	decoder := yaml.NewDecoder(file)
+	//	if err := decoder.Decode(&info); err != nil {
+	//		panic(err)
+	//	}
+	//	return info
+
+	return SnakeInfo{
+		Color: "#DF0000",
+		Head:  "shades",
+		Tail:  "bolt",
+	}
+}
+
 func (me *Rufio) Move(ctx *snek.Context) string {
 	state := snek.GetState(ctx)
-	adjacent := ctx.You.Head.GetAdjacentCells()
+	neighbours := ctx.You.Head.Neighbours()
 
 	state.UpdateSnakeHistory(ctx)
 
@@ -40,7 +65,7 @@ func (me *Rufio) Move(ctx *snek.Context) string {
 
 		utils.LogMove(ctx.Turn, result, tactic.Description())
 
-		cell, withinBounds := adjacent[result]
+		cell, withinBounds := neighbours[result]
 		if !withinBounds {
 			continue
 		}
@@ -70,7 +95,7 @@ func (me *Rufio) Move(ctx *snek.Context) string {
 	// TODO: Should still prefer to pick a random adjacent empty cell before fully welping out.
 	nonWalls := make([]string, 0)
 	isContinueOpen := false
-	for dir, _ := range adjacent {
+	for dir, _ := range neighbours {
 		nonWalls = append(nonWalls, dir)
 		if dir == state.Move {
 			isContinueOpen = true
@@ -84,31 +109,6 @@ func (me *Rufio) Move(ctx *snek.Context) string {
 
 	utils.LogMove(ctx.Turn, state.Move, "welp 👋")
 	return state.Move
-}
-
-func (me *Rufio) GetName() string {
-	return "rufio"
-}
-
-func (me *Rufio) GetInfo() SnakeInfo {
-	// TODO: It's a *lot* more work to load info from a file now than it was in Node... is it worth it?
-	//	file, err := os.Open(currentDir() + "/rufio/info.yaml")
-	//	if err != nil {
-	//		panic(err)
-	//	}
-	//
-	//	var info SnakeInfo
-	//	decoder := yaml.NewDecoder(file)
-	//	if err := decoder.Decode(&info); err != nil {
-	//		panic(err)
-	//	}
-	//	return info
-
-	return SnakeInfo{
-		Color: "#DF0000",
-		Head:  "shades",
-		Tail:  "bolt",
-	}
 }
 
 func (me *Rufio) StartGame(ctx *snek.Context) {

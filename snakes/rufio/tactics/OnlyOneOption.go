@@ -6,7 +6,7 @@ type OnlyOneOption struct{}
 
 func (_ OnlyOneOption) Run(ctx *snek.Context, _ *snek.State) string {
 	options := make([]string, 0)
-	for dir, cell := range ctx.You.Head.GetAdjacentCells() {
+	for dir, cell := range ctx.You.Head.Neighbours() {
 		if !cell.IsDeadly() {
 			options = append(options, dir)
 		}

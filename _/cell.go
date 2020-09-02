@@ -8,9 +8,6 @@ import (
 	"math"
 )
 
-// They should already know if anything resides on them, and whether they're deadly or risky, such that we don't have to
-// have the same loops checking for the same qualities numerous times each request.
-// We can then fix the ID() and GetAdjacentCells() calculations.  Which will allow us to handle the August challenge.
 type Cell struct {
 	X int `json:"x"`
 	Y int `json:"y"`
@@ -68,24 +65,24 @@ func (cell *Cell) String() string {
 	return fmt.Sprintf("(%d,%d)", cell.X, cell.Y)
 }
 
-func (cell *Cell) GetAdjacentCells() map[string]*Cell {
+func (cell *Cell) Neighbours() map[string]*Cell {
 	cells := make(map[string]*Cell)
 	if cell.Y < cell.board.Height-1 {
-		cells["up"] = cell.Adjacent("up")
+		cells["up"] = cell.Neighbour("up")
 	}
 	if cell.Y > 0 {
-		cells["down"] = cell.Adjacent("down")
+		cells["down"] = cell.Neighbour("down")
 	}
 	if cell.X > 0 {
-		cells["left"] = cell.Adjacent("left")
+		cells["left"] = cell.Neighbour("left")
 	}
 	if cell.X < cell.board.Width-1 {
-		cells["right"] = cell.Adjacent("right")
+		cells["right"] = cell.Neighbour("right")
 	}
 	return cells
 }
 
-func (origin *Cell) Adjacent(dir string) *Cell {
+func (origin *Cell) Neighbour(dir string) *Cell {
 	switch dir {
 	case "up":
 		return origin.board.CellAt(origin.X, origin.Y+1)
@@ -195,7 +192,7 @@ func (from *Cell) ToDirection(to *Cell) string {
 }
 
 func (origin *Cell) GetDistance(target *Cell) int {
-	path := origin.PathTo(target, origin.board.RiskyGraph)
+	path := origin.PathTo(target)
 	if path == nil {
 		return math.MaxInt32
 	}
@@ -246,7 +243,7 @@ func (origin *Cell) GetVector(target *Cell) *Vector {
 	}
 }
 
-func (origin *Cell) PathTo(target *Cell, graph traverse.Graph) []*Cell {
+func (origin *Cell) getPath(target *Cell, graph traverse.Graph) []*Cell {
 	shortest, _ := path.AStar(origin, target, graph, nil)
 	nodes, _ := shortest.To(target.ID())
 	if len(nodes) < 2 {
@@ -260,27 +257,26 @@ func (origin *Cell) PathTo(target *Cell, graph traverse.Graph) []*Cell {
 	return cells
 }
 
-func (origin *Cell) GetRiskyPath(target *Cell) []*Cell {
-	return origin.PathTo(target, origin.board.RiskyGraph)
-}
-
-func (origin *Cell) GetSafePath(target *Cell) []*Cell {
-	return origin.PathTo(target, origin.board.SafeGraph)
+func (origin *Cell) PathTo(target *Cell) []*Cell {
+	if safePath := origin.getPath(target, origin.board.SafeGraph); safePath != nil {
+		return safePath
+	}
+	return origin.getPath(target, origin.board.RiskyGraph)
 }
 
 func (origin *Cell) GetFuturePath(target *Cell) []*Cell {
-	return origin.PathTo(target, origin.board.FutureGraph)
+	return origin.getPath(target, origin.board.FutureGraph)
 }
 
-func (you *Cell) ApproachTarget(target *Cell) string {
-	cells := you.GetRiskyPath(target)
-	if cells == nil {
+func (origin *Cell) Approach(target *Cell) string {
+	path := origin.PathTo(target)
+	if path == nil {
 		return ""
 	}
-	return you.ToDirection(cells[0])
+	return origin.ToDirection(path[0])
 }
 
-func (origin *Cell) FindClosestTarget(targets []*Cell) *Cell {
+func (origin *Cell) FindClosest(targets []*Cell) *Cell {
 	if len(targets) == 1 {
 		return targets[0]
 	}

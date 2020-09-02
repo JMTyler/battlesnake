@@ -24,7 +24,7 @@ func (opts Aggrieve) Run(ctx *snek.Context, state *snek.State) string {
 		return ""
 	}
 
-	closestSnake := ctx.You.Head.FindClosestTarget(weaklings)
+	closestSnake := ctx.You.Head.FindClosest(weaklings)
 
 	if opts.Distance > 0 {
 		distanceToSnake := ctx.You.Head.GetDistance(closestSnake)
@@ -46,12 +46,12 @@ func (opts Aggrieve) Run(ctx *snek.Context, state *snek.State) string {
 		return ""
 	}
 
-	return ctx.You.Head.ApproachTarget(target)
+	return ctx.You.Head.Approach(target)
 }
 
 func chooseAdjacentCell(prey *snek.Snake, ctx *snek.Context, state *snek.State) *snek.Cell {
 	targetOptions := make(map[string]*snek.Cell)
-	for dir, cell := range prey.Head.GetAdjacentCells() {
+	for dir, cell := range prey.Head.Neighbours() {
 		if cell.IsSafe(ctx) {
 			targetOptions[dir] = cell
 		}
@@ -71,5 +71,5 @@ func chooseAdjacentCell(prey *snek.Snake, ctx *snek.Context, state *snek.State) 
 		targets = append(targets, cell)
 	}
 
-	return ctx.You.Head.FindClosestTarget(targets)
+	return ctx.You.Head.FindClosest(targets)
 }

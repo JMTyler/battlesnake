@@ -27,15 +27,15 @@ func (me *Tavros) Move(ctx *snek.Context) string {
 	move := ""
 
 	// Grab food if you're close to it, or if you're super hungry.
-	if food := ctx.You.Head.FindClosestTarget(ctx.Board.Food); food != nil {
+	if food := ctx.You.Head.FindClosest(ctx.Board.Food); food != nil {
 		if ctx.You.Health <= 20 || ctx.You.Head.GetDistance(food) <= 2 {
-			move = ctx.You.Head.ApproachTarget(food, ctx)
+			move = ctx.You.Head.Approach(food)
 		}
 	}
 
 	// Chase your tail.
 	if move == "" {
-		move = ctx.You.Head.ApproachTarget(ctx.You.Tail(), ctx)
+		move = ctx.You.Head.Approach(ctx.You.Tail())
 	}
 
 	if move == "" {
@@ -43,10 +43,10 @@ func (me *Tavros) Move(ctx *snek.Context) string {
 	}
 
 	// Don't ever move into a deadly space, even if the alternative is random.
-	target := ctx.You.Head.Adjacent(move)
-	if target == nil || target.IsDeadly(ctx) {
-		for dir, cell := range ctx.You.Head.GetAdjacentCells() {
-			if !cell.IsDeadly(ctx) {
+	target := ctx.You.Head.Neighbour(move)
+	if target == nil || target.IsDeadly() {
+		for dir, cell := range ctx.You.Head.Neighbours() {
+			if !cell.IsDeadly() {
 				move = dir
 				break
 			}

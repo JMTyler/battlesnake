@@ -34,8 +34,8 @@ func (snake *Snake) Prepare(ctx *Context) {
 			part.AddTags("friend")
 		}
 
-		adjacent := snake.Head.GetAdjacentCells()
-		for _, cell := range adjacent {
+		neighbours := snake.Head.Neighbours()
+		for _, cell := range neighbours {
 			cell.AddTags("friend-adjacent")
 		}
 	} else {
@@ -51,8 +51,8 @@ func (snake *Snake) Prepare(ctx *Context) {
 			part.AddTags("enemy", lengthTag)
 		}
 
-		adjacent := snake.Head.GetAdjacentCells()
-		for _, cell := range adjacent {
+		neighbours := snake.Head.Neighbours()
+		for _, cell := range neighbours {
 			cell.AddTags("enemy-adjacent", lengthTag)
 		}
 	}

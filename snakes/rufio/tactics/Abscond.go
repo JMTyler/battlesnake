@@ -25,7 +25,7 @@ func (opts Abscond) Run(ctx *snek.Context, _ *snek.State) string {
 		return ""
 	}
 
-	predator := ctx.You.Head.FindClosestTarget(predators)
+	predator := ctx.You.Head.FindClosest(predators)
 
 	if opts.Distance > 0 {
 		distanceToPredator := ctx.You.Head.GetDistance(predator)
@@ -43,5 +43,5 @@ func (opts Abscond) Run(ctx *snek.Context, _ *snek.State) string {
 	   target is on your own body; etc.), causing this tactic to get skipped.  This is a problem when there are still
 	   valid ways to abscond and you really should be taking them.
 	   TODO: Make the escape target/vector smarter so you still abscond when you need to abscond. */
-	return ctx.You.Head.ApproachTarget(escapeTarget)
+	return ctx.You.Head.Approach(escapeTarget)
 }

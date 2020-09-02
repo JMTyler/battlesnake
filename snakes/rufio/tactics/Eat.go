@@ -19,7 +19,7 @@ func (opts Eat) Run(ctx *snek.Context, _ *snek.State) string {
 		}
 	}
 
-	food := ctx.You.Head.FindClosestTarget(ctx.Board.Food)
+	food := ctx.You.Head.FindClosest(ctx.Board.Food)
 	if food == nil {
 		return ""
 	}
@@ -35,5 +35,5 @@ func (opts Eat) Run(ctx *snek.Context, _ *snek.State) string {
 		}
 	}
 
-	return ctx.You.Head.ApproachTarget(food)
+	return ctx.You.Head.Approach(food)
 }

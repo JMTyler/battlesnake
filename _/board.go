@@ -104,21 +104,21 @@ func (board *Board) loadGraphs(ctx *Context) {
 		for y := 0; y < board.Height; y++ {
 			node := board.CellAt(x, y)
 			if riskyGraph.Node(node.ID()) != nil {
-				for _, cell := range node.GetAdjacentCells() {
+				for _, cell := range node.Neighbours() {
 					if riskyGraph.Node(cell.ID()) != nil {
 						riskyGraph.SetEdge(riskyGraph.NewEdge(node, cell))
 					}
 				}
 			}
 			if safeGraph.Node(node.ID()) != nil {
-				for _, cell := range node.GetAdjacentCells() {
+				for _, cell := range node.Neighbours() {
 					if safeGraph.Node(cell.ID()) != nil {
 						safeGraph.SetEdge(safeGraph.NewEdge(node, cell))
 					}
 				}
 			}
 			if noHeadsGraph.Node(node.ID()) != nil {
-				for _, cell := range node.GetAdjacentCells() {
+				for _, cell := range node.Neighbours() {
 					if noHeadsGraph.Node(cell.ID()) != nil {
 						noHeadsGraph.SetEdge(noHeadsGraph.NewEdge(node, cell))
 					}
