@@ -34,27 +34,14 @@ func (opts Abscond) Run(ctx *snek.Context, _ *snek.State) string {
 		}
 	}
 
-	vector := ctx.You.Head.GetVector(predator)
-	xEscapeVector := -1 * vector.Weight.X
-	yEscapeVector := -1 * vector.Weight.Y
-	escapeTarget := ctx.Board.CellAt(
-		clamp(xEscapeVector+ctx.You.Head.X, 0, ctx.Board.Width-1),
-		clamp(yEscapeVector+ctx.You.Head.Y, 0, ctx.Board.Height-1),
-	)
+	escapeVector := ctx.You.Head.GetVector(predator)
+	escapeVector.Weight.X *= -1
+	escapeVector.Weight.Y *= -1
+	escapeTarget := ctx.You.Head.Translate(escapeVector.Weight)
 
 	/* Sometimes escapeTarget can't be directly satisfied (clamped to your current position if you're next to the wall;
 	   target is on your own body; etc.), causing this tactic to get skipped.  This is a problem when there are still
 	   valid ways to abscond and you really should be taking them.
 	   TODO: Make the escape target/vector smarter so you still abscond when you need to abscond. */
 	return ctx.You.Head.ApproachTarget(escapeTarget, ctx)
-}
-
-func clamp(val int, min int, max int) int {
-	if val <= min {
-		return min
-	}
-	if val >= max {
-		return max
-	}
-	return val
 }

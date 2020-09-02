@@ -6,6 +6,7 @@ import (
 	"time"
 )
 
+// TODO: Would be great to store snake-agnostic details, like Rufio's list of move options before finding a good one.
 type Frame struct {
 	tableName struct{} `pg:"\"Frames\""`
 

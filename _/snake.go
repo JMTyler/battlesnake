@@ -1,5 +1,7 @@
 package battlesnake
 
+// TODO: Make a Cell-like interface that works with Snake, which just asks Head.
+// TODO: Maybe Cell is not even a struct of its own? Snake.Head/Food/etc. just implement it?
 type Snake struct {
 	ID       string  `json:"id"`
 	Name     string  `json:"name"`

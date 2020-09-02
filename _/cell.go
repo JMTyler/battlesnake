@@ -2,6 +2,7 @@ package battlesnake
 
 import (
 	"fmt"
+	"github.com/JMTyler/battlesnake/_/utils"
 	"gonum.org/v1/gonum/graph/path"
 	"gonum.org/v1/gonum/graph/traverse"
 	"math"
@@ -16,6 +17,12 @@ type Cell struct {
 
 	board *Board   `json:"-"`
 	tags  []string `json:"-"`
+}
+
+// TODO: Merge with Cell when it becomes an interface.  Only difference is Position isn't limited to board boundaries.
+type Position struct {
+	X int
+	Y int
 }
 
 func (cell *Cell) AddTags(tags ...string) {
@@ -50,10 +57,7 @@ type Vector struct {
 		X string
 		Y string
 	}
-	Weight struct {
-		X int
-		Y int
-	}
+	Weight *Position
 }
 
 func (cell *Cell) ID() int64 {
@@ -145,6 +149,8 @@ func (cell *Cell) IsRisky(ctx *Context) bool {
 		return true
 	}
 
+	// TODO: Maybe consider all cells around the edges of the board to be risky?
+
 	return false
 }
 
@@ -204,6 +210,13 @@ func (origin *Cell) GetDistances(targets []*Cell) []int {
 	return distances
 }
 
+// TODO: Implement methods for various common matrix operations.
+func (origin *Cell) Translate(delta *Position) *Cell {
+	x := utils.Clamp(origin.X+delta.X, 0, origin.board.Width-1)
+	y := utils.Clamp(origin.Y+delta.Y, 0, origin.board.Height-1)
+	return origin.board.CellAt(x, y)
+}
+
 func (origin *Cell) GetVector(target *Cell) *Vector {
 	x := target.X - origin.X
 	y := target.Y - origin.Y
@@ -226,10 +239,7 @@ func (origin *Cell) GetVector(target *Cell) *Vector {
 			xDir,
 			yDir,
 		},
-		Weight: struct {
-			X int
-			Y int
-		}{
+		Weight: &Position{
 			x,
 			y,
 		},
