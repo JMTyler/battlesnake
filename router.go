@@ -23,6 +23,7 @@ var the_snakes = []snakes.SnakeService{
 
 func handleRoute(route string, snake snakes.SnakeService, f func(snakes.SnakeService, *snek.Context) []byte) {
 	http.HandleFunc(route, func(w http.ResponseWriter, r *http.Request) {
+		sentryHub := sentry.NewHub(sentry.CurrentHub().Client(), sentry.NewScope())
 		defer func() {
 			// HACK: Would be simpler to use sentry.Recover() but it doesn't seem to work as expected.
 			err := recover()
@@ -30,15 +31,15 @@ func handleRoute(route string, snake snakes.SnakeService, f func(snakes.SnakeSer
 				w.WriteHeader(500)
 
 				if exception, ok := err.(error); ok {
-					sentry.CaptureException(exception)
+					sentryHub.CaptureException(exception)
 				} else if str, ok := err.(string); ok {
-					sentry.CaptureMessage(str)
+					sentryHub.CaptureMessage(str)
 				} else {
-					sentry.CaptureMessage(fmt.Sprintf("Object: %#v", err))
+					sentryHub.CaptureMessage(fmt.Sprintf("Object: %#v", err))
 				}
 
 				fmt.Println("Flushing Sentry...")
-				sentry.Flush(time.Second)
+				sentryHub.Flush(time.Second)
 			}
 		}()
 
@@ -66,7 +67,7 @@ func handleRoute(route string, snake snakes.SnakeService, f func(snakes.SnakeSer
 			}
 			ctx.Prepare()
 
-			sentry.ConfigureScope(func(scope *sentry.Scope) {
+			sentryHub.ConfigureScope(func(scope *sentry.Scope) {
 				scope.SetRequest(r)
 				scope.SetUser(sentry.User{ID: ctx.Game.ID})
 				scope.SetTag("game", fmt.Sprintf("https://play.battlesnake.com/g/%s/?turn=%v", ctx.Game.ID, ctx.Turn))
@@ -81,14 +82,14 @@ func handleRoute(route string, snake snakes.SnakeService, f func(snakes.SnakeSer
 		duration := time.Now().Sub(start).Milliseconds()
 		if duration >= 350 {
 			// If request takes longer than 400ms, something is wrong.
-			sentry.WithScope(func(scope *sentry.Scope) {
+			sentryHub.WithScope(func(scope *sentry.Scope) {
 				scope.SetLevel(sentry.LevelWarning)
 				scope.SetTag("duration", fmt.Sprintf("%v", duration))
-				sentry.CaptureMessage("Move took unusually long to calculate.")
+				sentryHub.CaptureMessage("Move took unusually long to calculate.")
 			})
 		}
 
-		sentry.ConfigureScope(func(scope *sentry.Scope) {
+		sentryHub.ConfigureScope(func(scope *sentry.Scope) {
 			scope.Clear()
 		})
 	})
