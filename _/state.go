@@ -1,6 +1,8 @@
 package battlesnake
 
-var states = make(map[string]*State)
+import "sync"
+
+var states = &sync.Map{}
 
 type State struct {
 	Move   string
@@ -13,19 +15,19 @@ type SnakeState struct {
 }
 
 func InitState(ctx *Context, value *State) {
-	states[ctx.Game.ID+"---"+ctx.You.ID] = value
+	states.Store(ctx.Game.ID+"---"+ctx.You.ID, value)
 }
 
 func DeleteState(ctx *Context) {
-	delete(states, ctx.Game.ID+"---"+ctx.You.ID)
+	states.Delete(ctx.Game.ID+"---"+ctx.You.ID)
 }
 
 func GetState(ctx *Context) *State {
-	state, ok := states[ctx.Game.ID+"---"+ctx.You.ID]
+	state, ok := states.Load(ctx.Game.ID+"---"+ctx.You.ID)
 	if !ok {
 		return &State{Move: "right", Snakes: make(map[string]*SnakeState)}
 	}
-	return state
+	return state.(*State)
 }
 
 func (state *State) UpdateSnakeHistory(ctx *Context) {
