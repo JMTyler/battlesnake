@@ -167,6 +167,10 @@ func (cell *Cell) IsRisky() bool {
 	return false
 }
 
+func (cell *Cell) IsEdge() bool {
+	return cell.HasTags("edge")
+}
+
 func (cell *Cell) CanReachTail(snake *Snake) bool {
 	// TODO: Can't seem to path to my tail from right next to it.
 	pathToTail := cell.GetFuturePath(snake.Tail())
@@ -274,6 +278,9 @@ func (origin *Cell) getPath(target *Cell, graph traverse.Graph) []*Cell {
 }
 
 func (origin *Cell) PathTo(target *Cell) []*Cell {
+	if superSafePath := origin.getPath(target, origin.board.SuperSafeGraph); superSafePath != nil {
+		return superSafePath
+	}
 	if safePath := origin.getPath(target, origin.board.SafeGraph); safePath != nil {
 		return safePath
 	}

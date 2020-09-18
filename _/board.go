@@ -12,9 +12,10 @@ type Board struct {
 	Food    []*Cell  `json:"food"`
 	Hazards []*Cell  `json:"hazards"`
 
-	RiskyGraph  traverse.Graph `json:"-"`
-	SafeGraph   traverse.Graph `json:"-"`
-	FutureGraph traverse.Graph `json:"-"`
+	RiskyGraph     traverse.Graph `json:"-"`
+	SafeGraph      traverse.Graph `json:"-"`
+	SuperSafeGraph traverse.Graph `json:"-"`
+	FutureGraph    traverse.Graph `json:"-"`
 
 	Friends []*Snake  `json:"-"`
 	Foes    []*Snake  `json:"-"`
@@ -45,6 +46,16 @@ func (board *Board) Prepare(ctx *Context) {
 	for ix, hazard := range board.Hazards {
 		board.Hazards[ix] = board.CellAt(hazard.X, hazard.Y)
 		board.Hazards[ix].AddTags("hazard")
+	}
+
+	for x := 0; x < board.Width; x++ {
+		board.CellAt(x, 0).AddTags("edge")
+		board.CellAt(x, board.Height-1).AddTags("edge")
+	}
+
+	for y := 0; y < board.Height; y++ {
+		board.CellAt(0, y).AddTags("edge")
+		board.CellAt(board.Width-1, y).AddTags("edge")
 	}
 
 	board.loadSnakes(ctx)
@@ -80,10 +91,12 @@ func (board *Board) loadSnakes(ctx *Context) {
 func (board *Board) loadGraphs(ctx *Context) {
 	riskyGraph := simple.NewUndirectedGraph()
 	safeGraph := simple.NewUndirectedGraph()
+	superSafeGraph := simple.NewUndirectedGraph()
 	noHeadsGraph := simple.NewUndirectedGraph()
 
 	board.RiskyGraph = riskyGraph
 	board.SafeGraph = safeGraph
+	board.SuperSafeGraph = superSafeGraph
 	board.FutureGraph = noHeadsGraph
 
 	for x := 0; x < board.Width; x++ {
@@ -95,6 +108,9 @@ func (board *Board) loadGraphs(ctx *Context) {
 					safeGraph.AddNode(node)
 					if !node.HasTags("head") {
 						noHeadsGraph.AddNode(node)
+					}
+					if !node.IsEdge() {
+						superSafeGraph.AddNode(node)
 					}
 				}
 			}
@@ -117,6 +133,13 @@ func (board *Board) loadGraphs(ctx *Context) {
 				for _, cell := range node.Neighbours() {
 					if safeGraph.Node(cell.ID()) != nil {
 						safeGraph.SetEdge(safeGraph.NewEdge(node, cell))
+					}
+				}
+			}
+			if superSafeGraph.Node(node.ID()) != nil {
+				for _, cell := range node.Neighbours() {
+					if superSafeGraph.Node(cell.ID()) != nil {
+						superSafeGraph.SetEdge(superSafeGraph.NewEdge(node, cell))
 					}
 				}
 			}
