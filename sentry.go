@@ -18,7 +18,7 @@ func initSentry() {
 	}
 }
 
-func recoverWithSentry(){
+func recoverWithSentry() {
 	sentry.Recover()
 
 	fmt.Println("Flushing Sentry...")

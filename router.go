@@ -69,9 +69,15 @@ func handleRoute(route string, snake snakes.SnakeService, f func(snakes.SnakeSer
 
 			sentryHub.ConfigureScope(func(scope *sentry.Scope) {
 				scope.SetRequest(r)
-				scope.SetUser(sentry.User{ID: ctx.Game.ID})
-				scope.SetTag("game", fmt.Sprintf("https://play.battlesnake.com/g/%s/?turn=%v", ctx.Game.ID, ctx.Turn))
-				scope.SetTag("turn", fmt.Sprintf("%v", ctx.Turn))
+
+				scope.SetTag("snake", snake.GetName())
+				scope.SetTag("game", ctx.Game.ID)
+
+				scope.SetContext("game", map[string]interface{}{
+					"id":   ctx.Game.ID,
+					"turn": ctx.Turn,
+					"url":  fmt.Sprintf("https://play.battlesnake.com/g/%s/?turn=%v", ctx.Game.ID, ctx.Turn),
+				})
 			})
 		}
 
@@ -81,10 +87,10 @@ func handleRoute(route string, snake snakes.SnakeService, f func(snakes.SnakeSer
 
 		duration := time.Now().Sub(start).Milliseconds()
 		if duration >= 350 {
-			// If request takes longer than 400ms, something is wrong.
+			// If request takes longer than 350ms, something is wrong.
 			sentryHub.WithScope(func(scope *sentry.Scope) {
 				scope.SetLevel(sentry.LevelWarning)
-				scope.SetTag("duration", fmt.Sprintf("%v", duration))
+				scope.SetExtra("duration", duration)
 				sentryHub.CaptureMessage("Move took unusually long to calculate.")
 			})
 		}
