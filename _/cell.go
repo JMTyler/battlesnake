@@ -171,11 +171,22 @@ func (cell *Cell) IsEdge() bool {
 	return cell.HasTags("edge")
 }
 
-func (cell *Cell) CanReachTail(snake *Snake) bool {
+func (origin *Cell) CanReachTail(snake *Snake) bool {
 	// TODO: Can't seem to path to my tail from right next to it.
-	pathToTail := cell.GetFuturePath(snake.Tail())
-	// TODO: We still don't want to follow a path if it funnels us through only one spot, especially next to a head.
-	return pathToTail != nil
+	pathToTail := origin.GetFuturePath(snake.Tail())
+	if pathToTail == nil {
+		return false
+	}
+
+	for _, cell := range pathToTail {
+		neighbours := cell.Neighbours()
+		if len(neighbours) == 2 {
+			// This cell is a funnel - its only neighbours are the entry and exit.  It's too risky.
+			return false
+		}
+	}
+
+	return true
 }
 
 // TODO: Cell should know its own context, and not have to pass it around everywhere.
