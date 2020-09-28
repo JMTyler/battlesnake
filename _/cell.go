@@ -167,11 +167,36 @@ func (cell *Cell) IsRisky() bool {
 	return false
 }
 
-func (cell *Cell) CanReachTail(snake *Snake) bool {
-	// TODO: Can't seem to path to my tail from right next to it.
-	pathToTail := cell.GetFuturePath(snake.Tail())
-	// TODO: We still don't want to follow a path if it funnels us through only one spot, especially next to a head.
-	return pathToTail != nil
+func (cell *Cell) IsEdge() bool {
+	return cell.HasTags("edge")
+}
+
+func (origin *Cell) CanReachTail(snake *Snake) bool {
+	if origin == snake.Tail() {
+		return true
+	}
+
+	for turnsAway := 1; turnsAway < len(snake.FullBody); turnsAway++ {
+		ix := len(snake.FullBody) - turnsAway
+		pathToTail := origin.GetTheoreticalPath(snake.FullBody[ix])
+		if pathToTail != nil && len(pathToTail) >= turnsAway {
+			return true
+		}
+	}
+
+	return false
+
+	// TODO: This doesn't really work. Doesn't handle corners well, and might be too simple-minded anyway.
+	// TODO: What if we add a "funnel" tag to cells and are scared of *many* of them or avoid funnels when seeking tail?
+	//for _, cell := range pathToTail {
+	//	neighbours := cell.Neighbours()
+	//	if len(neighbours) == 2 {
+	//		// This cell is a funnel - its only neighbours are the entry and exit.  It's too risky.
+	//		return false
+	//	}
+	//}
+	//
+	//return true
 }
 
 // TODO: Cell should know its own context, and not have to pass it around everywhere.
@@ -274,14 +299,29 @@ func (origin *Cell) getPath(target *Cell, graph traverse.Graph) []*Cell {
 }
 
 func (origin *Cell) PathTo(target *Cell) []*Cell {
+	if superSafePath := origin.getPath(target, origin.board.SuperSafeGraph); superSafePath != nil {
+		return superSafePath
+	}
 	if safePath := origin.getPath(target, origin.board.SafeGraph); safePath != nil {
 		return safePath
 	}
 	return origin.getPath(target, origin.board.RiskyGraph)
 }
 
-func (origin *Cell) GetFuturePath(target *Cell) []*Cell {
-	return origin.getPath(target, origin.board.FutureGraph)
+func (origin *Cell) GetTheoreticalPath(target *Cell) []*Cell {
+	// Clone the graph so we can add the target to it, just this once.
+	graph := *origin.board.FutureGraph
+
+	if graph.Node(target.ID()) == nil {
+		graph.AddNode(target)
+		for _, neighbour := range target.Neighbours() {
+			if graph.Node(neighbour.ID()) != nil {
+				graph.SetEdge(graph.NewEdge(target, neighbour))
+			}
+		}
+	}
+
+	return origin.getPath(target, &graph)
 }
 
 func (origin *Cell) Approach(target *Cell) string {
