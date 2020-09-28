@@ -2,7 +2,6 @@ package battlesnake
 
 import (
 	"gonum.org/v1/gonum/graph/simple"
-	"gonum.org/v1/gonum/graph/traverse"
 )
 
 type Board struct {
@@ -12,10 +11,10 @@ type Board struct {
 	Food    []*Cell  `json:"food"`
 	Hazards []*Cell  `json:"hazards"`
 
-	RiskyGraph     traverse.Graph `json:"-"`
-	SafeGraph      traverse.Graph `json:"-"`
-	SuperSafeGraph traverse.Graph `json:"-"`
-	FutureGraph    traverse.Graph `json:"-"`
+	RiskyGraph     *simple.UndirectedGraph `json:"-"`
+	SafeGraph      *simple.UndirectedGraph `json:"-"`
+	SuperSafeGraph *simple.UndirectedGraph `json:"-"`
+	FutureGraph    *simple.UndirectedGraph `json:"-"`
 
 	Friends []*Snake  `json:"-"`
 	Foes    []*Snake  `json:"-"`

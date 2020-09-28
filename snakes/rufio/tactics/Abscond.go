@@ -39,6 +39,8 @@ func (opts Abscond) Run(ctx *snek.Context, _ *snek.State) string {
 	escapeVector.Weight.Y *= -1
 	escapeTarget := ctx.You.Head.Translate(escapeVector.Weight)
 
+	// TODO: If all options take you into a risky cell, prioritise the move that either doesn't continue *your own* path, or doesn't take you into the cell that continues the predator's path.
+
 	/* Sometimes escapeTarget can't be directly satisfied (clamped to your current position if you're next to the wall;
 	   target is on your own body; etc.), causing this tactic to get skipped.  This is a problem when there are still
 	   valid ways to abscond and you really should be taking them.

@@ -94,9 +94,13 @@ func (me *Rufio) Move(ctx *snek.Context) string {
 
 	// TODO: Should still prefer to pick a random adjacent empty cell before fully welping out.
 	nonWalls := make([]string, 0)
+	emptyCells := make([]string, 0)
 	isContinueOpen := false
-	for dir, _ := range neighbours {
+	for dir, cell := range neighbours {
 		nonWalls = append(nonWalls, dir)
+		if !cell.IsDeadly() {
+			emptyCells = append(emptyCells, dir)
+		}
 		if dir == state.Move {
 			isContinueOpen = true
 			break
@@ -105,6 +109,9 @@ func (me *Rufio) Move(ctx *snek.Context) string {
 
 	if !isContinueOpen {
 		state.Move = nonWalls[0]
+		if len(emptyCells) > 0 {
+			state.Move = emptyCells[0]
+		}
 	}
 
 	utils.LogMove(ctx.Turn, state.Move, "welp 👋")
