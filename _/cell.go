@@ -178,13 +178,14 @@ func (origin *Cell) CanReachTail(snake *Snake) bool {
 		return false
 	}
 
-	for _, cell := range pathToTail {
-		neighbours := cell.Neighbours()
-		if len(neighbours) == 2 {
-			// This cell is a funnel - its only neighbours are the entry and exit.  It's too risky.
-			return false
-		}
-	}
+	// TODO: This doesn't really work. Doesn't handle corners well, and might be too simple-minded anyway.
+	//for _, cell := range pathToTail {
+	//	neighbours := cell.Neighbours()
+	//	if len(neighbours) == 2 {
+	//		// This cell is a funnel - its only neighbours are the entry and exit.  It's too risky.
+	//		return false
+	//	}
+	//}
 
 	return true
 }
