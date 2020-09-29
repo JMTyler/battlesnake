@@ -179,7 +179,8 @@ func (origin *Cell) CanReachTail(snake *Snake) bool {
 	for turnsAway := 1; turnsAway < len(snake.FullBody); turnsAway++ {
 		ix := len(snake.FullBody) - turnsAway
 		pathToTail := origin.GetTheoreticalPath(snake.FullBody[ix])
-		if pathToTail != nil && len(pathToTail) >= turnsAway {
+		// This is actually one extra turn away, just in case we run into food.
+		if pathToTail != nil && len(pathToTail) > turnsAway {
 			return true
 		}
 	}
