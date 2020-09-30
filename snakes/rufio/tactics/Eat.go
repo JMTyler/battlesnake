@@ -20,6 +20,17 @@ func (opts Eat) Run(ctx *snek.Context, _ *snek.State) string {
 	}
 
 	foods := snek.FilterCells(ctx.Board.Food, func(cell *snek.Cell) bool {
+		myDistance := ctx.You.Head.GetDistance(cell)
+		for _, foe := range ctx.Board.Foes {
+			if foe.Head.GetDistance(cell) < myDistance {
+				// Don't waste time going after food that's closer to another snake.
+				return false
+			}
+			if foe.Head.GetDistance(cell) == myDistance && foe.Length >= ctx.You.Length {
+				// Don't waste time going after food that's a bigger snake will fight you for.
+				return false
+			}
+		}
 		return !cell.IsRisky()
 	})
 	food := ctx.You.Head.FindClosest(foods)
