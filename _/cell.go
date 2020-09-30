@@ -138,6 +138,10 @@ func (cell *Cell) IsDeadly() bool {
 		return true
 	}
 
+	if cell.HasTags("tunnel") {
+		return true
+	}
+
 	return false
 }
 
