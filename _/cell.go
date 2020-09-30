@@ -159,9 +159,6 @@ func (cell *Cell) IsRisky() bool {
 	if cell.HasTags("hazard") {
 		return true
 	}
-	if cell.HasTags("edge") {
-		return true
-	}
 
 	return false
 }
