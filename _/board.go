@@ -49,12 +49,26 @@ func (board *Board) Prepare(ctx *Context) {
 
 	for x := 0; x < board.Width; x++ {
 		board.CellAt(x, 0).AddTags("edge")
+		if board.CellAt(x, 1).HasTags("enemy") {
+			board.CellAt(x, 0).AddTags("tunnel")
+		}
+
 		board.CellAt(x, board.Height-1).AddTags("edge")
+		if board.CellAt(x, board.Height-2).HasTags("enemy") {
+			board.CellAt(x, board.Height-1).AddTags("tunnel")
+		}
 	}
 
 	for y := 0; y < board.Height; y++ {
 		board.CellAt(0, y).AddTags("edge")
+		if board.CellAt(1, y).HasTags("enemy") {
+			board.CellAt(0, y).AddTags("tunnel")
+		}
+
 		board.CellAt(board.Width-1, y).AddTags("edge")
+		if board.CellAt(board.Width-2, y).HasTags("enemy") {
+			board.CellAt(board.Width-1, y).AddTags("tunnel")
+		}
 	}
 
 	board.loadSnakes(ctx)
