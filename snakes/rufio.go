@@ -12,7 +12,7 @@ import (
 
 type Rufio struct{}
 
-var strategy = []tactics.Tactic{
+var standard = []tactics.Tactic{
 	tactics.New("Only One Option", tactics.OnlyOneOption{}),
 	tactics.New("Easy Kill", tactics.Aggrieve{Advantage: 1, Distance: 2}),
 	tactics.New("Quick Snack", tactics.Eat{Distance: 2}),
@@ -22,6 +22,13 @@ var strategy = []tactics.Tactic{
 	tactics.New("Go Centre", tactics.GoCentre{Width: 3, Height: 3}),
 	tactics.New("Seek Tail", tactics.SeekTail{}),
 	// TODO: Seek other snake's tail if available
+}
+
+var snackatron = []tactics.Tactic{
+	tactics.New("Only One Option", tactics.OnlyOneOption{}),
+	tactics.New("Abscond", tactics.Abscond{Disadvantage: 1, Distance: 2}),
+	tactics.New("Go Centre", tactics.GoCentre{Width: 10, Height: 10}),
+	tactics.New("Seek Tail", tactics.SeekTail{}),
 }
 
 func (me *Rufio) GetName() string {
@@ -54,6 +61,11 @@ func (me *Rufio) Move(ctx *snek.Context) string {
 	neighbours := ctx.You.Head.Neighbours()
 
 	state.UpdateSnakeHistory(ctx)
+
+	strategy := standard
+	if len(ctx.Board.Food) > (ctx.Board.Width * ctx.Board.Height / 2) {
+		strategy = snackatron
+	}
 
 	move := ""
 	riskyBusiness := ""
