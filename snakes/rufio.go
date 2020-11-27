@@ -112,10 +112,10 @@ func (me *Rufio) Move(ctx *snek.Context) string {
 		nonWalls = append(nonWalls, dir)
 		if !cell.IsDeadly() {
 			emptyCells = append(emptyCells, dir)
-		}
-		if dir == state.Move {
-			isContinueOpen = true
-			break
+			if dir == state.Move {
+				isContinueOpen = true
+				break
+			}
 		}
 	}
 
