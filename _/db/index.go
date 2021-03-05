@@ -2,6 +2,7 @@ package db
 
 import (
 	"context"
+	"crypto/tls"
 	"fmt"
 	"github.com/JMTyler/battlesnake/_/config"
 	"github.com/go-pg/pg/v9"
@@ -44,6 +45,7 @@ func InitDatabase() *pg.DB {
 		Addr:            auth.Host,
 		Database:        database,
 		ApplicationName: "BattlesnakeServer",
+		TLSConfig:       &tls.Config{ InsecureSkipVerify: true },
 	}
 
 	DB = pg.Connect(connOptions)
