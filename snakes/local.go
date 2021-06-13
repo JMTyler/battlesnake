@@ -15,7 +15,7 @@ func (me *Local) GetName() string {
 func (me *Local) GetInfo() SnakeInfo {
 	return SnakeInfo{
 		Color: "#666666",
-		Head:  "shac-gamer",
+		Head:  "gamer",
 		Tail:  "freckled",
 	}
 }

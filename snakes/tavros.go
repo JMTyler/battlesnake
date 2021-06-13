@@ -15,7 +15,7 @@ func (me *Tavros) GetName() string {
 func (me *Tavros) GetInfo() SnakeInfo {
 	return SnakeInfo{
 		Color: "#A15000",
-		Head:  "shac-workout",
+		Head:  "workout",
 		Tail:  "fat-rattle",
 	}
 }
