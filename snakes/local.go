@@ -6,7 +6,7 @@ import (
 
 type Local struct{}
 
-var snake SnakeService = &Tavros{}
+var snake SnakeService = &Rufio{}
 
 func (me *Local) GetName() string {
 	return "local"
@@ -14,8 +14,8 @@ func (me *Local) GetName() string {
 
 func (me *Local) GetInfo() SnakeInfo {
 	return SnakeInfo{
-		Color: "#008F00",
-		Head:  "shac-workout",
+		Color: "#666666",
+		Head:  "shac-gamer",
 		Tail:  "freckled",
 	}
 }
