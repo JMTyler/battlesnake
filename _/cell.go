@@ -306,19 +306,21 @@ func (origin *Cell) PathTo(target *Cell) []*Cell {
 }
 
 func (origin *Cell) GetTheoreticalPath(target *Cell) []*Cell {
-	// Clone the graph so we can add the target to it, just this once.
-	graph := *origin.board.FutureGraph
+	graph := origin.board.FutureGraph
 
 	if graph.Node(target.ID()) == nil {
 		graph.AddNode(target)
+		defer graph.RemoveNode(target.ID())
+
 		for _, neighbour := range target.Neighbours() {
 			if graph.Node(neighbour.ID()) != nil {
 				graph.SetEdge(graph.NewEdge(target, neighbour))
+				defer graph.RemoveEdge(target.ID(), neighbour.ID())
 			}
 		}
 	}
 
-	return origin.getPath(target, &graph)
+	return origin.getPath(target, graph)
 }
 
 func (origin *Cell) Approach(target *Cell) string {
