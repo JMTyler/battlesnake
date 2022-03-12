@@ -13,6 +13,7 @@ type Cell struct {
 	Y int `json:"y"`
 
 	board *Board   `json:"-"`
+	game  *Game    `json:"-"`
 	tags  []string `json:"-"`
 }
 
@@ -46,6 +47,7 @@ func (cell *Cell) hasTag(requiredTag string) bool {
 
 func (cell *Cell) Prepare(ctx *Context) {
 	cell.board = ctx.Board
+	cell.game = ctx.Game
 	cell.tags = make([]string, 0)
 }
 
@@ -67,16 +69,16 @@ func (cell *Cell) String() string {
 
 func (cell *Cell) Neighbours() map[string]*Cell {
 	cells := make(map[string]*Cell)
-	if cell.Y < cell.board.Height-1 {
+	if cell.Y < cell.board.Height-1 || cell.game.Ruleset.Name == "wrapped" {
 		cells["up"] = cell.Neighbour("up")
 	}
-	if cell.Y > 0 {
+	if cell.Y > 0 || cell.game.Ruleset.Name == "wrapped" {
 		cells["down"] = cell.Neighbour("down")
 	}
-	if cell.X > 0 {
+	if cell.X > 0 || cell.game.Ruleset.Name == "wrapped" {
 		cells["left"] = cell.Neighbour("left")
 	}
-	if cell.X < cell.board.Width-1 {
+	if cell.X < cell.board.Width-1 || cell.game.Ruleset.Name == "wrapped" {
 		cells["right"] = cell.Neighbour("right")
 	}
 	return cells
@@ -85,13 +87,29 @@ func (cell *Cell) Neighbours() map[string]*Cell {
 func (origin *Cell) Neighbour(dir string) *Cell {
 	switch dir {
 	case "up":
-		return origin.board.CellAt(origin.X, origin.Y+1)
+		y := origin.Y + 1
+		if y >= origin.board.Height && origin.game.Ruleset.Name == "wrapped" {
+			y = 0
+		}
+		return origin.board.CellAt(origin.X, y)
 	case "down":
-		return origin.board.CellAt(origin.X, origin.Y-1)
+		y := origin.Y - 1
+		if y < 0 && origin.game.Ruleset.Name == "wrapped" {
+			y = origin.board.Height - 1
+		}
+		return origin.board.CellAt(origin.X, y)
 	case "left":
-		return origin.board.CellAt(origin.X-1, origin.Y)
+		x := origin.X - 1
+		if x < 0 && origin.game.Ruleset.Name == "wrapped" {
+			x = origin.board.Width - 1
+		}
+		return origin.board.CellAt(x, origin.Y)
 	case "right":
-		return origin.board.CellAt(origin.X+1, origin.Y)
+		x := origin.X + 1
+		if x >= origin.board.Width && origin.game.Ruleset.Name == "wrapped" {
+			x = 0
+		}
+		return origin.board.CellAt(x, origin.Y)
 	}
 	// TODO: error?
 	return nil

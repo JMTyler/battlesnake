@@ -8,9 +8,14 @@ type Context struct {
 }
 
 type Game struct {
-	ID      string `json:"id"`
-	Timeout int    `json:"timeout"`
-	Dev     bool   `json:"dev"`
+	ID      string   `json:"id"`
+	Timeout int      `json:"timeout"`
+	Ruleset *Ruleset `json:"ruleset"`
+	Dev     bool     `json:"dev"`
+}
+
+type Ruleset struct {
+	Name string `json:"name"`
 }
 
 func (ctx *Context) Prepare() {
