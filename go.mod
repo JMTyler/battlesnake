@@ -11,6 +11,7 @@ require (
 	github.com/go-pg/urlstruct v0.5.1 // indirect
 	github.com/goccy/go-yaml v1.8.0
 	github.com/mattn/go-colorable v0.1.7 // indirect
+	github.com/newrelic/go-agent/v3 v3.15.2
 	github.com/vmihailenco/msgpack/v4 v4.3.12 // indirect
 	golang.org/x/crypto v0.0.0-20200820211705-5c72a883971a // indirect
 	golang.org/x/exp v0.0.0-20200819202907-27b6b2ade93b // indirect

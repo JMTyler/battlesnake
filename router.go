@@ -6,6 +6,7 @@ import (
 	snek "github.com/JMTyler/battlesnake/_"
 	"github.com/JMTyler/battlesnake/_/config"
 	"github.com/getsentry/sentry-go"
+	"github.com/newrelic/go-agent/v3/newrelic"
 	"net/http"
 	"time"
 	//	"github.com/JMTyler/battlesnake/_/utils"
@@ -22,7 +23,7 @@ var the_snakes = []snakes.SnakeService{
 }
 
 func handleRoute(route string, snake snakes.SnakeService, f func(snakes.SnakeService, *snek.Context) []byte) {
-	http.HandleFunc(route, func(w http.ResponseWriter, r *http.Request) {
+	http.HandleFunc(newrelic.WrapHandleFunc(getNewRelicApp(), route, func(w http.ResponseWriter, r *http.Request) {
 		sentryHub := sentry.NewHub(sentry.CurrentHub().Client(), sentry.NewScope())
 		defer func() {
 			// HACK: Would be simpler to use sentry.Recover() but it doesn't seem to work as expected.
@@ -67,6 +68,8 @@ func handleRoute(route string, snake snakes.SnakeService, f func(snakes.SnakeSer
 			}
 			ctx.Prepare()
 
+			attachSnakeDataToNewRelic(ctx, newrelic.FromContext(r.Context()))
+
 			sentryHub.ConfigureScope(func(scope *sentry.Scope) {
 				scope.SetRequest(r)
 
@@ -98,7 +101,7 @@ func handleRoute(route string, snake snakes.SnakeService, f func(snakes.SnakeSer
 		sentryHub.ConfigureScope(func(scope *sentry.Scope) {
 			scope.Clear()
 		})
-	})
+	}))
 }
 
 // TODO: Setup root paths to default to local snake.

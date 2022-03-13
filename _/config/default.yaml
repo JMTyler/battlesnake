@@ -3,3 +3,4 @@ debug: false
 database_url: ""
 logging.sql: false
 logging.router: false
+new_relic_app_name: Battlesnake
