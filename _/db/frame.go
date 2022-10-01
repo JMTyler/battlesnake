@@ -3,6 +3,7 @@ package db
 import (
 	"fmt"
 	snek "github.com/JMTyler/battlesnake/_"
+	"log"
 	"time"
 )
 
@@ -53,7 +54,7 @@ func (f *Frame) Insert() {
 
 	queue <- func() {
 		if _, err := DB.Model(f).OnConflict("DO NOTHING").Insert(f); err != nil {
-			fmt.Println("Failed to insert frame.", err)
+			log.Printf("Failed to insert frame. %v\n", err)
 			return
 			//panic(err)
 		}
@@ -63,7 +64,7 @@ func (f *Frame) Insert() {
 func (f *Frame) Update(move string, duration int64) {
 	queue <- func() {
 		if _, err := DB.Model(f).WhereStruct(f.getKey()).Set("move = ?, duration = ?, updated_at = ?", move, duration, time.Now()).Update(); err != nil {
-			fmt.Println("Failed to update frame.", err)
+			log.Printf("Failed to update frame. %v\n", err)
 			return
 			//panic(err)
 		}
@@ -85,14 +86,14 @@ func PruneGames() {
 			// Find the oldest game in the database.
 			var gameID string
 			if err := DB.Model(&Frame{}).Column("game_id").Limit(1).Order("created_at ASC").Where("important = ?", false).Select(&gameID); err != nil {
-				fmt.Println("Failed to fetch oldest game for pruning.", err)
+				log.Printf("Failed to fetch oldest game for pruning. %v\n", err)
 				return
 				//panic(err)
 			}
 
 			// And delete it.
 			if _, err := DB.Model(&Frame{}).Where("game_id = ?", gameID).Delete(); err != nil {
-				fmt.Println("Failed to prune oldest game.", err)
+				log.Printf("Failed to prune oldest game. %v\n", err)
 				return
 				//panic(err)
 			}
